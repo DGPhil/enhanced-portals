@@ -6,11 +6,8 @@ import net.minecraft.util.ChatComponentText;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.library.util.ItemHelper;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
 
-public class TileNetworkInterface extends TileFrame implements IPeripheral
+public class TileNetworkInterface extends TileFrame //implements IPeripheral
 {
 	@Override
 	public boolean activate(EntityPlayer player, ItemStack stack)
@@ -30,7 +27,7 @@ public class TileNetworkInterface extends TileFrame implements IPeripheral
 				{
 					if (!worldObj.isRemote)
 					{
-					    player.addChatMessage(new ChatComponentText(Localization.getChatString("noUidSet")));
+					    player.addChatMessage(new ChatComponentText(Localization.getErrorString("noUidSet")));
 					}
 				}
 				else
@@ -54,7 +51,7 @@ public class TileNetworkInterface extends TileFrame implements IPeripheral
 		return true;
 	}
 
-	@Override
+	/*@Override
     public String getType()
     {
         return "Network Interface";
@@ -97,5 +94,5 @@ public class TileNetworkInterface extends TileFrame implements IPeripheral
     public void detach(IComputerAccess computer)
     {
 
-    }
+    }*/
 }

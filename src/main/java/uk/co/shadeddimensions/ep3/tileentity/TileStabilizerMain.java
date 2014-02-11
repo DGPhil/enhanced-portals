@@ -339,15 +339,15 @@ public class TileStabilizerMain extends TileEP implements IInventory
 
 		if (tag.hasKey("activeConnections"))
 		{
-			NBTTagList c = tag.getTagList("activeConnections", 9);
+			NBTTagList c = tag.getTagList("activeConnections", 10);
 
 			for (int i = 0; i < c.tagCount(); i++)
 			{
-				//NBTTagCompound t = (NBTTagCompound) c.tagAt(i);
-				//String A = t.getString("Key"), B = t.getString("Value");
+				NBTTagCompound t = (NBTTagCompound) c.getCompoundTagAt(i);
+				String A = t.getString("Key"), B = t.getString("Value");
 
-				//activeConnections.put(A, B);
-				//activeConnectionsReverse.put(B, A);
+				activeConnections.put(A, B);
+				activeConnectionsReverse.put(B, A);
 			}
 		}
 

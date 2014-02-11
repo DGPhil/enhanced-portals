@@ -3,21 +3,12 @@ package uk.co.shadeddimensions.ep3.tileentity.portal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.util.ForgeDirection;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
 
-public class TileTransferEnergy extends TileFrameTransfer implements IEnergyHandler, IPeripheral
+public class TileTransferEnergy extends TileFrameTransfer //implements IEnergyHandler, IPeripheral
 {
-    public EnergyStorage storage = new EnergyStorage(16000);
+    //public EnergyStorage storage = new EnergyStorage(16000);
 
     @Override
     public boolean activate(EntityPlayer player, ItemStack stack)
@@ -59,17 +50,17 @@ public class TileTransferEnergy extends TileFrameTransfer implements IEnergyHand
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        storage.readFromNBT(nbt);
+        //storage.readFromNBT(nbt);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
-        storage.writeToNBT(nbt);
+        //storage.writeToNBT(nbt);
     }
 
-    @Override
+    /*@Override
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
     {
         return storage.receiveEnergy(maxReceive, simulate);
@@ -267,5 +258,5 @@ public class TileTransferEnergy extends TileFrameTransfer implements IEnergyHand
     public void detach(IComputerAccess computer)
     {
         
-    }
+    }*/
 }

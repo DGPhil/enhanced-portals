@@ -17,11 +17,8 @@ import uk.co.shadeddimensions.ep3.network.packet.PacketTileGui;
 import uk.co.shadeddimensions.ep3.portal.GlyphIdentifier;
 import uk.co.shadeddimensions.ep3.util.PortalTextureManager;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
 
-public class TileDiallingDevice extends TileFrame implements IPeripheral
+public class TileDiallingDevice extends TileFrame //implements IPeripheral
 {
     public class GlyphElement
     {
@@ -102,6 +99,8 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
                 EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(this), (EntityPlayerMP) player);
             }
         }
+        
+        markDirty();
     }
     
     @Override
@@ -123,7 +122,7 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
         {
             if (controller.getIdentifierUnique() == null)
             {
-                player.addChatMessage(new ChatComponentText(Localization.getChatString("noUidSet")));
+                player.addChatMessage(new ChatComponentText(Localization.getErrorString("noUidSet")));
             }
             else if (!player.isSneaking())
             {
@@ -209,7 +208,7 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
         tag.setTag("glyphList", list);
     }
     
-    @Override
+    /*@Override
     public String getType()
     {
         return "Dialling Device";
@@ -374,5 +373,5 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
     public void detach(IComputerAccess computer)
     {
         
-    }
+    }*/
 }

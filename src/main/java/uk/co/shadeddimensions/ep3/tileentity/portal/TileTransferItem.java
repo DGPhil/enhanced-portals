@@ -1,22 +1,18 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
+import cpw.mods.fml.common.network.ByteBufUtils;
 
-public class TileTransferItem extends TileFrameTransfer implements IInventory, IPeripheral
+public class TileTransferItem extends TileFrameTransfer implements IInventory//, IPeripheral
 {
     ItemStack stack;
     
@@ -190,7 +186,7 @@ public class TileTransferItem extends TileFrameTransfer implements IInventory, I
         }
     }
     
-    @Override
+    /*@Override
     public String getType()
     {
         return "ITM";
@@ -241,7 +237,7 @@ public class TileTransferItem extends TileFrameTransfer implements IInventory, I
     public void detach(IComputerAccess computer)
     {
         
-    }
+    }*/
 
     @Override
     public boolean hasCustomInventoryName()

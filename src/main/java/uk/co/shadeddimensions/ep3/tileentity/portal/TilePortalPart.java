@@ -139,6 +139,7 @@ public class TilePortalPart extends TileEP
     public void setPortalController(ChunkCoordinates c)
     {
         portalController = c;
+        markDirty();
         EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
     }
 

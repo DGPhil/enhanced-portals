@@ -1,10 +1,6 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
 import io.netty.buffer.ByteBuf;
-
-import java.io.DataInputStream;
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,11 +17,8 @@ import net.minecraftforge.fluids.IFluidHandler;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
 
-public class TileTransferFluid extends TileFrameTransfer implements IFluidHandler, IPeripheral
+public class TileTransferFluid extends TileFrameTransfer implements IFluidHandler//, IPeripheral
 {
     public FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 16);
 
@@ -265,7 +258,7 @@ public class TileTransferFluid extends TileFrameTransfer implements IFluidHandle
         cached = true;
     }
     
-    @Override
+    /*@Override
     public String getType()
     {
         return "FTM";
@@ -320,5 +313,5 @@ public class TileTransferFluid extends TileFrameTransfer implements IFluidHandle
     public void detach(IComputerAccess computer)
     {
         
-    }
+    }*/
 }

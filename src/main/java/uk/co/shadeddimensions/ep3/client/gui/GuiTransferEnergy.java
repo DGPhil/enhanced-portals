@@ -41,7 +41,7 @@ public class GuiTransferEnergy extends GuiBaseContainer
     @Override
     public void addElements()
     {
-        addElement(new ElementRedstoneFlux(this, 5, 5, energy.storage));
+        //addElement(new ElementRedstoneFlux(this, 5, 5, energy.storage));
     }
     
     @Override

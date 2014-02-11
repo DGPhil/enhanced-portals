@@ -21,7 +21,7 @@ public class ContainerTransferEnergy extends ContainerBase
     {
         super.detectAndSendChanges();
         TileTransferEnergy energy = (TileTransferEnergy) object;
-        int amt = energy.storage.getEnergyStored();
+        int amt = -1;//energy.storage.getEnergyStored();
         byte state = (byte) (energy.isSending ? 1 : 0);
         
         for (int i = 0; i < crafters.size(); i++)
@@ -49,7 +49,7 @@ public class ContainerTransferEnergy extends ContainerBase
         
         if (par1 == 1)
         {
-            energy.storage.setEnergyStored(par2);
+            //energy.storage.setEnergyStored(par2);
         }
         else if (par1 == 2)
         {

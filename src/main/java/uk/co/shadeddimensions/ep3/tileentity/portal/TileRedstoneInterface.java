@@ -63,7 +63,8 @@ public class TileRedstoneInterface extends TileFrame
 			
 			setState((byte) s);
 		}
-
+		
+		markDirty();
 		EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(this), (EntityPlayerMP) player);
 	}
 

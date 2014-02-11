@@ -57,15 +57,17 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
     public void applyBiometricFilters(int slotIndex, ItemStack s)
     {
         NBTTagCompound t = s.getTagCompound();
-        NBTTagList l = t.getTagList("entities", 9);
+        NBTTagList l = t.getTagList("entities", 10);
 
         for (int i = 0; i < l.tagCount(); i++)
         {
-            //NBTTagCompound tag = (NBTTagCompound) l.tagAt(i);
-            //EntityData entity = new EntityData(tag.getString("Name"), EntityData.getClassFromID(tag.getInteger("ID")), false, (byte) 0);
-            //entityList.add(entity);
-            //lastUpdateTime = System.currentTimeMillis();
+            NBTTagCompound tag = (NBTTagCompound) l.getCompoundTagAt(i);
+            EntityData entity = new EntityData(tag.getString("Name"), EntityData.getClassFromID(tag.getInteger("ID")), false, (byte) 0);
+            entityList.add(entity);
+            lastUpdateTime = System.currentTimeMillis();
         }
+        
+        markDirty();
     }
 
     public boolean canEntityTravel(Entity entity)
@@ -130,7 +132,7 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
                 }
             }
         }
-
+        
         return stack;
     }
 
@@ -259,31 +261,31 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
         isActive = tag.getBoolean("isActive");
         defaultPermissions = tag.getBoolean("notFoundSend");
 
-        NBTTagList l = tag.getTagList("sendingEntityTypes", 9);
+        NBTTagList l = tag.getTagList("sendingEntityTypes", 10);
         for (int i = 0; i < l.tagCount(); i++)
         {
-            //EntityData d = new EntityData().readFromNBT((NBTTagCompound) l.tagAt(i));
+            EntityData d = new EntityData().readFromNBT((NBTTagCompound) l.getCompoundTagAt(i));
 
-            //if (d != null && d.EntityClass != null)
-            //{
-            //    entityList.add(d);
-            //}
+            if (d != null && d.EntityClass != null)
+            {
+                entityList.add(d);
+            }
         }
 
         if (tag.hasKey("Inventory"))
         {
-            /*NBTTagList tagList = tag.getTagList("Inventory");
+            NBTTagList tagList = tag.getTagList("Inventory", 10);
 
             for (int i = 0; i < tagList.tagCount(); i++)
             {
-                NBTTagCompound t2 = (NBTTagCompound) tagList.tagAt(i);
+                NBTTagCompound t2 = (NBTTagCompound) tagList.getCompoundTagAt(i);
                 byte slot = t2.getByte("Slot");
 
                 if (slot >= 0 && slot < inventory.length)
                 {
                     inventory[slot] = ItemStack.loadItemStackFromNBT(t2);
                 }
-            }*/
+            }
         }
     }
 
