@@ -1,6 +1,7 @@
 package uk.co.shadeddimensions.ep3.network;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -28,6 +29,8 @@ import uk.co.shadeddimensions.ep3.container.ContainerTransferEnergy;
 import uk.co.shadeddimensions.ep3.container.ContainerTransferFluid;
 import uk.co.shadeddimensions.ep3.container.ContainerTransferItem;
 import uk.co.shadeddimensions.ep3.item.ItemHandheldScanner;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileGui;
+import uk.co.shadeddimensions.ep3.tileentity.TileEP;
 import uk.co.shadeddimensions.ep3.tileentity.TileStabilizerMain;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
@@ -157,17 +160,17 @@ public class GuiHandler implements IGuiHandler
 
             if (ID == PORTAL_CONTROLLER)
             {
-                PacketHandlerServer.sendGuiPacketToPlayer((TileController) tile, player);
+                EnhancedPortals.packetPipeline.sendTo(new PacketTileGui((TileEP) tile), (EntityPlayerMP) player);
                 return new ContainerBase(tile);
             }
             else if (ID == REDSTONE_INTERFACE)
             {
-                PacketHandlerServer.sendGuiPacketToPlayer((TileRedstoneInterface) tile, player);
+                EnhancedPortals.packetPipeline.sendTo(new PacketTileGui((TileEP) tile), (EntityPlayerMP) player);
                 return new ContainerBase(tile);
             }
             else if (ID == NETWORK_INTERFACE)
             {
-            	PacketHandlerServer.sendGuiPacketToPlayer((TileController) tile, player);
+                EnhancedPortals.packetPipeline.sendTo(new PacketTileGui((TileEP) tile), (EntityPlayerMP) player);
                 return new ContainerBase(tile);
             }
             else if (ID == MODULE_MANIPULATOR)
@@ -176,12 +179,12 @@ public class GuiHandler implements IGuiHandler
             }
             else if (ID == DIMENSIONAL_BRIDGE_STABILIZER)
             {
-                PacketHandlerServer.sendGuiPacketToPlayer((TileStabilizerMain) tile, player);
+                EnhancedPortals.packetPipeline.sendTo(new PacketTileGui((TileEP) tile), (EntityPlayerMP) player);
                 return new ContainerDimensionalBridgeStabilizer((TileStabilizerMain) tile, player);
             }
             else if (ID == DIALLING_DEVICE)
             {
-            	PacketHandlerServer.sendGuiPacketToPlayer((TileDiallingDevice) tile, player);
+                EnhancedPortals.packetPipeline.sendTo(new PacketTileGui((TileEP) tile), (EntityPlayerMP) player);
                 return new ContainerBase(tile);
             }
             else if (ID == TEXTURE_FRAME)
@@ -202,7 +205,7 @@ public class GuiHandler implements IGuiHandler
             }
             else if (ID == BIOMETRIC_IDENTIFIER)
             {
-                PacketHandlerServer.sendGuiPacketToPlayer((TileBiometricIdentifier) tile, player);
+                EnhancedPortals.packetPipeline.sendTo(new PacketTileGui((TileEP) tile), (EntityPlayerMP) player);
                 return new ContainerBiometricIdentifier((TileBiometricIdentifier) tile, player);
             }
             else if (ID == GUIDE)

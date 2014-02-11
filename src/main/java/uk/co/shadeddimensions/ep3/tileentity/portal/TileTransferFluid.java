@@ -1,7 +1,8 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +18,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
@@ -66,26 +66,26 @@ public class TileTransferFluid extends TileFrameTransfer implements IFluidHandle
     }
 
     @Override
-    public void packetGuiFill(DataOutputStream stream) throws IOException
+    public void packetGuiFill(ByteBuf buffer)
     {
         if (tank.getFluid() != null)
         {
-            stream.writeBoolean(false);
-            stream.writeInt(tank.getFluid().fluidID);
-            stream.writeInt(tank.getFluidAmount());
+            buffer.writeBoolean(false);
+            buffer.writeInt(tank.getFluid().fluidID);
+            buffer.writeInt(tank.getFluidAmount());
         }
         else
         {
-            stream.writeBoolean(false);
+            buffer.writeBoolean(false);
         }
     }
 
     @Override
-    public void packetGuiUse(DataInputStream stream) throws IOException
+    public void packetGuiUse(ByteBuf buffer)
     {
-        if (stream.readBoolean())
+        if (buffer.readBoolean())
         {
-            tank.setFluid(new FluidStack(FluidRegistry.getFluid(stream.readInt()), stream.readInt()));
+            tank.setFluid(new FluidStack(FluidRegistry.getFluid(buffer.readInt()), buffer.readInt()));
         }
         else
         {

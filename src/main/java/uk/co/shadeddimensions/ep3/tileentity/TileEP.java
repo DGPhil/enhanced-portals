@@ -1,16 +1,12 @@
 package uk.co.shadeddimensions.ep3.tileentity;
 
 import io.netty.buffer.ByteBuf;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
+import uk.co.shadeddimensions.ep3.network.packet.PacketRequestData;
 import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
 
 public class TileEP extends TileEntity
@@ -41,31 +37,16 @@ public class TileEP extends TileEntity
 
     }
     
-    /**
-     * Should only be used for data that needs to be displayed ONLY in the GUI. If it needs to be displayed in-world as well as the GUI, use packetFill/packetUse.
-     * @param stream
-     * @throws IOException
-     */
-    public void packetGuiFill(DataOutputStream stream) throws IOException
+    public void packetGuiFill(ByteBuf buffer)
     {
 
     }
 
-    /**
-     * Should only be used for data that needs to be displayed ONLY in the GUI. If it needs to be displayed in-world as well as the GUI, use packetFill/packetUse.
-     * @param stream
-     * @throws IOException
-     */
-    public void packetGuiUse(DataInputStream stream) throws IOException
+    public void packetGuiUse(ByteBuf buffer)
     {
 
     }
-
-    /**
-     * Called when the player sends a GUI packet to the server.
-     * @param tag
-     * @param player
-     */
+    
     public void packetGui(NBTTagCompound tag, EntityPlayer player)
     {
         
@@ -78,7 +59,7 @@ public class TileEP extends TileEntity
         
         if (worldObj.isRemote)
         {
-            PacketHandlerClient.requestTileData(this);
+            EnhancedPortals.packetPipeline.sendToServer(new PacketRequestData(this));
         }
     }
 }

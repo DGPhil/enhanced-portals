@@ -3,8 +3,9 @@ package uk.co.shadeddimensions.ep3.client.gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.lib.Localization;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileRedstoneInterface;
 import uk.co.shadeddimensions.library.gui.GuiBase;
 
@@ -24,7 +25,7 @@ public class GuiRedstoneInterface extends GuiBase
     {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("id", button.id);
-        PacketHandlerClient.sendGuiPacket(tag);
+        EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
     }
 
     @Override

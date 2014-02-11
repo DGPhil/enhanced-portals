@@ -1,22 +1,24 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileGui;
 import uk.co.shadeddimensions.ep3.util.EntityData;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
+import cpw.mods.fml.common.network.ByteBufUtils;
 
 public class TileBiometricIdentifier extends TileFrame implements IInventory
 {
@@ -214,38 +216,38 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
             defaultPermissions = !defaultPermissions;
         }
     	
-    	PacketHandlerServer.sendGuiPacketToPlayer(this, player);
+    	EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(this), (EntityPlayerMP) player);
     }
 
     @Override
-    public void packetGuiFill(DataOutputStream stream) throws IOException
+    public void packetGuiFill(ByteBuf buffer)
     {
-        stream.writeBoolean(isActive);
-        stream.writeBoolean(defaultPermissions);
-        stream.writeByte(entityList.size());
+        buffer.writeBoolean(isActive);
+        buffer.writeBoolean(defaultPermissions);
+        buffer.writeByte(entityList.size());
 
         for (EntityData d : entityList)
         {
-            stream.writeUTF(d.EntityDisplayName);
-            stream.writeInt(EntityData.getEntityID(d.EntityClass));
-            stream.writeBoolean(d.disallow);
-            stream.writeByte(d.checkType);
+            ByteBufUtils.writeUTF8String(buffer, d.EntityDisplayName);
+            buffer.writeInt(EntityData.getEntityID(d.EntityClass));
+            buffer.writeBoolean(d.disallow);
+            buffer.writeByte(d.checkType);
         }
     }
 
     @Override
-    public void packetGuiUse(DataInputStream stream) throws IOException
+    public void packetGuiUse(ByteBuf buffer)
     {
-        isActive = stream.readBoolean();
-        defaultPermissions = stream.readBoolean();
+        isActive = buffer.readBoolean();
+        defaultPermissions = buffer.readBoolean();
         entityList.clear();
         lastUpdateTime = System.currentTimeMillis();
 
-        byte size = stream.readByte();
+        byte size = buffer.readByte();
 
         for (int i = 0; i < size; i++)
         {
-            entityList.add(new EntityData(stream.readUTF(), EntityData.getClassFromID(stream.readInt()), stream.readBoolean(), stream.readByte()));
+            entityList.add(new EntityData(ByteBufUtils.readUTF8String(buffer), EntityData.getClassFromID(buffer.readInt()), buffer.readBoolean(), buffer.readByte()));
         }
     }
 

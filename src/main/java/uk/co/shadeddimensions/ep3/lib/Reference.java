@@ -28,12 +28,11 @@ public class Reference
         VERSION = properties.containsKey("version") ? properties.getProperty("version") : ""; 
     }
     
-    public static final String ID = "EnhancedPortals3";
-    public static final String SHORT_ID = "ep3";
-    public static final String NAME = "EnhancedPortals 3";
+    public static final String ID = "ep3";
+    public static final String NAME = "EnhancedPortals";
     public static final String VERSION;
     public static final String DEPENDENCIES = "after:ThermalExpansion";
-    public static final String MC_VERSION = "[1.6.4,)";
+    public static final String MC_VERSION = "[1.7.2,)";
 
     public static final String CLIENT_PROXY = "uk.co.shadeddimensions.ep3.network.ClientProxy";
     public static final String COMMON_PROXY = "uk.co.shadeddimensions.ep3.network.CommonProxy";

@@ -1,13 +1,15 @@
 package uk.co.shadeddimensions.ep3.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.container.ContainerTransferEnergy;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferEnergy;
 import uk.co.shadeddimensions.library.gui.GuiBaseContainer;
 import uk.co.shadeddimensions.library.gui.element.ElementRedstoneFlux;
@@ -47,7 +49,7 @@ public class GuiTransferEnergy extends GuiBaseContainer
     {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setBoolean("state", true);
-        PacketHandlerClient.sendGuiPacket(tag);
+        EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
     }
     
     @Override

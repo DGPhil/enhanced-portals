@@ -1,9 +1,11 @@
 package uk.co.shadeddimensions.ep3.util;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -143,27 +145,18 @@ public class PortalTextureManager
         inventory[1] = s;
     }
 
-    public void usePacket(DataInputStream stream) throws IOException
+    public void usePacket(ByteBuf buffer)
     {
-        frameColour = stream.readInt();
-        portalColour = stream.readInt();
-        particleColour = stream.readInt();
-        particleType = stream.readInt();
-        customFrameTexture = stream.readInt();
-        customPortalTexture = stream.readInt();
+        frameColour = buffer.readInt();
+        portalColour = buffer.readInt();
+        particleColour = buffer.readInt();
+        particleType = buffer.readInt();
+        customFrameTexture = buffer.readInt();
+        customPortalTexture = buffer.readInt();
 
         for (int i = 0; i < inventory.length; i++)
         {
-            int ID = stream.readInt(), meta = stream.readInt();
-
-            if (ID == 0)
-            {
-                inventory[i] = null;
-            }
-            else
-            {
-                //inventory[i] = new ItemStack(ID, 1, meta); // TODO
-            }
+            inventory[i] = ByteBufUtils.readItemStack(buffer);
         }
     }
 
@@ -194,27 +187,18 @@ public class PortalTextureManager
         tag.setTag(tagName, t);
     }
 
-    public void writeToPacket(DataOutputStream stream) throws IOException
+    public void writeToPacket(ByteBuf buffer)
     {
-        stream.writeInt(frameColour);
-        stream.writeInt(portalColour);
-        stream.writeInt(particleColour);
-        stream.writeInt(particleType);
-        stream.writeInt(customFrameTexture);
-        stream.writeInt(customPortalTexture);
+        buffer.writeInt(frameColour);
+        buffer.writeInt(portalColour);
+        buffer.writeInt(particleColour);
+        buffer.writeInt(particleType);
+        buffer.writeInt(customFrameTexture);
+        buffer.writeInt(customPortalTexture);
 
         for (ItemStack element : inventory)
         {
-            if (element != null)
-            {
-                //stream.writeInt(element.itemID); // TODO
-                stream.writeInt(element.getItemDamage());
-            }
-            else
-            {
-                stream.writeInt(0);
-                stream.writeInt(0);
-            }
+            ByteBufUtils.writeItemStack(buffer, element);
         }
     }
 }

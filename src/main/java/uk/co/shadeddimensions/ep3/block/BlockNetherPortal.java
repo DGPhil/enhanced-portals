@@ -21,6 +21,8 @@ public class BlockNetherPortal extends net.minecraft.block.BlockPortal
     public BlockNetherPortal()
     {
         super();
+        setBlockName("nether_portal");
+        setBlockTextureName("nether_portal");
         instance = this;
     }
     

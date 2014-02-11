@@ -1,20 +1,22 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileGui;
 import uk.co.shadeddimensions.ep3.portal.GlyphIdentifier;
 import uk.co.shadeddimensions.ep3.util.PortalTextureManager;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
@@ -79,14 +81,14 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
             ptm.readFromNBT(tag, "TextureData");
             glyphList.get(tag.getInteger("SetDialTexture")).texture = ptm;
             
-            PacketHandlerServer.sendGuiPacketToPlayer(this, player);
+            EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(this), (EntityPlayerMP) player);
         }
 
         if (tag.hasKey("GlyphName") && tag.hasKey("Glyphs"))
         {
             glyphList.add(new GlyphElement(tag.getString("GlyphName"), new GlyphIdentifier(tag.getString("Glyphs"))));
             
-            PacketHandlerServer.sendGuiPacketToPlayer(this, player);
+            EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(this), (EntityPlayerMP) player);
         }
 
         if (tag.hasKey("DeleteGlyph"))
@@ -97,7 +99,7 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
             {
                 glyphList.remove(g);
                 
-                PacketHandlerServer.sendGuiPacketToPlayer(this, player);
+                EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(this), (EntityPlayerMP) player);
             }
         }
     }
@@ -135,26 +137,26 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
     }
     
     @Override
-    public void packetGuiFill(DataOutputStream stream) throws IOException
+    public void packetGuiFill(ByteBuf buffer)
     {
-        stream.writeInt(glyphList.size());
+        buffer.writeInt(glyphList.size());
 
         for (int i = 0; i < glyphList.size(); i++)
         {
-            stream.writeUTF(glyphList.get(i).name);
-            stream.writeUTF(glyphList.get(i).identifier.getGlyphString());
+            ByteBufUtils.writeUTF8String(buffer, glyphList.get(i).name);
+            ByteBufUtils.writeUTF8String(buffer, glyphList.get(i).identifier.getGlyphString());
         }
     }
     
     @Override
-    public void packetGuiUse(DataInputStream stream) throws IOException
+    public void packetGuiUse(ByteBuf buffer)
     {
-        int max = stream.readInt();
+        int max = buffer.readInt();
         glyphList.clear();
 
         for (int i = 0; i < max; i++)
         {
-            glyphList.add(new GlyphElement(stream.readUTF(), new GlyphIdentifier(stream.readUTF())));
+            glyphList.add(new GlyphElement(ByteBufUtils.readUTF8String(buffer), new GlyphIdentifier(ByteBufUtils.readUTF8String(buffer))));
         }
     }
     
@@ -166,7 +168,7 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
 
         for (int i = 0; i < list.tagCount(); i++)
         {
-            /*NBTTagCompound t = (NBTTagCompound) list.tagAt(i);
+            NBTTagCompound t = (NBTTagCompound) list.getCompoundTagAt(i);
             String name = t.getString("Name"), glyph = t.getString("Identifier");
 
             if (t.hasKey("texture"))
@@ -179,7 +181,7 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
             else
             {
                 glyphList.add(new GlyphElement(name, new GlyphIdentifier(glyph)));
-            }*/
+            }
         }
     }
 

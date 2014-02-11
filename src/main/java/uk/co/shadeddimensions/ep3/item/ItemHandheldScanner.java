@@ -23,15 +23,12 @@ import cofh.api.energy.ItemEnergyContainer;
 
 public class ItemHandheldScanner extends ItemEnergyContainer
 {
-    public static int ID;
     public static ItemHandheldScanner instance;
     
     public static InventoryScanner getInventory(ItemStack stack)
     {
         return new InventoryScanner(stack);
     }
-
-    IIcon texture;
 
     public ItemHandheldScanner()
     {
@@ -41,6 +38,7 @@ public class ItemHandheldScanner extends ItemEnergyContainer
         setCreativeTab(Reference.creativeTab);
         setMaxDamage(0);
         setMaxStackSize(1);
+        setTextureName("enhancedportals:scanner");
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -74,12 +72,6 @@ public class ItemHandheldScanner extends ItemEnergyContainer
         }
 
         return true;
-    }
-
-    @Override
-    public IIcon getIconFromDamage(int par1)
-    {
-        return texture;
     }
 
     @Override
@@ -190,12 +182,6 @@ public class ItemHandheldScanner extends ItemEnergyContainer
                 }
             }
         }
-    }
-
-    @Override
-    public void registerIcons(IIconRegister par1IconRegister)
-    {
-        texture = par1IconRegister.registerIcon("enhancedportals:handheldScanner");
     }
 
     private void scanEntity(Entity entity, EntityPlayer player, ItemStack stack)

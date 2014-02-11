@@ -17,8 +17,6 @@ import uk.co.shadeddimensions.ep3.lib.Reference;
 public class ItemEntityCard extends Item
 {
     public static ItemEntityCard instance;
-    
-    IIcon texture;
 
     public ItemEntityCard()
     {
@@ -26,6 +24,7 @@ public class ItemEntityCard extends Item
         instance = this;
         setCreativeTab(Reference.creativeTab);
         setUnlocalizedName("entityCard");
+        setTextureName("enhancedportals:id_card");
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -67,17 +66,5 @@ public class ItemEntityCard extends Item
                 list.add(EnumChatFormatting.GRAY + String.format(Localization.getItemString("andMore"), tagList.tagCount() - 5));
             }
         }
-    }
-
-    @Override
-    public IIcon getIconFromDamage(int par1)
-    {
-        return texture;
-    }
-
-    @Override
-    public void registerIcons(IIconRegister par1IconRegister)
-    {
-        texture = par1IconRegister.registerIcon("enhancedportals:idCard");
     }
 }

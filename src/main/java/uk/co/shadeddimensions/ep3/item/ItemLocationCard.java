@@ -48,8 +48,6 @@ public class ItemLocationCard extends Item
         s.setTagCompound(t);
     }
 
-    IIcon texture;
-
     public ItemLocationCard()
     {
         super();
@@ -58,6 +56,7 @@ public class ItemLocationCard extends Item
         setUnlocalizedName("locationCard");
         setMaxDamage(0);
         setHasSubtypes(true);
+        setTextureName("enhancedportals:location_card");
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -73,12 +72,6 @@ public class ItemLocationCard extends Item
     }
 
     @Override
-    public IIcon getIconFromDamage(int par1)
-    {
-        return texture;
-    }
-
-    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if (player.isSneaking() && hasDBSLocation(stack))
@@ -88,11 +81,5 @@ public class ItemLocationCard extends Item
         }
 
         return stack;
-    }
-
-    @Override
-    public void registerIcons(IIconRegister register)
-    {
-        texture = register.registerIcon("enhancedportals:locationCard");
     }
 }

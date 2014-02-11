@@ -11,27 +11,14 @@ public class ItemPaintbrush extends Item
 {
     public static ItemPaintbrush instance;
     
-    public static IIcon texture;
-
     public ItemPaintbrush()
     {
         super();
         instance = this;
         setCreativeTab(Reference.creativeTab);
         setUnlocalizedName("nanobrush");
+        setTextureName("enhancedportals:paintbrush");
         setMaxStackSize(1);
-    }
-
-    @Override
-    public IIcon getIconFromDamage(int par1)
-    {
-        return texture;
-    }
-
-    @Override
-    public void registerIcons(IIconRegister register)
-    {
-        texture = register.registerIcon("enhancedportals:paintbrush");
     }
 
     @Override

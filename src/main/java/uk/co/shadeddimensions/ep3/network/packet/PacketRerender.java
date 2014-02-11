@@ -1,14 +1,10 @@
 package uk.co.shadeddimensions.ep3.network.packet;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
-import cpw.mods.fml.common.network.Player;
 
-public class PacketRerender extends PacketEnhancedPortals
+public class PacketRerender extends PacketEP
 {
     int posX, posY, posZ;
 
@@ -25,24 +21,30 @@ public class PacketRerender extends PacketEnhancedPortals
     }
 
     @Override
-    public void readPacketData(DataInputStream stream) throws IOException
+    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
     {
-        posX = stream.readInt();
-        posY = stream.readInt();
-        posZ = stream.readInt();
+        buffer.writeInt(posX);
+        buffer.writeInt(posY);
+        buffer.writeInt(posZ);
     }
 
     @Override
-    public void writePacketData(DataOutputStream stream) throws IOException
+    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
     {
-        stream.writeInt(posX);
-        stream.writeInt(posY);
-        stream.writeInt(posZ);
+        posX = buffer.readInt();
+        posY = buffer.readInt();
+        posZ = buffer.readInt();
     }
-    
+
     @Override
-    public void clientPacket(INetworkManager manager, PacketEnhancedPortals packet, Player player)
+    public void handleClientSide(EntityPlayer player)
     {
-        ((EntityPlayer) player).worldObj.markBlockForRenderUpdate(posX, posY, posZ);
+        ((EntityPlayer) player).worldObj.markBlockForUpdate(posX, posY, posZ);
+    }
+
+    @Override
+    public void handleServerSide(EntityPlayer player)
+    {
+        
     }
 }

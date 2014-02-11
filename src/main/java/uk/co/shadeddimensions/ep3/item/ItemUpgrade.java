@@ -11,11 +11,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.item.block.ItemFrame;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.lib.Reference;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileDiallingDevice;
@@ -27,7 +28,6 @@ import uk.co.shadeddimensions.ep3.tileentity.portal.TileRedstoneInterface;
 
 public class ItemUpgrade extends Item
 {
-	public static int ID;
 	public static ItemUpgrade instance;
 
 	static IIcon baseIcon;
@@ -157,7 +157,7 @@ public class ItemUpgrade extends Item
 				}
 
 				t.setPortalController(controller.getChunkCoordinates());
-				PacketHandlerServer.sendUpdatePacketToAllAround(controller);
+				EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(controller), controller);
 				return true;
 			}
 		}

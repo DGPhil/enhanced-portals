@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.client.gui.elements.ElementGlyphIdentifier;
 import uk.co.shadeddimensions.ep3.client.gui.elements.ElementGlyphSelector;
 import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
@@ -16,8 +17,7 @@ import uk.co.shadeddimensions.ep3.item.ItemWrench;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
-import uk.co.shadeddimensions.ep3.network.packet.PacketTextureData;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileDiallingDevice;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileDiallingDevice.GlyphElement;
@@ -60,13 +60,13 @@ public class GuiDiallingDevice extends GuiBase
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setBoolean("DialTerminateRequest", true);
-                PacketHandlerClient.sendGuiPacket(tag);
+                EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
             }
             else if (selector.getGlyphIdentifier().size() > 0)
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setString("DialRequest", selector.getGlyphIdentifier().getGlyphString());
-                PacketHandlerClient.sendGuiPacket(tag);
+                EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
             }
             else
             {
@@ -98,7 +98,7 @@ public class GuiDiallingDevice extends GuiBase
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setString("GlyphName", textField.getText());
                 tag.setString("Glyphs", selector.getGlyphIdentifier().getGlyphString());
-                PacketHandlerClient.sendGuiPacket(tag);
+                EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
             }
 
             toggleState();
@@ -185,7 +185,7 @@ public class GuiDiallingDevice extends GuiBase
 
             NBTTagCompound tag = new NBTTagCompound();
             tag.setInteger("DeleteGlyph", num);
-            PacketHandlerClient.sendGuiPacket(tag);
+            EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
         }
     }
 

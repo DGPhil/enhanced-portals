@@ -45,8 +45,7 @@ public class BlockFrame extends BlockContainer implements IDismantleable
     public static int PORTAL_CONTROLLER = 1, REDSTONE_INTERFACE = 2, NETWORK_INTERFACE = 3, DIALLING_DEVICE = 4, BIOMETRIC_IDENTIFIER = 5, MODULE_MANIPULATOR = 6, TRANSFER_FLUID = 7, TRANSFER_ITEM = 8, TRANSFER_ENERGY = 9;
     public static int FRAME_TYPES = 10;
 
-    static IIcon[] fullIcons;
-    public static IIcon[] overlayIcons;
+    public static IIcon[] overlayIcons, fullIcons;
     public static ConnectedTextures connectedTextures;
 
     public BlockFrame()
@@ -57,6 +56,8 @@ public class BlockFrame extends BlockContainer implements IDismantleable
         setHardness(5);
         setResistance(2000);
         setStepSound(soundTypeMetal);
+        setBlockName("frame");
+        setBlockTextureName("frame");
         connectedTextures = new ConnectedTexturesDetailed("enhancedportals:frame/%s", this, -1);
     }
 
@@ -163,9 +164,9 @@ public class BlockFrame extends BlockContainer implements IDismantleable
     @Override
     public IIcon getIcon(int side, int meta)
     {
-        return fullIcons[MathHelper.clamp_int(meta, 0, FRAME_TYPES)];
+        return fullIcons[meta];
     }
-
+    
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
     {
@@ -193,7 +194,7 @@ public class BlockFrame extends BlockContainer implements IDismantleable
     {
         overlayIcons = new IIcon[FRAME_TYPES];
         fullIcons = new IIcon[FRAME_TYPES];
-
+        
         for (int i = 0; i < overlayIcons.length; i++)
         {
             overlayIcons[i] = register.registerIcon("enhancedportals:portalFrame_" + i);

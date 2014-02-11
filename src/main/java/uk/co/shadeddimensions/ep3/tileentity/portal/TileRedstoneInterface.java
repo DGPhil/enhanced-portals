@@ -1,7 +1,8 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
@@ -10,12 +11,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileGui;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileDiallingDevice.GlyphElement;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
@@ -61,7 +64,7 @@ public class TileRedstoneInterface extends TileFrame
 			setState((byte) s);
 		}
 
-		PacketHandlerServer.sendGuiPacketToPlayer(this, player);
+		EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(this), (EntityPlayerMP) player);
 	}
 
 	@Override
@@ -111,10 +114,10 @@ public class TileRedstoneInterface extends TileFrame
 	}
 
 	@Override
-	public void packetGuiFill(DataOutputStream stream) throws IOException
+	public void packetGuiFill(ByteBuf buffer)
 	{
-		stream.writeBoolean(isOutput);
-		stream.writeByte(state);
+		buffer.writeBoolean(isOutput);
+		buffer.writeByte(state);
 	}
 
 	public int isProvidingStrongPower(int side)
@@ -340,10 +343,10 @@ public class TileRedstoneInterface extends TileFrame
 	}
 
 	@Override
-	public void packetGuiUse(DataInputStream stream) throws IOException
+	public void packetGuiUse(ByteBuf buffer)
 	{
-		isOutput = stream.readBoolean();
-		setState(stream.readByte());
+		isOutput = buffer.readBoolean();
+		setState(buffer.readByte());
 	}
 
 	@Override

@@ -3,18 +3,20 @@ package uk.co.shadeddimensions.ep3.item.block;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlockWithMetadata;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 
 public class ItemFrame extends ItemBlockWithMetadata
 {
     public static String[] unlocalizedName = new String[] { "frame", "controller", "redstone", "networkInterface", "dialDevice", "biometric", "upgrade", "fluid", "item", "energy" };
-
+    
     public ItemFrame(Block block)
     {
         super(block, block);

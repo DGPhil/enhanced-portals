@@ -28,6 +28,8 @@ public class BlockDecoration extends Block
         instance = this;
         setHardness(3);
         setStepSound(soundTypeMetal);
+        setBlockName("decoration");
+        setBlockTextureName("decoration");
         setCreativeTab(Reference.creativeTab);
     }
 

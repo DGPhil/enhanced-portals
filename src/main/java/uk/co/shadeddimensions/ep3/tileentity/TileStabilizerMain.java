@@ -1,8 +1,7 @@
 package uk.co.shadeddimensions.ep3.tileentity;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -21,11 +20,12 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
 import uk.co.shadeddimensions.ep3.item.ItemLocationCard;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.portal.GlyphIdentifier;
 import uk.co.shadeddimensions.ep3.portal.PortalException;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
@@ -166,7 +166,7 @@ public class TileStabilizerMain extends TileEP implements IInventory
 			{
 				TileStabilizer t = (TileStabilizer) tile;
 				t.mainBlock = null;
-				PacketHandlerServer.sendUpdatePacketToAllAround(t);
+				EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
 			}
 		}
 	}
@@ -315,28 +315,23 @@ public class TileStabilizerMain extends TileEP implements IInventory
 	}
 
 	@Override
-	public void packetGuiFill(DataOutputStream stream) throws IOException
+	public void packetGuiFill(ByteBuf buffer)
 	{
-		stream.writeInt(activeConnections.size());
-		stream.writeInt(powerState);
-		stream.writeInt(instability);
-		stream.writeInt(energyStorage.getMaxEnergyStored());
-		stream.writeInt(energyStorage.getEnergyStored());
+	    buffer.writeInt(activeConnections.size());
+	    buffer.writeInt(powerState);
+	    buffer.writeInt(instability);
+	    buffer.writeInt(energyStorage.getMaxEnergyStored());
+	    buffer.writeInt(energyStorage.getEnergyStored());
 	}
 
 	@Override
-	public void packetGuiUse(DataInputStream stream) throws IOException
+	public void packetGuiUse(ByteBuf buffer)
 	{
-		if (stream.available() == 1)
-		{
-			return; // Stops EOF exceptions from old invalid packets
-		}
-
-		intActiveConnections = stream.readInt();
-		powerState = stream.readInt();
-		instability = stream.readInt();
-		energyStorage.setCapacity(stream.readInt());
-		energyStorage.setEnergyStored(stream.readInt());
+		intActiveConnections = buffer.readInt();
+		powerState = buffer.readInt();
+		instability = buffer.readInt();
+		energyStorage.setCapacity(buffer.readInt());
+		energyStorage.setEnergyStored(buffer.readInt());
 	}
 
 	@Override
@@ -392,7 +387,7 @@ public class TileStabilizerMain extends TileEP implements IInventory
 		rows = rows2;
 		blockList = blocks;
 		energyStorage = new EnergyStorage(rows * getEnergyStoragePerRow());
-		PacketHandlerServer.sendUpdatePacketToAllAround(this);
+		EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
 	}
 
 	void setInstability(int newInstability)
@@ -663,7 +658,7 @@ public class TileStabilizerMain extends TileEP implements IInventory
 					}
 					catch (PortalException e)
 					{
-						CommonProxy.logger.warning(e.getMessage());
+						CommonProxy.logger.warn(e.getMessage());
 					}
 				}
 

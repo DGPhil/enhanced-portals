@@ -6,10 +6,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.container.ContainerBiometricIdentifier;
 import uk.co.shadeddimensions.ep3.item.ItemWrench;
 import uk.co.shadeddimensions.ep3.lib.Localization;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
 import uk.co.shadeddimensions.ep3.util.EntityData;
 import uk.co.shadeddimensions.library.gui.GuiBaseContainer;
@@ -121,6 +122,6 @@ public class GuiBiometricIdentifier extends GuiBaseContainer
             tag.setInteger("remove", Integer.parseInt(buttonName.replace("R", "")));
         }
 
-        PacketHandlerClient.sendGuiPacket(tag);
+        EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
     }
 }

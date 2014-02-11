@@ -5,26 +5,23 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 import buildcraft.api.tools.IToolWrench;
 import cofh.api.block.IDismantleable;
 
 public class ItemWrench extends Item implements IToolWrench
 {
-    public static int ID;
     public static ItemWrench instance;
-    
-    IIcon texture;
 
     public ItemWrench()
     {
         super();
-        ID += 256;
         instance = this;
         setCreativeTab(Reference.creativeTab);
         setUnlocalizedName("wrench");
+        setTextureName("enhancedportals:wrench");
         setMaxStackSize(1);
     }
 
@@ -32,18 +29,6 @@ public class ItemWrench extends Item implements IToolWrench
     public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
     {
         return true;
-    }
-
-    @Override
-    public IIcon getIconFromDamage(int par1)
-    {
-        return texture;
-    }
-
-    @Override
-    public void registerIcons(IIconRegister register)
-    {
-        texture = register.registerIcon("enhancedportals:wrench");
     }
 
     @Override
@@ -57,7 +42,7 @@ public class ItemWrench extends Item implements IToolWrench
     {
 
     }
-
+    
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {

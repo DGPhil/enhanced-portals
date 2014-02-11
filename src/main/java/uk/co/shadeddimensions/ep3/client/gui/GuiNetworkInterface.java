@@ -8,10 +8,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.client.gui.elements.ElementGlyphIdentifier;
 import uk.co.shadeddimensions.ep3.client.gui.elements.ElementGlyphSelector;
 import uk.co.shadeddimensions.ep3.lib.Localization;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.portal.GlyphIdentifier;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
 import uk.co.shadeddimensions.library.gui.GuiBase;
@@ -66,7 +67,7 @@ public class GuiNetworkInterface extends GuiBase
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setString("nid", selector.getGlyphIdentifier().getGlyphString());
-                PacketHandlerClient.sendGuiPacket(tag);
+                EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
                 toggleState();
             }
         }

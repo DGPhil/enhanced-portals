@@ -1,10 +1,12 @@
 package uk.co.shadeddimensions.ep3.container;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileGui;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferItem;
 import uk.co.shadeddimensions.library.container.ContainerBase;
 
@@ -36,7 +38,7 @@ public class ContainerTransferItem extends ContainerBase
             }
             if (itemStack != lastItem)
             {
-                 PacketHandlerServer.sendGuiPacketToPlayer(item, (EntityPlayer) icrafting);
+                 EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(item), (EntityPlayerMP) icrafting);
             }
         }
 

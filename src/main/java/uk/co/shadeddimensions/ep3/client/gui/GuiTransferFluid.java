@@ -3,12 +3,11 @@ package uk.co.shadeddimensions.ep3.client.gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidRegistry;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.container.ContainerTransferFluid;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferFluid;
-import uk.co.shadeddimensions.library.gui.GuiBase;
 import uk.co.shadeddimensions.library.gui.GuiBaseContainer;
 import uk.co.shadeddimensions.library.gui.element.ElementFluidTank;
 
@@ -36,7 +35,7 @@ public class GuiTransferFluid extends GuiBaseContainer
     {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setBoolean("state", true);
-        PacketHandlerClient.sendGuiPacket(tag);
+        EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
     }
     
     @Override

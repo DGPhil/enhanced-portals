@@ -42,6 +42,8 @@ public class BlockPortal extends BlockContainer
         setResistance(2000);
         setLightOpacity(0);
         setStepSound(soundTypeGlass);
+        setBlockName("portal");
+        setBlockTextureName("portal");
     }
 
     @Override

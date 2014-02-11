@@ -1,9 +1,6 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.util.ForgeDirection;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.tileentity.TileEP;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 
@@ -42,7 +40,7 @@ public class TilePortalPart extends TileEP
         {
             return cachedController;
         }
-        
+
         TileEntity tile = WorldUtils.getTileEntity(worldObj, portalController);
 
         if (tile != null && tile instanceof TileController)
@@ -92,30 +90,27 @@ public class TilePortalPart extends TileEP
     }
 
     @Override
-    public void packetFill(DataOutputStream stream) throws IOException
+    public void packetFill(ByteBuf buffer)
     {
         if (portalController == null)
         {
-            stream.writeInt(0);
-            stream.writeInt(-1);
-            stream.writeInt(0);
+            buffer.writeBoolean(false);
         }
         else
         {
-            stream.writeInt(portalController.posX);
-            stream.writeInt(portalController.posY);
-            stream.writeInt(portalController.posZ);
+            buffer.writeBoolean(true);
+            buffer.writeInt(portalController.posX);
+            buffer.writeInt(portalController.posY);
+            buffer.writeInt(portalController.posZ);
         }
     }
 
     @Override
-    public void packetUse(DataInputStream stream) throws IOException
+    public void packetUse(ByteBuf buffer)
     {
-        int pcX = stream.readInt(), pcY = stream.readInt(), pcZ = stream.readInt();
-
-        if (pcY != -1)
+        if (buffer.readBoolean())
         {
-            portalController = new ChunkCoordinates(pcX, pcY, pcZ);
+            portalController = new ChunkCoordinates(buffer.readInt(), buffer.readInt(), buffer.readInt());
         }
         else
         {
@@ -144,7 +139,7 @@ public class TilePortalPart extends TileEP
     public void setPortalController(ChunkCoordinates c)
     {
         portalController = c;
-        PacketHandlerServer.sendUpdatePacketToAllAround(this);
+        EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
     }
 
     @Override

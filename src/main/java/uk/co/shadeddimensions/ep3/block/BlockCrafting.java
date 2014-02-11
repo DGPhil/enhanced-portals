@@ -23,6 +23,8 @@ public class BlockCrafting extends Block
         setCreativeTab(Reference.creativeTab);
         setHardness(5);
         setResistance(2000);
+        setBlockName("crafting");
+        setBlockTextureName("crafting");
         setStepSound(soundTypeMetal);
     }
 

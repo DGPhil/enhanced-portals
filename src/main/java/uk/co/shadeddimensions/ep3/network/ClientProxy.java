@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.DimensionManager;
@@ -39,7 +40,7 @@ public class ClientProxy extends CommonProxy
 
     public static boolean resourceExists(String file)
     {
-        ReloadableResourceManager resourceManager = (ReloadableResourceManager) FMLClientHandler.instance().getClient().getResourceManager();
+        IReloadableResourceManager resourceManager = (IReloadableResourceManager) FMLClientHandler.instance().getClient().getResourceManager();
 
         try
         {
@@ -102,7 +103,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void registerItems()
     {
-        gogglesRenderIndex = RenderingRegistry.addNewArmourRendererPrefix("epGoggles");
+        glassesRenderIndex = RenderingRegistry.addNewArmourRendererPrefix("epGoggles");
 
         super.registerItems();
     }

@@ -232,23 +232,23 @@ public class NetworkManager
 
         for (int i = 0; i < portalLocations.tagCount(); i++)
         {
-            /*NBTTagCompound t = (NBTTagCompound) portalLocations.tagAt(i);
+            NBTTagCompound t = (NBTTagCompound) portalLocations.getCompoundTagAt(i);
 
-            addPortal(new GlyphIdentifier(t), new WorldCoordinates(t));*/  // TODO
+            addPortal(new GlyphIdentifier(t), new WorldCoordinates(t));
         }
 
         for (int i = 0; i < portalNetworks.tagCount(); i++)
         {
-            /*NBTTagCompound t = (NBTTagCompound) portalNetworks.tagAt(i);
-            NBTTagList l = t.getTagList("Portals");
+            NBTTagCompound t = (NBTTagCompound) portalNetworks.getCompoundTagAt(i);
+            NBTTagList l = t.getTagList("Portals", 9);
 
             GlyphIdentifier identifier = new GlyphIdentifier(t);
 
             for (int j = 0; j < l.tagCount(); j++)
             {
-                NBTTagCompound tag = (NBTTagCompound) l.tagAt(j);
+                NBTTagCompound tag = (NBTTagCompound) l.getCompoundTagAt(j);
                 addPortalToNetwork(new GlyphIdentifier(tag), identifier);
-            }*/  // TODO
+            }
         }
     }
 

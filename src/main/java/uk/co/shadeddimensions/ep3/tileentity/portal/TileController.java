@@ -1,14 +1,14 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,12 +17,14 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
 import uk.co.shadeddimensions.ep3.item.ItemLocationCard;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileGui;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.portal.EntityManager;
 import uk.co.shadeddimensions.ep3.portal.GlyphIdentifier;
 import uk.co.shadeddimensions.ep3.portal.PortalException;
@@ -34,10 +36,9 @@ import uk.co.shadeddimensions.ep3.util.PortalTextureManager;
 import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
 
 public class TileController extends TileFrame //implements IPeripheral
 {
@@ -191,7 +192,7 @@ public class TileController extends TileFrame //implements IPeripheral
         cachedDestinationUID = id;
         cachedDestinationLoc = wc;
 
-        PacketHandlerServer.sendUpdatePacketToAllAround(this);
+        EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
     }
 
     @Override
@@ -260,7 +261,7 @@ public class TileController extends TileFrame //implements IPeripheral
         System.out.println("Portal Components: " + portalStructure.size());
 
         portalState = ControlState.FINALIZED;
-        PacketHandlerServer.sendUpdatePacketToAllAround(this);
+        EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
     }
 
     public void connectionDial()
@@ -464,7 +465,7 @@ public class TileController extends TileFrame //implements IPeripheral
         biometricIdentifier = null;
         moduleManipulator = null;
         portalState = ControlState.REQUIRES_WRENCH;
-        PacketHandlerServer.sendUpdatePacketToAllAround(this);
+        EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
     }
 
     public TileBiometricIdentifier getBiometricIdentifier()
@@ -825,29 +826,29 @@ public class TileController extends TileFrame //implements IPeripheral
     }
 
     @Override
-    public void packetFill(DataOutputStream stream) throws IOException
+    public void packetFill(ByteBuf buffer)
     {
-        stream.writeInt(portalState.ordinal());
-        stream.writeBoolean(isPortalActive());
+        buffer.writeInt(portalState.ordinal());
+        buffer.writeBoolean(isPortalActive());
 
         if (isPortalActive())
         {
-            stream.writeUTF(cachedDestinationUID.getGlyphString());
-            stream.writeInt(cachedDestinationLoc.posX);
-            stream.writeInt(cachedDestinationLoc.posY);
-            stream.writeInt(cachedDestinationLoc.posZ);
-            stream.writeInt(cachedDestinationLoc.dimension);
+            ByteBufUtils.writeUTF8String(buffer, cachedDestinationUID.getGlyphString());
+            buffer.writeInt(cachedDestinationLoc.posX);
+            buffer.writeInt(cachedDestinationLoc.posY);
+            buffer.writeInt(cachedDestinationLoc.posZ);
+            buffer.writeInt(cachedDestinationLoc.dimension);
         }
         
-        activeTextureData.writeToPacket(stream);
-        stream.writeInt(instability);
+        activeTextureData.writeToPacket(buffer);
+        buffer.writeInt(instability);
         
-        stream.writeBoolean(moduleManipulator != null);
+        buffer.writeBoolean(moduleManipulator != null);
         if (moduleManipulator != null)
         {
-        	stream.writeInt(moduleManipulator.posX);
-        	stream.writeInt(moduleManipulator.posY);
-        	stream.writeInt(moduleManipulator.posZ);
+            buffer.writeInt(moduleManipulator.posX);
+            buffer.writeInt(moduleManipulator.posY);
+            buffer.writeInt(moduleManipulator.posZ);
         }
     }
 
@@ -870,7 +871,7 @@ public class TileController extends TileFrame //implements IPeripheral
         else if (tag.hasKey("nid"))
         {
             setIdentifierNetwork(new GlyphIdentifier(tag.getString("nid")));
-            PacketHandlerServer.sendGuiPacketToPlayer(this, player);
+            EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(this), (EntityPlayerMP) player);
         }
         
         if (tag.hasKey("frameColour"))
@@ -931,46 +932,46 @@ public class TileController extends TileFrame //implements IPeripheral
     }
 
     @Override
-    public void packetGuiFill(DataOutputStream stream) throws IOException
+    public void packetGuiFill(ByteBuf buffer)
     {
-        stream.writeUTF(getHasIdentifierUnique() ? getIdentifierUnique().getGlyphString() : "");
-        stream.writeInt(getPortalCount());
-        stream.writeInt(getFrameCount());
-        stream.writeInt(getRedstoneInterfaceCount());
-        stream.writeInt(getNetworkInterfaceCount());
-        stream.writeInt(getDiallingDeviceCount());
-        stream.writeBoolean(getHasBiometricIdentifier());
-        stream.writeInt(getTransferEnergyCount());
-        stream.writeInt(getTransferFluidCount());
-        stream.writeInt(getTransferItemCount());
-        stream.writeInt(getHasIdentifierNetwork() ? CommonProxy.networkManager.getNetworkSize(getIdentifierNetwork()) : -1);
+        ByteBufUtils.writeUTF8String(buffer, getHasIdentifierUnique() ? getIdentifierUnique().getGlyphString() : "");
+        buffer.writeInt(getPortalCount());
+        buffer.writeInt(getFrameCount());
+        buffer.writeInt(getRedstoneInterfaceCount());
+        buffer.writeInt(getNetworkInterfaceCount());
+        buffer.writeInt(getDiallingDeviceCount());
+        buffer.writeBoolean(getHasBiometricIdentifier());
+        buffer.writeInt(getTransferEnergyCount());
+        buffer.writeInt(getTransferFluidCount());
+        buffer.writeInt(getTransferItemCount());
+        buffer.writeInt(getHasIdentifierNetwork() ? CommonProxy.networkManager.getNetworkSize(getIdentifierNetwork()) : -1);
     }
 
     @Override
-    public void packetGuiUse(DataInputStream stream) throws IOException
+    public void packetGuiUse(ByteBuf buffer)
     {
-        uID = new GlyphIdentifier(stream.readUTF());
-        countPortals = stream.readInt();
-        countFrames = stream.readInt();
-        countRedstone = stream.readInt();
-        countNetwork = stream.readInt();
-        countDial = stream.readInt();
-        hasBio = stream.readBoolean();
-        countEnergy = stream.readInt();
-        countFluids = stream.readInt();
-        countItems = stream.readInt();
-        connectedPortals = stream.readInt();
+        uID = new GlyphIdentifier(ByteBufUtils.readUTF8String(buffer));
+        countPortals = buffer.readInt();
+        countFrames = buffer.readInt();
+        countRedstone = buffer.readInt();
+        countNetwork = buffer.readInt();
+        countDial = buffer.readInt();
+        hasBio = buffer.readBoolean();
+        countEnergy = buffer.readInt();
+        countFluids = buffer.readInt();
+        countItems = buffer.readInt();
+        connectedPortals = buffer.readInt();
     }
 
     @Override
-    public void packetUse(DataInputStream stream) throws IOException
+    public void packetUse(ByteBuf buffer)
     {
-        portalState = ControlState.values()[stream.readInt()];
+        portalState = ControlState.values()[buffer.readInt()];
         
-        if (stream.readBoolean())
+        if (buffer.readBoolean())
         {
-            cachedDestinationUID = new GlyphIdentifier(stream.readUTF());
-            cachedDestinationLoc = new WorldCoordinates(stream.readInt(), stream.readInt(), stream.readInt(), stream.readInt());
+            cachedDestinationUID = new GlyphIdentifier(ByteBufUtils.readUTF8String(buffer));
+            cachedDestinationLoc = new WorldCoordinates(buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt());
         }
         else
         {
@@ -978,12 +979,12 @@ public class TileController extends TileFrame //implements IPeripheral
             cachedDestinationLoc = null;
         }
 
-        activeTextureData.usePacket(stream);
-        instability = stream.readInt();
+        activeTextureData.usePacket(buffer);
+        instability = buffer.readInt();
         
-        if (stream.readBoolean())
+        if (buffer.readBoolean())
         {
-        	moduleManipulator = new ChunkCoordinates(stream.readInt(), stream.readInt(), stream.readInt());
+        	moduleManipulator = new ChunkCoordinates(buffer.readInt(), buffer.readInt(), buffer.readInt());
         }
         
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -1095,7 +1096,7 @@ public class TileController extends TileFrame //implements IPeripheral
      */
     void sendUpdatePacket(boolean updateChunks)
     {
-        PacketHandlerServer.sendUpdatePacketToAllAround(this);
+        EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
 
         if (updateChunks)
         {

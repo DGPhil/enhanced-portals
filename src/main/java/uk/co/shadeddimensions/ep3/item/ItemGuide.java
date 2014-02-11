@@ -14,8 +14,6 @@ public class ItemGuide extends Item
 {
     public static ItemGuide instance;
     
-    IIcon texture;
-    
     public ItemGuide()
     {
         super();
@@ -23,20 +21,9 @@ public class ItemGuide extends Item
         setCreativeTab(Reference.creativeTab);
         setUnlocalizedName("guide");
         setMaxStackSize(1);
+        setTextureName("enhancedportals:manual");
     }
 
-    @Override
-    public IIcon getIconFromDamage(int par1)
-    {
-        return texture;
-    }
-    
-    @Override
-    public void registerIcons(IIconRegister iconRegister)
-    {
-        texture = iconRegister.registerIcon("enhancedportals:guide");
-    }
-    
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {

@@ -1,25 +1,18 @@
 package uk.co.shadeddimensions.ep3.network.packet;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
 import uk.co.shadeddimensions.ep3.client.gui.GuiPortalController;
-import uk.co.shadeddimensions.ep3.client.gui.GuiRedstoneInterface;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
 import uk.co.shadeddimensions.ep3.tileentity.TileEP;
-import uk.co.shadeddimensions.ep3.tileentity.portal.TileRedstoneInterface;
 import uk.co.shadeddimensions.library.container.ContainerBase;
-import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.common.network.ByteBufUtils;
 
-public class PacketGuiData extends PacketEnhancedPortals
+public class PacketGuiData extends PacketEP
 {
     NBTTagCompound tag;
 
@@ -34,7 +27,19 @@ public class PacketGuiData extends PacketEnhancedPortals
     }
 
     @Override
-    public void clientPacket(INetworkManager manager, PacketEnhancedPortals packet, Player player)
+    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    {
+        ByteBufUtils.writeTag(buffer, tag);
+    }
+
+    @Override
+    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    {
+        tag = ByteBufUtils.readTag(buffer);
+    }
+
+    @Override
+    public void handleClientSide(EntityPlayer player)
     {
         Container container = ((EntityPlayer) player).openContainer;
         
@@ -55,16 +60,7 @@ public class PacketGuiData extends PacketEnhancedPortals
     }
 
     @Override
-    public void readPacketData(DataInputStream stream) throws IOException
-    {
-        short length = stream.readShort();
-        byte[] compressed = new byte[length];
-        stream.readFully(compressed);
-        tag = CompressedStreamTools.decompress(compressed);
-    }
-
-    @Override
-    public void serverPacket(INetworkManager manager, PacketEnhancedPortals packet, Player player)
+    public void handleServerSide(EntityPlayer player)
     {
         Container container = ((EntityPlayer) player).openContainer;
         
@@ -72,13 +68,5 @@ public class PacketGuiData extends PacketEnhancedPortals
         {
             ((TileEP) ((ContainerBase) container).object).packetGui(tag, (EntityPlayer) player);
         }
-    }
-
-    @Override
-    public void writePacketData(DataOutputStream stream) throws IOException
-    {
-        byte[] compressed = CompressedStreamTools.compress(tag);
-        stream.writeShort(compressed.length);
-        stream.write(compressed);
     }
 }

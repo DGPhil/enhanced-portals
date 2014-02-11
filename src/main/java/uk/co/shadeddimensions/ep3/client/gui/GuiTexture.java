@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
 import uk.co.shadeddimensions.ep3.client.gui.elements.ElementIconToggleButton;
@@ -21,7 +22,7 @@ import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
 import uk.co.shadeddimensions.ep3.network.ClientProxy.ParticleSet;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
 import uk.co.shadeddimensions.library.gui.GuiBaseContainer;
 import uk.co.shadeddimensions.library.gui.button.GuiBetterSlider;
@@ -45,7 +46,7 @@ public class GuiTexture extends GuiBaseContainer
             backgroundColor = 0x5396da;
             maxHeight += 90;
             name = Localization.getGuiString("colour");
-            icon = ItemPaintbrush.texture;
+            icon = ItemPaintbrush.instance.getIconFromDamage(0);
             
             addElement(new ElementClickBlocker(gui, 3, 21, maxWidth - 7, maxHeight - 25));
         }
@@ -96,7 +97,7 @@ public class GuiTexture extends GuiBaseContainer
 
             NBTTagCompound tag = new NBTTagCompound();
             tag.setInteger((screenState == 0 ? "frame" : screenState == 1 ? "portal" : "particle") + "Colour", hex);
-            PacketHandlerClient.sendGuiPacket(tag);
+            EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
         }
         else if (button.id == colourResetButton.id)
         {
@@ -123,7 +124,7 @@ public class GuiTexture extends GuiBaseContainer
 
             NBTTagCompound tag = new NBTTagCompound();
             tag.setInteger((screenState == 0 ? "frame" : screenState == 1 ? "portal" : "particle") + "Colour", Integer.parseInt(String.format("%02x%02x%02x", redSlider.getValue(), greenSlider.getValue(), blueSlider.getValue()), 16));
-            PacketHandlerClient.sendGuiPacket(tag);
+            EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
         }
     }
 
@@ -336,7 +337,7 @@ public class GuiTexture extends GuiBaseContainer
 
         if (tag.hasKey("frameItemID") || tag.hasKey("portalItemID"))
         {
-            PacketHandlerClient.sendGuiPacket(tag);
+            EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
         }
     }
 
@@ -380,7 +381,7 @@ public class GuiTexture extends GuiBaseContainer
                             tag.setInteger("customPortalTexture", -1);
                         }
 
-                        PacketHandlerClient.sendGuiPacket(tag);
+                        EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
                     }
                     else
                     {
@@ -399,22 +400,22 @@ public class GuiTexture extends GuiBaseContainer
 
                     if (b.getID().equals(buttonName))
                     {
-                        NBTTagCompound payload = new NBTTagCompound();
+                        NBTTagCompound tag = new NBTTagCompound();
 
                         if (mouseButton == 0)
                         {
                             fakeItem.setDisabled(true);
                             b.setSelected(true);
-                            payload.setInteger("customFrameTexture", Integer.parseInt(buttonName.replace("F", "")));
+                            tag.setInteger("customFrameTexture", Integer.parseInt(buttonName.replace("F", "")));
                         }
                         else
                         {
                             fakeItem.setDisabled(false);
                             b.setSelected(false);
-                            payload.setInteger("customFrameTexture", -1);
+                            tag.setInteger("customFrameTexture", -1);
                         }
 
-                        PacketHandlerClient.sendGuiPacket(payload);
+                        EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
                     }
                     else
                     {
@@ -447,7 +448,7 @@ public class GuiTexture extends GuiBaseContainer
                             ((ElementParticleToggleButton) particleList.getElements().get(1)).setSelected(true);
                         }
 
-                        PacketHandlerClient.sendGuiPacket(tag);
+                        EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
                     }
                     else
                     {

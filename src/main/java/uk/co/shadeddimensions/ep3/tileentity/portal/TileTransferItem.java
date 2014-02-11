@@ -1,9 +1,7 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -51,39 +49,15 @@ public class TileTransferItem extends TileFrameTransfer implements IInventory, I
     }
     
     @Override
-    public void packetGuiFill(DataOutputStream stream) throws IOException
+    public void packetGuiFill(ByteBuf buffer)
     {
-        if (stack != null)
-        {
-            stream.writeBoolean(true);
-            NBTTagCompound tag = new NBTTagCompound();
-            stack.writeToNBT(tag);
-            
-            byte[] compressed = CompressedStreamTools.compress(tag);
-            stream.writeShort(compressed.length);
-            stream.write(compressed);
-        }
-        else
-        {
-            stream.writeBoolean(false);
-        }
+        ByteBufUtils.writeItemStack(buffer, stack);
     }
     
     @Override
-    public void packetGuiUse(DataInputStream stream) throws IOException
+    public void packetGuiUse(ByteBuf buffer)
     {
-        if (stream.readBoolean())
-        {
-            short length = stream.readShort();
-            byte[] compressed = new byte[length];
-            stream.readFully(compressed);
-            NBTTagCompound tag = CompressedStreamTools.decompress(compressed);
-            stack = ItemStack.loadItemStackFromNBT(tag);
-        }
-        else
-        {
-            stack = null;
-        }
+        stack = ByteBufUtils.readItemStack(buffer);
     }
 
     @Override

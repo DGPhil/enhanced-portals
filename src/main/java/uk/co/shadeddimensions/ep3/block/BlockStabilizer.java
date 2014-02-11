@@ -28,6 +28,8 @@ public class BlockStabilizer extends BlockContainer
         setHardness(5);
         setResistance(2000);
         setStepSound(soundTypeMetal);
+        setBlockName("dbs");
+        setBlockTextureName("dbs");
         setCreativeTab(Reference.creativeTab);
         connectedTextures = new ConnectedTexturesDetailed("enhancedportals:bridge/%s", this, -1);
     }

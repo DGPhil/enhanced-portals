@@ -20,7 +20,6 @@ import uk.co.shadeddimensions.ep3.tileentity.portal.TileModuleManipulator;
 
 public class ItemPortalModule extends Item implements IPortalModule
 {
-    public static int ID;
     public static ItemPortalModule instance;
     
     public static enum PortalModules
@@ -94,7 +93,7 @@ public class ItemPortalModule extends Item implements IPortalModule
     @Override
     public String getID(ItemStack upgrade)
     {
-        return Reference.SHORT_ID + "." + upgrade.getItemDamage();
+        return Reference.ID + "." + upgrade.getItemDamage();
     }
 
     @Override

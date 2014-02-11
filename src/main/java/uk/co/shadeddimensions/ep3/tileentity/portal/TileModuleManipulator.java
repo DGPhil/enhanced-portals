@@ -1,21 +1,22 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.api.IPortalModule;
 import uk.co.shadeddimensions.ep3.client.particle.PortalFX;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.library.util.ItemHelper;
+import cpw.mods.fml.common.network.ByteBufUtils;
 
 public class TileModuleManipulator extends TileFrame implements IInventory
 {
@@ -80,22 +81,13 @@ public class TileModuleManipulator extends TileFrame implements IInventory
     }
 
     @Override
-    public void packetFill(DataOutputStream stream) throws IOException
+    public void packetFill(ByteBuf buffer)
     {
-        super.packetFill(stream);
+        super.packetFill(buffer);
 
         for (int i = 0; i < getSizeInventory(); i++)
         {
-            if (getStackInSlot(i) != null)
-            {
-                stream.writeInt(Item.getIdFromItem(getStackInSlot(i).getItem()));
-                stream.writeInt(getStackInSlot(i).getItemDamage());
-            }
-            else
-            {
-                stream.writeInt(0);
-                stream.writeInt(0);
-            }
+            ByteBufUtils.writeItemStack(buffer, getStackInSlot(i));
         }
     }
 
@@ -198,7 +190,7 @@ public class TileModuleManipulator extends TileFrame implements IInventory
                     s.stackSize = 1;
 
                     setInventorySlotContents(i, s);
-                    PacketHandlerServer.sendUpdatePacketToAllAround(this);
+                    EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
                     return true;
                 }
             }
@@ -281,18 +273,13 @@ public class TileModuleManipulator extends TileFrame implements IInventory
     }
 
     @Override
-    public void packetUse(java.io.DataInputStream stream) throws IOException
+    public void packetUse(ByteBuf buffer)
     {
-        super.packetUse(stream);
+        super.packetUse(buffer);
 
         for (int i = 0; i < getSizeInventory(); i++)
         {
-            int id = stream.readInt(), meta = stream.readInt();
-
-            if (id != 0)
-            {
-                setInventorySlotContents(i, new ItemStack(Item.getItemById(id), 1, meta));
-            }
+            setInventorySlotContents(i, ByteBufUtils.readItemStack(buffer));
         }
 
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);

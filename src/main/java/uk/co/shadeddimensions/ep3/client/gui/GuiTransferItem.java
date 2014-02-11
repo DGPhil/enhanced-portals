@@ -6,9 +6,10 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.container.ContainerTransferItem;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferItem;
 import uk.co.shadeddimensions.library.gui.GuiBaseContainer;
 import uk.co.shadeddimensions.library.gui.element.ElementItemIconWithSlotAndCount;
@@ -48,7 +49,7 @@ public class GuiTransferItem extends GuiBaseContainer
     {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setBoolean("state", true);
-        PacketHandlerClient.sendGuiPacket(tag);
+        EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
     }
     
     @Override

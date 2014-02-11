@@ -17,11 +17,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.network.packet.PacketEP;
+import uk.co.shadeddimensions.ep3.tileentity.TileEP;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -206,6 +209,11 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Packet
         channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
         channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point);
         channels.get(Side.SERVER).writeAndFlush(message);
+    }
+    
+    public void sendToAllAround(PacketEP message, TileEP tile)
+    {
+        EnhancedPortals.packetPipeline.sendToAllAround(message, new TargetPoint(tile.getWorldObj().provider.dimensionId, tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5, 128.0));
     }
 
     /**

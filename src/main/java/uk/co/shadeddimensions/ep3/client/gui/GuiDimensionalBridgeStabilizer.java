@@ -7,10 +7,11 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.container.ContainerDimensionalBridgeStabilizer;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.tileentity.TileStabilizerMain;
 import uk.co.shadeddimensions.ep3.util.GeneralUtils;
 import uk.co.shadeddimensions.library.gui.GuiBaseContainer;
@@ -61,7 +62,7 @@ public class GuiDimensionalBridgeStabilizer extends GuiBaseContainer
         {
             NBTTagCompound tag = new NBTTagCompound();
             tag.setBoolean("button", false);
-            PacketHandlerClient.sendGuiPacket(tag);
+            EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
         }
     }
 

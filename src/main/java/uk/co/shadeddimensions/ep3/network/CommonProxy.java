@@ -3,7 +3,6 @@ package uk.co.shadeddimensions.ep3.network;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.logging.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -11,6 +10,10 @@ import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.Configuration;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockCrafting;
 import uk.co.shadeddimensions.ep3.block.BlockDecoration;
@@ -32,7 +35,11 @@ import uk.co.shadeddimensions.ep3.item.ItemWrench;
 import uk.co.shadeddimensions.ep3.item.block.ItemDecoration;
 import uk.co.shadeddimensions.ep3.item.block.ItemFrame;
 import uk.co.shadeddimensions.ep3.item.block.ItemStabilizer;
-import uk.co.shadeddimensions.ep3.lib.Reference;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
+import uk.co.shadeddimensions.ep3.network.packet.PacketRequestData;
+import uk.co.shadeddimensions.ep3.network.packet.PacketRerender;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTextureData;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileGui;
 import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.portal.NetworkManager;
 import uk.co.shadeddimensions.ep3.tileentity.TileStabilizer;
@@ -57,11 +64,11 @@ public class CommonProxy
     public static final int REDSTONE_FLUX_COST = 10000;
     public static final int REDSTONE_FLUX_TIMER = 20;
 
-    public int gogglesRenderIndex = 0;
+    public int glassesRenderIndex = 0;
 
     public static NetworkManager networkManager;
 
-    public static final Logger logger = Logger.getLogger(Reference.NAME);
+    public static final Logger logger = LogManager.getLogger("enhancedportals");
 
     public static boolean useAlternateGlyphs, customNetherPortals, portalsDestroyBlocks, fasterPortalCooldown, disableVanillaRecipes, disableTERecipes, disablePortalSounds, disableParticles, forceShowFrameOverlays, disablePigmen, netherDisableParticles, netherDisableSounds;
     public static int redstoneFluxPowerMultiplier;
@@ -227,5 +234,10 @@ public class CommonProxy
     public void registerPackets()
     {
         EnhancedPortals.packetPipeline.registerPacket(PacketTileUpdate.class);
+        EnhancedPortals.packetPipeline.registerPacket(PacketTileGui.class);
+        EnhancedPortals.packetPipeline.registerPacket(PacketTextureData.class);
+        EnhancedPortals.packetPipeline.registerPacket(PacketRerender.class);
+        EnhancedPortals.packetPipeline.registerPacket(PacketRequestData.class);
+        EnhancedPortals.packetPipeline.registerPacket(PacketGuiData.class);
     }
 }

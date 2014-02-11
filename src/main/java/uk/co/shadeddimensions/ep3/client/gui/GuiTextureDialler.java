@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
 import uk.co.shadeddimensions.ep3.client.gui.elements.ElementIconToggleButton;
@@ -23,7 +24,7 @@ import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
 import uk.co.shadeddimensions.ep3.network.ClientProxy.ParticleSet;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileDiallingDevice;
 import uk.co.shadeddimensions.library.gui.GuiBaseContainer;
@@ -49,7 +50,7 @@ public class GuiTextureDialler extends GuiBaseContainer
             backgroundColor = 0x5396da;
             maxHeight += 90;
             name = Localization.getGuiString("colour");
-            icon = ItemPaintbrush.texture;
+            icon = ItemPaintbrush.instance.getIconFromDamage(0);
             
             addElement(new ElementClickBlocker(gui, 3, 21, maxWidth - 7, maxHeight - 25));
         }
@@ -137,7 +138,7 @@ public class GuiTextureDialler extends GuiBaseContainer
             NBTTagCompound tag = new NBTTagCompound();
             tag.setInteger("SetDialTexture", ClientProxy.editingDialEntry);
             ClientProxy.dialEntryTexture.writeToNBT(tag, "TextureData");
-            PacketHandlerClient.sendGuiPacket(tag);
+            EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
             ClientProxy.editingDialEntry = -1;
             GuiHandler.openGui(Minecraft.getMinecraft().thePlayer, dial, GuiHandler.DIALLING_DEVICE);
         }

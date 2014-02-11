@@ -10,8 +10,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.util.ForgeDirection;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.util.GeneralUtils;
 import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
 import uk.co.shadeddimensions.library.util.ItemHelper;
@@ -95,12 +96,13 @@ public class TileStabilizer extends TileEP
                         else if (tile instanceof TileStabilizerMain)
                         {
                             ((TileStabilizerMain) tile).deconstruct();
+                            worldObj.setBlock(c.posX, c.posY, c.posZ, BlockStabilizer.instance, 0, 2);
                         }
                     }
                     
                     for (ChunkCoordinates c : blocks)
                     {
-                        worldObj.setBlock(c.posX, c.posY, c.posZ, BlockStabilizer.instance, 0, 2);
+                        //worldObj.setBlock(c.posX, c.posY, c.posZ, BlockStabilizer.instance, 0, 2);
                         
                         TileEntity tile = worldObj.getTileEntity(c.posX, c.posY, c.posZ);
 
@@ -108,7 +110,6 @@ public class TileStabilizer extends TileEP
                         {
                             TileStabilizer t = (TileStabilizer) tile;
                             t.mainBlock = topLeft;
-                            PacketHandlerServer.sendUpdatePacketToAllAround(t);
                         }
                     }
 
@@ -244,7 +245,7 @@ public class TileStabilizer extends TileEP
     @Override
     public void packetUse(ByteBuf buffer)
     {
-        isFormed = buffer.readBoolean();
+        //isFormed = buffer.readBoolean();
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
@@ -259,5 +260,11 @@ public class TileStabilizer extends TileEP
     {
         super.writeToNBT(tag);
         GeneralUtils.saveChunkCoord(tag, mainBlock, "mainBlock");
+    }
+    
+    @Override
+    public void validate()
+    {
+        this.tileEntityInvalid = false;
     }
 }
