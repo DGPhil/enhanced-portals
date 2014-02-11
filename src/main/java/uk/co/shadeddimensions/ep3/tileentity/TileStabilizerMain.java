@@ -41,28 +41,20 @@ public class TileStabilizerMain extends TileEP implements IInventory
 {
 	static final int ACTIVE_PORTALS_PER_ROW = 2, ENERGY_STORAGE_PER_ROW = CommonProxy.REDSTONE_FLUX_COST + CommonProxy.REDSTONE_FLUX_COST / 2;
 
-	ArrayList<ChunkCoordinates> blockList;
+	ArrayList<ChunkCoordinates> blockList = new ArrayList<ChunkCoordinates>();
 
-	HashMap<String, String> activeConnections;
-	HashMap<String, String> activeConnectionsReverse;
+	HashMap<String, String> activeConnections = new HashMap<String, String>();
+	HashMap<String, String> activeConnectionsReverse = new HashMap<String, String>();
 
 	ItemStack inventory;
 	int rows, tickTimer;
-	EnergyStorage energyStorage;
+	EnergyStorage energyStorage = new EnergyStorage(0);
 	public int powerState, instability = 0;
 	Random rand = new Random();
 	public boolean is3x3 = false;
 
 	@SideOnly(Side.CLIENT)
 	public int intActiveConnections;
-
-	public TileStabilizerMain()
-	{
-		blockList = new ArrayList<ChunkCoordinates>();
-		activeConnections = new HashMap<String, String>();
-		activeConnectionsReverse = new HashMap<String, String>();
-		energyStorage = new EnergyStorage(0);
-	}
 
 	public boolean activate(EntityPlayer player)
 	{

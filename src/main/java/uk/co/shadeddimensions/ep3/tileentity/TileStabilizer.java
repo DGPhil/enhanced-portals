@@ -245,7 +245,7 @@ public class TileStabilizer extends TileEP
     @Override
     public void packetUse(ByteBuf buffer)
     {
-        //isFormed = buffer.readBoolean();
+        isFormed = buffer.readBoolean();
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
@@ -260,11 +260,5 @@ public class TileStabilizer extends TileEP
     {
         super.writeToNBT(tag);
         GeneralUtils.saveChunkCoord(tag, mainBlock, "mainBlock");
-    }
-    
-    @Override
-    public void validate()
-    {
-        this.tileEntityInvalid = false;
     }
 }

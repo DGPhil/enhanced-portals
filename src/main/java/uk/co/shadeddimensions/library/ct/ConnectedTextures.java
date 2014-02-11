@@ -41,7 +41,7 @@ public class ConnectedTextures
 
     protected boolean canConnectTo(IBlockAccess blockAccess, int x, int y, int z)
     {
-        if (block == blockAccess.getBlock(x, y, z))
+        if (Block.isEqualTo(block, blockAccess.getBlock(x, y, z)))
         {
             int meta = blockAccess.getBlockMetadata(x, y, z);
 

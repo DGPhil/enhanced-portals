@@ -2,6 +2,7 @@ package uk.co.shadeddimensions.ep3;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.world.WorldEvent;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -22,8 +23,8 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 
 @Mod(name = Reference.NAME, modid = Reference.ID, dependencies = Reference.DEPENDENCIES, acceptedMinecraftVersions = Reference.MC_VERSION)
 public class EnhancedPortals
@@ -36,7 +37,7 @@ public class EnhancedPortals
     @SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
     public static CommonProxy proxy;
 
-    public static final Logger logger = LogManager.getLogger("enhancedportals");
+    public static final Logger logger = LogManager.getLogger("EnhancedPortals");
     
     public EnhancedPortals()
     {
@@ -79,7 +80,7 @@ public class EnhancedPortals
     {
         CommonProxy.networkManager = new NetworkManager(event);
     }
-
+    
     /*@ForgeSubscribe
     @SideOnly(Side.CLIENT)
     public void textureHook(TextureStitchEvent.Pre event)
@@ -106,14 +107,14 @@ public class EnhancedPortals
                 counter++;
             }
         }
-    }
+    }*/
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void worldSave(WorldEvent.Save event)
     {
         if (!event.world.isRemote)
         {
             CommonProxy.networkManager.saveAllData();
         }
-    }*/
+    }
 }

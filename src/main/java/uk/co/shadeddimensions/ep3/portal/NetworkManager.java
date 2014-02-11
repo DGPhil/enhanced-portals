@@ -1,16 +1,13 @@
 package uk.co.shadeddimensions.ep3.portal;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
@@ -18,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
+import uk.co.shadeddimensions.ep3.util.GeneralUtils;
 import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
@@ -220,7 +218,7 @@ public class NetworkManager
             return;
         }
 
-        NBTTagCompound baseTag = null; //(NBTTagCompound) NBTBase.readNamedTag(new DataInputStream(new FileInputStream(dataFile)));
+        NBTTagCompound baseTag = GeneralUtils.NBTJsonRead(dataFile);
 
         if (baseTag == null)
         {
@@ -233,14 +231,13 @@ public class NetworkManager
         for (int i = 0; i < portalLocations.tagCount(); i++)
         {
             NBTTagCompound t = (NBTTagCompound) portalLocations.getCompoundTagAt(i);
-
             addPortal(new GlyphIdentifier(t), new WorldCoordinates(t));
         }
 
         for (int i = 0; i < portalNetworks.tagCount(); i++)
         {
             NBTTagCompound t = (NBTTagCompound) portalNetworks.getCompoundTagAt(i);
-            NBTTagList l = t.getTagList("Portals", 9);
+            NBTTagList l = t.getTagList("Portals", 10);
 
             GlyphIdentifier identifier = new GlyphIdentifier(t);
 
@@ -250,6 +247,8 @@ public class NetworkManager
                 addPortalToNetwork(new GlyphIdentifier(tag), identifier);
             }
         }
+        
+        EnhancedPortals.logger.warn("!!!!!!!!!!!!!!!!!!!!!!! Portal Locations: " + portalCoordinates.size());
     }
 
     private boolean makeFile()
@@ -363,17 +362,7 @@ public class NetworkManager
 
         baseTag.setTag("PortalLocations", portalLocations);
         baseTag.setTag("PortalNetworks", portalNetworks);
-
-        try
-        {
-            DataOutputStream s = new DataOutputStream(new FileOutputStream(dataFile));
-            //NBTBase.writeNamedTag(baseTag, s);  // TODO
-            s.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        GeneralUtils.NBTJsonSave(baseTag, dataFile);
     }
 
     public boolean portalIdentifierExists(GlyphIdentifier id)

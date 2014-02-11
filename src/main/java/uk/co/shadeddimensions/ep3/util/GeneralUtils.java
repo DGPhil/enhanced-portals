@@ -1,25 +1,43 @@
 package uk.co.shadeddimensions.ep3.util;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.util.ForgeDirection;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.item.ItemGoggles;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.portal.GlyphIdentifier;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
 public class GeneralUtils
 {
+    public static void writeNBTTag(NBTTagCompound tag, DataOutput output)
+    {
+
+    }
+
     public static boolean hasEnergyCost()
     {
         return CommonProxy.redstoneFluxPowerMultiplier > 0;
@@ -37,7 +55,7 @@ public class GeneralUtils
             ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.armorItemInSlot(3);
             return stack != null && stack.isItemEqual(new ItemStack(ItemGoggles.instance));
         }
-        
+
         return false;
     }
 
@@ -57,13 +75,13 @@ public class GeneralUtils
     {
         ArrayList<ChunkCoordinates> list = new ArrayList<ChunkCoordinates>();
 
-        NBTTagList tagList = tag.getTagList(name, 9);
+        NBTTagList tagList = tag.getTagList(name, 10);
 
         for (int i = 0; i < tagList.tagCount(); i++)
         {
-            //NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i);
+            NBTTagCompound t = tagList.getCompoundTagAt(i);
 
-            //list.add(new ChunkCoordinates(t.getInteger("X"), t.getInteger("Y"), t.getInteger("Z")));
+            list.add(new ChunkCoordinates(t.getInteger("X"), t.getInteger("Y"), t.getInteger("Z")));
         }
 
         return list;
@@ -85,13 +103,13 @@ public class GeneralUtils
     {
         ArrayList<WorldCoordinates> list = new ArrayList<WorldCoordinates>();
 
-        NBTTagList tagList = tag.getTagList(name, 9);
+        NBTTagList tagList = tag.getTagList(name, 10);
 
         for (int i = 0; i < tagList.tagCount(); i++)
         {
-            //NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i);
+            NBTTagCompound t = tagList.getCompoundTagAt(i);
 
-            //list.add(new WorldCoordinates(t.getInteger("X"), t.getInteger("Y"), t.getInteger("Z"), t.getInteger("D")));
+            list.add(new WorldCoordinates(t.getInteger("X"), t.getInteger("Y"), t.getInteger("Z"), t.getInteger("D")));
         }
 
         return list;
@@ -199,5 +217,68 @@ public class GeneralUtils
     public static void writeGlyphIdentifier(DataOutputStream stream, GlyphIdentifier i) throws IOException
     {
         stream.writeUTF(i == null ? "" : i.getGlyphString());
+    }
+
+    public static void NBTJsonSave(NBTTagCompound baseTag, File file)
+    {
+        try
+        {
+            Writer writer = new FileWriter(file);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(baseTag, writer);
+            writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static NBTTagCompound NBTJsonRead(File file)
+    {
+        String fileData = "";
+        
+        try
+        {
+            BufferedReader br = null;
+
+            try
+            {
+                br = new BufferedReader(new FileReader(file));
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
+
+                while (line != null)
+                {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
+                }
+                
+                fileData = sb.toString();
+            }
+            finally
+            {
+                if (br != null)
+                {
+                    br.close();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            EnhancedPortals.logger.catching(e);
+            return null;
+        }
+
+        try
+        {
+            return (NBTTagCompound) JsonToNBT.func_150315_a(fileData);
+        }
+        catch (NBTException e)
+        {
+            EnhancedPortals.logger.catching(e);
+            return null;
+        }
     }
 }

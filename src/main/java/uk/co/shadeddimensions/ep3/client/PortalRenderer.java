@@ -3,6 +3,7 @@ package uk.co.shadeddimensions.ep3.client;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
@@ -22,7 +23,7 @@ public class PortalRenderer implements ISimpleBlockRenderingHandler
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
     {
-        //renderer.renderBlockAsItem(Block.portal, 0, 0xFFFFFF); // TODO
+        renderer.renderBlockAsItem(Blocks.portal, 0, 0xFFFFFF);
     }
 
     @Override
