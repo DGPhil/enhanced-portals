@@ -1,11 +1,11 @@
 package uk.co.shadeddimensions.ep3.item;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 import buildcraft.api.tools.IToolWrench;
@@ -16,11 +16,11 @@ public class ItemWrench extends Item implements IToolWrench
     public static int ID;
     public static ItemWrench instance;
     
-    Icon texture;
+    IIcon texture;
 
     public ItemWrench()
     {
-        super(ID);
+        super();
         ID += 256;
         instance = this;
         setCreativeTab(Reference.creativeTab);
@@ -29,19 +29,19 @@ public class ItemWrench extends Item implements IToolWrench
     }
 
     @Override
-    public boolean shouldPassSneakingClickToBlock(World par2World, int par4, int par5, int par6)
+    public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
     {
         return true;
     }
 
     @Override
-    public Icon getIconFromDamage(int par1)
+    public IIcon getIconFromDamage(int par1)
     {
         return texture;
     }
 
     @Override
-    public void registerIcons(IconRegister register)
+    public void registerIcons(IIconRegister register)
     {
         texture = register.registerIcon("enhancedportals:wrench");
     }
@@ -63,7 +63,7 @@ public class ItemWrench extends Item implements IToolWrench
     {
         if (!world.isRemote && player.isSneaking())
         {
-            Block block = Block.blocksList[world.getBlockId(x, y, z)];
+            Block block = world.getBlock(x, y, z);
 
             if (block instanceof IDismantleable)
             {

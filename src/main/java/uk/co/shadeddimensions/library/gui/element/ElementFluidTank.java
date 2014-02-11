@@ -3,14 +3,13 @@ package uk.co.shadeddimensions.library.gui.element;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
 
-import uk.co.shadeddimensions.ep3.client.gui.GuiTransferFluid;
 import uk.co.shadeddimensions.library.gui.IGuiBase;
 import uk.co.shadeddimensions.library.util.GuiUtils;
 
@@ -73,7 +72,7 @@ public class ElementFluidTank extends ElementProgressBar
                 height = Math.min(height, sizeY - 2);
             }
 
-            Icon icon = fluid.getIcon();
+            IIcon icon = fluid.getIcon();
             int colour = fluid.getColor();
             gui.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
             GL11.glColor3ub((byte) (colour >> 16 & 0xFF), (byte) (colour >> 8 & 0xFF), (byte) (colour & 0xFF));

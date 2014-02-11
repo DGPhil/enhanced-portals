@@ -102,15 +102,15 @@ public class GuiNetworkInterface extends GuiBase
     {
         super.drawGuiForegroundLayer(x, y);
 
-        drawCenteredString(fontRenderer, Localization.getGuiString("networkInterface"), xSize / 2, -13, 0xFFFFFF);
-        fontRenderer.drawString(Localization.getGuiString("networkIdentifier"), 8, 8, 0x404040);
-        fontRenderer.drawString(overlayActive ? Localization.getGuiString("glyphs") : Localization.getGuiString("networkInformation"), 8, 44, 0x404040);
+        drawCenteredString(getFontRenderer(), Localization.getGuiString("networkInterface"), xSize / 2, -13, 0xFFFFFF);
+        getFontRenderer().drawString(Localization.getGuiString("networkIdentifier"), 8, 8, 0x404040);
+        getFontRenderer().drawString(overlayActive ? Localization.getGuiString("glyphs") : Localization.getGuiString("networkInformation"), 8, 44, 0x404040);
 
         if (!overlayActive)
         {
             String s1 = controller.connectedPortals == -1 ? Localization.getGuiString("notSet") : "" + controller.connectedPortals;
-            fontRenderer.drawString(Localization.getGuiString("networkedPortals"), 12, 57, 0x404040);
-            fontRenderer.drawString(s1, xSize - 12 - fontRenderer.getStringWidth(s1), 57, 0x404040);
+            getFontRenderer().drawString(Localization.getGuiString("networkedPortals"), 12, 57, 0x404040);
+            getFontRenderer().drawString(s1, xSize - 12 - getFontRenderer().getStringWidth(s1), 57, 0x404040);
 
             if (x >= guiLeft + 7 && x <= guiLeft + xSize - 8)
             {
@@ -137,7 +137,7 @@ public class GuiNetworkInterface extends GuiBase
         buttonList.add(resetButton);
         buttonList.add(saveButton);
 
-        resetButton.drawButton = saveButton.drawButton = false;
+        resetButton.visible = saveButton.visible = false;
     }
 
     @Override
@@ -150,7 +150,7 @@ public class GuiNetworkInterface extends GuiBase
                 if (y >= guiTop + 20 && y <= guiTop + 37)
                 {
                     toggleState();
-                    mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                    //mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
                     return;
                 }
             }
@@ -162,7 +162,7 @@ public class GuiNetworkInterface extends GuiBase
     private void toggleState()
     {
         overlayActive = !overlayActive;
-        resetButton.drawButton = saveButton.drawButton = overlayActive;
+        resetButton.visible = saveButton.visible = overlayActive;
         identifier.setDisabled(!overlayActive);
         selector.setVisible(overlayActive);
     }

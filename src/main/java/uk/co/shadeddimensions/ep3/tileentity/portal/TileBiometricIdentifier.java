@@ -5,16 +5,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.Icon;
-import uk.co.shadeddimensions.ep3.block.BlockFrame;
-import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
-import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
 import uk.co.shadeddimensions.ep3.util.EntityData;
@@ -45,7 +42,7 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
                 GuiHandler.openGui(player, this, GuiHandler.BIOMETRIC_IDENTIFIER);
                 return true;
             }
-            else if (stack != null && stack.itemID == ItemPaintbrush.ID)
+            else if (ItemHelper.isPaintbrush(stack))
             {
                 GuiHandler.openGui(player, controller, GuiHandler.TEXTURE_FRAME);
                 return true;
@@ -58,14 +55,14 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
     public void applyBiometricFilters(int slotIndex, ItemStack s)
     {
         NBTTagCompound t = s.getTagCompound();
-        NBTTagList l = t.getTagList("entities");
+        NBTTagList l = t.getTagList("entities", 9);
 
         for (int i = 0; i < l.tagCount(); i++)
         {
-            NBTTagCompound tag = (NBTTagCompound) l.tagAt(i);
-            EntityData entity = new EntityData(tag.getString("Name"), EntityData.getClassFromID(tag.getInteger("ID")), false, (byte) 0);
-            entityList.add(entity);
-            lastUpdateTime = System.currentTimeMillis();
+            //NBTTagCompound tag = (NBTTagCompound) l.tagAt(i);
+            //EntityData entity = new EntityData(tag.getString("Name"), EntityData.getClassFromID(tag.getInteger("ID")), false, (byte) 0);
+            //entityList.add(entity);
+            //lastUpdateTime = System.currentTimeMillis();
         }
     }
 
@@ -96,12 +93,6 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
     public boolean canUpdate()
     {
         return true;
-    }
-
-    @Override
-    public void closeChest()
-    {
-
     }
 
     public ArrayList<EntityData> copySendingEntityTypes()
@@ -148,7 +139,7 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
     }
 
     @Override
-    public String getInvName()
+    public String getInventoryName()
     {
         return "tile.ep3.frame.scanner.name";
     }
@@ -173,12 +164,6 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
     }
 
     @Override
-    public boolean isInvNameLocalized()
-    {
-        return false;
-    }
-
-    @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack)
     {
         return ItemHelper.isEnergyContainerItem(itemstack);
@@ -190,15 +175,9 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
         return true;
     }
 
-    public void onNeighborBlockChange(int blockID)
+    public void onNeighborBlockChange(Block block)
     {
         isActive = WorldUtils.getHighestPowerState(this) == 0;
-    }
-
-    @Override
-    public void openChest()
-    {
-
     }
 
     @Override
@@ -278,20 +257,20 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
         isActive = tag.getBoolean("isActive");
         defaultPermissions = tag.getBoolean("notFoundSend");
 
-        NBTTagList l = tag.getTagList("sendingEntityTypes");
+        NBTTagList l = tag.getTagList("sendingEntityTypes", 9);
         for (int i = 0; i < l.tagCount(); i++)
         {
-            EntityData d = new EntityData().readFromNBT((NBTTagCompound) l.tagAt(i));
+            //EntityData d = new EntityData().readFromNBT((NBTTagCompound) l.tagAt(i));
 
-            if (d != null && d.EntityClass != null)
-            {
-                entityList.add(d);
-            }
+            //if (d != null && d.EntityClass != null)
+            //{
+            //    entityList.add(d);
+            //}
         }
 
         if (tag.hasKey("Inventory"))
         {
-            NBTTagList tagList = tag.getTagList("Inventory");
+            /*NBTTagList tagList = tag.getTagList("Inventory");
 
             for (int i = 0; i < tagList.tagCount(); i++)
             {
@@ -302,7 +281,7 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
                 {
                     inventory[slot] = ItemStack.loadItemStackFromNBT(t2);
                 }
-            }
+            }*/
         }
     }
 
@@ -346,5 +325,23 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
         }
 
         tag.setTag("Inventory", itemList);
+    }
+
+    @Override
+    public boolean hasCustomInventoryName()
+    {
+        return false;
+    }
+
+    @Override
+    public void openInventory()
+    {
+        
+    }
+
+    @Override
+    public void closeInventory()
+    {
+        
     }
 }

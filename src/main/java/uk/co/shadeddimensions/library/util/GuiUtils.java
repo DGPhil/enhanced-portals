@@ -3,12 +3,14 @@ package uk.co.shadeddimensions.library.util;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.Icon;
+
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
@@ -38,7 +40,7 @@ public class GuiUtils extends Gui
         drawTiledTexture(gui, x, y, fluid.getFluid().getIcon(fluid), width, height);
     }
 
-    public static void drawIcon(IGuiBase gui, Icon icon, int x, int y, int spriteSheet)
+    public static void drawIcon(IGuiBase gui, IIcon icon, int x, int y, int spriteSheet)
     {
         if (spriteSheet == 0)
         {
@@ -65,7 +67,7 @@ public class GuiUtils extends Gui
         }
     }
 
-    public static void drawScaledTexturedModelRectFromIcon(IGuiBase gui, int x, int y, Icon icon, int width, int height)
+    public static void drawScaledTexturedModelRectFromIcon(IGuiBase gui, int x, int y, IIcon icon, int width, int height)
     {
         if (icon == null)
         {
@@ -99,7 +101,7 @@ public class GuiUtils extends Gui
         tessellator.draw();
     }
 
-    public static void drawTiledTexture(IGuiBase gui, int x, int y, Icon icon, int width, int height)
+    public static void drawTiledTexture(IGuiBase gui, int x, int y, IIcon icon, int width, int height)
     {
         int i = 0;
         int j = 0;

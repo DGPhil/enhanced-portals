@@ -9,12 +9,11 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.config.Configuration;
 import uk.co.shadeddimensions.ep3.block.BlockCrafting;
 import uk.co.shadeddimensions.ep3.block.BlockDecoration;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
-import uk.co.shadeddimensions.ep3.block.BlockNetherPortal;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
 import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
 import uk.co.shadeddimensions.ep3.crafting.ThermalExpansion;
@@ -47,7 +46,6 @@ import uk.co.shadeddimensions.ep3.tileentity.portal.TileRedstoneInterface;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferEnergy;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferFluid;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferItem;
-import uk.co.shadeddimensions.ep3.util.ConfigHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -62,7 +60,6 @@ public class CommonProxy
     public static NetworkManager networkManager;
 
     public static final Logger logger = Logger.getLogger(Reference.NAME);
-    public static ConfigHandler configuration;
 
     public static boolean useAlternateGlyphs, customNetherPortals, portalsDestroyBlocks, fasterPortalCooldown, disableVanillaRecipes, disableTERecipes, disablePortalSounds, disableParticles, forceShowFrameOverlays, disablePigmen, netherDisableParticles, netherDisableSounds;
     public static int redstoneFluxPowerMultiplier;
@@ -132,57 +129,40 @@ public class CommonProxy
     {
         ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, new WeightedRandomChestContent(new ItemStack(ItemPortalModule.instance, 1, 4), 1, 1, 2));
 
-        if (customNetherPortals)
-        {
-            BlockNetherPortal.ID = Block.portal.blockID;
-            Block.blocksList[BlockNetherPortal.ID] = null;
+        //if (customNetherPortals)
+        //{
+            //BlockNetherPortal.ID = Block.portal.blockID;
+            //Block.blocksList[BlockNetherPortal.ID] = null;
 
-            if (!reflectBlock(new BlockNetherPortal(), net.minecraft.block.BlockPortal.class))
-            {
-                Block.blocksList[BlockNetherPortal.ID] = null;
-                Block.blocksList[BlockNetherPortal.ID] = new net.minecraft.block.BlockPortal(BlockNetherPortal.ID);
-                logger.warning("Unable to modify BlockPortal. Custom Nether Portals have been disabled.");
-            }
-        }
+            //if (!reflectBlock(new BlockNetherPortal(), net.minecraft.block.BlockPortal.class))
+            //{
+                //Block.blocksList[BlockNetherPortal.ID] = null;
+                //Block.blocksList[BlockNetherPortal.ID] = new net.minecraft.block.BlockPortal(BlockNetherPortal.ID);
+            //    logger.warning("Unable to modify BlockPortal. Custom Nether Portals have been disabled.");
+            //}
+        //}
     }
 
     public void registerBlocks()
     {
-        BlockFrame.ID = configuration.getBlockId("Frame");
-        BlockPortal.ID = configuration.getBlockId("Portal");
-        BlockStabilizer.ID = configuration.getBlockId("DimensionalBridgeStabilizer");
-        BlockDecoration.ID = configuration.getBlockId("Decoration");
-        BlockCrafting.ID = configuration.getBlockId("Crafting");
-        
-        GameRegistry.registerBlock(new BlockFrame(), ItemFrame.class, "portalFrame");
+        GameRegistry.registerBlock(new BlockFrame(), ItemFrame.class, "frame");
         GameRegistry.registerBlock(new BlockPortal(), "portal");
         GameRegistry.registerBlock(new BlockStabilizer(), ItemStabilizer.class, "stabilizer");
-        GameRegistry.registerBlock(new BlockDecoration(), ItemDecoration.class, "ep3.decoration");
+        GameRegistry.registerBlock(new BlockDecoration(), ItemDecoration.class, "decoration");
         GameRegistry.registerBlock(new BlockCrafting(), "crafting");
     }
 
     public void registerItems()
     {
-        ItemWrench.ID = configuration.getItemId("Wrench");
-        ItemPaintbrush.ID = configuration.getItemId("Paintbrush");
-        ItemGoggles.ID = configuration.getItemId("Glasses");
-        ItemLocationCard.ID = configuration.getItemId("LocationCard");
-        ItemPortalModule.ID = configuration.getItemId("PortalModule");
-        ItemEntityCard.ID = configuration.getItemId("EntityCard");
-        ItemHandheldScanner.ID = configuration.getItemId("HandheldScanner");
-        ItemUpgrade.ID = configuration.getItemId("InPlaceUpgrade");
-        ItemMisc.ID = configuration.getItemId("MiscItems");
-        ItemGuide.ID = configuration.getItemId("Manual");
-        
         GameRegistry.registerItem(new ItemWrench(), "wrench");
-        GameRegistry.registerItem(new ItemPaintbrush(), "paintbrush");
+        GameRegistry.registerItem(new ItemPaintbrush(), "nanobrush");
         GameRegistry.registerItem(new ItemGoggles(), "goggles");
-        GameRegistry.registerItem(new ItemLocationCard(), "locationCard");
-        GameRegistry.registerItem(new ItemPortalModule(), "portalModule");
-        GameRegistry.registerItem(new ItemEntityCard(), "entityCard");
-        GameRegistry.registerItem(new ItemHandheldScanner(), "handheldScanner");
-        GameRegistry.registerItem(new ItemUpgrade(), "inPlaceUpgrade");
-        GameRegistry.registerItem(new ItemMisc(), "miscItems");
+        GameRegistry.registerItem(new ItemLocationCard(), "location_card");
+        GameRegistry.registerItem(new ItemPortalModule(), "portal_module");
+        GameRegistry.registerItem(new ItemEntityCard(), "entity_card");
+        GameRegistry.registerItem(new ItemHandheldScanner(), "handheld_scanner");
+        GameRegistry.registerItem(new ItemUpgrade(), "upgrade");
+        GameRegistry.registerItem(new ItemMisc(), "misc_items");
         GameRegistry.registerItem(new ItemGuide(), "guide");
     }
 
@@ -205,27 +185,7 @@ public class CommonProxy
 
     public void setupConfiguration(Configuration theConfig)
     {
-        configuration = new ConfigHandler(Reference.VERSION);
-        configuration.setConfiguration(theConfig);
-
-        configuration.addBlockEntry("Portal");
-        configuration.addBlockEntry("Frame");
-        configuration.addBlockEntry("DimensionalBridgeStabilizer");
-        configuration.addBlockEntry("Decoration");
-        configuration.addBlockEntry("Crafting");
-
-        configuration.addItemEntry("Wrench");
-        configuration.addItemEntry("Glasses");
-        configuration.addItemEntry("Paintbrush");
-        configuration.addItemEntry("LocationCard");
-        configuration.addItemEntry("EntityCard");
-        configuration.addItemEntry("HandheldScanner");
-        configuration.addItemEntry("MiscItems");
-        configuration.addItemEntry("PortalModule");
-        configuration.addItemEntry("InPlaceUpgrade");
-        configuration.addItemEntry("Manual");
-
-        useAlternateGlyphs = configuration.get("Misc", "UseAlternateGlyphs", false);
+        /*useAlternateGlyphs = configuration.get("Misc", "UseAlternateGlyphs", false);
         forceShowFrameOverlays = configuration.get("Misc", "ForceShowFrameOverlays", false);
 
         customNetherPortals = configuration.get("Overrides", "CustomNetherPortals", true);
@@ -248,7 +208,7 @@ public class CommonProxy
             redstoneFluxPowerMultiplier = 0;
         }
 
-        configuration.init();
+        configuration.init();*/
     }
 
     public void setupCrafting()

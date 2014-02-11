@@ -87,7 +87,7 @@ public class ElementGlyphSelector extends ElementBaseContainer
                     }
                 }
 
-                gui.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                //gui.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F); // TODO
                 return true;
             }
         }

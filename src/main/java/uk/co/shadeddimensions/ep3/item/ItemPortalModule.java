@@ -2,7 +2,7 @@ package uk.co.shadeddimensions.ep3.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,13 +10,12 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import uk.co.shadeddimensions.ep3.api.IPortalModule;
 import uk.co.shadeddimensions.ep3.client.particle.PortalFX;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
-import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileModuleManipulator;
 
 public class ItemPortalModule extends Item implements IPortalModule
@@ -35,13 +34,12 @@ public class ItemPortalModule extends Item implements IPortalModule
         }
     }
 
-    static Icon baseIcon;
-    static Icon[] overlayIcons = new Icon[PortalModules.values().length];
+    static IIcon baseIcon;
+    static IIcon[] overlayIcons = new IIcon[PortalModules.values().length];
 
     public ItemPortalModule()
     {
-        super(ID);
-        ID += 256;
+        super();
         instance = this;
         setCreativeTab(Reference.creativeTab);
         setUnlocalizedName("portalModule");
@@ -83,7 +81,7 @@ public class ItemPortalModule extends Item implements IPortalModule
     }
 
     @Override
-    public Icon getIconFromDamageForRenderPass(int damage, int pass)
+    public IIcon getIconFromDamageForRenderPass(int damage, int pass)
     {
         if (pass == 1)
         {
@@ -116,7 +114,7 @@ public class ItemPortalModule extends Item implements IPortalModule
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void getSubItems(int itemID, CreativeTabs creativeTab, List list)
+    public void getSubItems(Item itemID, CreativeTabs creativeTab, List list)
     {
         for (int i = 0; i < PortalModules.values().length; i++)
         {
@@ -210,7 +208,7 @@ public class ItemPortalModule extends Item implements IPortalModule
     }
 
     @Override
-    public void registerIcons(IconRegister register)
+    public void registerIcons(IIconRegister register)
     {
         baseIcon = register.registerIcon("enhancedportals:blankPortalModule");
 

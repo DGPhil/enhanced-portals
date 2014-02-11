@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import uk.co.shadeddimensions.ep3.item.ItemGoggles;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.portal.GlyphIdentifier;
@@ -35,7 +35,7 @@ public class GeneralUtils
             }
 
             ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.armorItemInSlot(3);
-            return stack != null && stack.itemID == ItemGoggles.ID;
+            return stack != null && stack.isItemEqual(new ItemStack(ItemGoggles.instance));
         }
         
         return false;
@@ -57,13 +57,13 @@ public class GeneralUtils
     {
         ArrayList<ChunkCoordinates> list = new ArrayList<ChunkCoordinates>();
 
-        NBTTagList tagList = tag.getTagList(name);
+        NBTTagList tagList = tag.getTagList(name, 9);
 
         for (int i = 0; i < tagList.tagCount(); i++)
         {
-            NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i);
+            //NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i);
 
-            list.add(new ChunkCoordinates(t.getInteger("X"), t.getInteger("Y"), t.getInteger("Z")));
+            //list.add(new ChunkCoordinates(t.getInteger("X"), t.getInteger("Y"), t.getInteger("Z")));
         }
 
         return list;
@@ -85,13 +85,13 @@ public class GeneralUtils
     {
         ArrayList<WorldCoordinates> list = new ArrayList<WorldCoordinates>();
 
-        NBTTagList tagList = tag.getTagList(name);
+        NBTTagList tagList = tag.getTagList(name, 9);
 
         for (int i = 0; i < tagList.tagCount(); i++)
         {
-            NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i);
+            //NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i);
 
-            list.add(new WorldCoordinates(t.getInteger("X"), t.getInteger("Y"), t.getInteger("Z"), t.getInteger("D")));
+            //list.add(new WorldCoordinates(t.getInteger("X"), t.getInteger("Y"), t.getInteger("Z"), t.getInteger("D")));
         }
 
         return list;

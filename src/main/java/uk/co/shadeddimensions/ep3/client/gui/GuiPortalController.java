@@ -164,9 +164,9 @@ public class GuiPortalController extends GuiBase
     @Override
     public void drawGuiForegroundLayer(int x, int y)
     {
-        drawCenteredString(fontRenderer, Localization.getGuiString("portalController"), xSize / 2, -13, 0xFFFFFF);
-        fontRenderer.drawString(Localization.getGuiString("uniqueIdentifier"), 8, 8, 0x404040);
-        fontRenderer.drawString(overlayActive ? Localization.getGuiString("glyphs") : Localization.getGuiString("portalComponents"), 8, 44, 0x404040);
+        drawCenteredString(getFontRenderer(), Localization.getGuiString("portalController"), xSize / 2, -13, 0xFFFFFF);
+        getFontRenderer().drawString(Localization.getGuiString("uniqueIdentifier"), 8, 8, 0x404040);
+        getFontRenderer().drawString(overlayActive ? Localization.getGuiString("glyphs") : Localization.getGuiString("portalComponents"), 8, 44, 0x404040);
 
         if (!overlayActive)
         {
@@ -184,7 +184,7 @@ public class GuiPortalController extends GuiBase
         
         if (warningTimer > 0)
         {
-            fontRenderer.drawString(warningMessage, xSize / 2 - fontRenderer.getStringWidth(warningMessage) / 2, 125, 0xFF0000);
+            getFontRenderer().drawString(warningMessage, xSize / 2 - getFontRenderer().getStringWidth(warningMessage) / 2, 125, 0xFF0000);
         }
 
         super.drawGuiForegroundLayer(x, y);
@@ -202,7 +202,7 @@ public class GuiPortalController extends GuiBase
         buttonList.add(resetButton);
         buttonList.add(saveButton);
 
-        resetButton.drawButton = saveButton.drawButton = overlayActive;
+        resetButton.visible = saveButton.visible = overlayActive;
     }
 
     @Override
@@ -215,7 +215,7 @@ public class GuiPortalController extends GuiBase
                 if (y >= guiTop + 20 && y <= guiTop + 37)
                 {
                     toggleState();
-                    mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                    //mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F); // SOUND
                     return;
                 }
             }
@@ -230,7 +230,7 @@ public class GuiPortalController extends GuiBase
         portalComponents.setVisible(!overlayActive);
         identifier.setDisabled(!overlayActive);
         selector.setVisible(overlayActive);
-        resetButton.drawButton = saveButton.drawButton = overlayActive;
+        resetButton.visible = saveButton.visible = overlayActive;
     }
 
     @Override

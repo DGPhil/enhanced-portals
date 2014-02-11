@@ -1,10 +1,10 @@
 package uk.co.shadeddimensions.ep3.item;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.lib.Reference;
@@ -12,15 +12,13 @@ import uk.co.shadeddimensions.ep3.network.GuiHandler;
 
 public class ItemGuide extends Item
 {
-    public static int ID;
     public static ItemGuide instance;
     
-    Icon texture;
+    IIcon texture;
     
     public ItemGuide()
     {
-        super(ID);
-        ID += 256;
+        super();
         instance = this;
         setCreativeTab(Reference.creativeTab);
         setUnlocalizedName("guide");
@@ -28,13 +26,13 @@ public class ItemGuide extends Item
     }
 
     @Override
-    public Icon getIconFromDamage(int par1)
+    public IIcon getIconFromDamage(int par1)
     {
         return texture;
     }
     
     @Override
-    public void registerIcons(IconRegister iconRegister)
+    public void registerIcons(IIconRegister iconRegister)
     {
         texture = iconRegister.registerIcon("enhancedportals:guide");
     }

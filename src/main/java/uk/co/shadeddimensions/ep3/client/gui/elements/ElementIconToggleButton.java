@@ -1,17 +1,17 @@
 package uk.co.shadeddimensions.ep3.client.gui.elements;
 
 import net.minecraft.client.gui.Gui;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import uk.co.shadeddimensions.library.gui.IGuiBase;
 import uk.co.shadeddimensions.library.gui.element.ElementButton;
 import uk.co.shadeddimensions.library.util.GuiUtils;
 
 public class ElementIconToggleButton extends ElementButton
 {
-    Icon icon;
+    IIcon icon;
     boolean selected;
 
-    public ElementIconToggleButton(IGuiBase parent, int x, int y, String id, Icon icon)
+    public ElementIconToggleButton(IGuiBase parent, int x, int y, String id, IIcon icon)
     {
         super(parent, x, y, 0, id, null, "");
         this.icon = icon;

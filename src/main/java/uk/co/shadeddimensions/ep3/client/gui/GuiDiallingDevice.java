@@ -27,7 +27,6 @@ import uk.co.shadeddimensions.library.gui.element.ElementButtonIcon;
 import uk.co.shadeddimensions.library.gui.element.ElementScrollBar;
 import uk.co.shadeddimensions.library.gui.element.ElementScrollPanel;
 import uk.co.shadeddimensions.library.gui.element.ElementScrollPanelOverlay;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiDiallingDevice extends GuiBase
 {
@@ -150,18 +149,18 @@ public class GuiDiallingDevice extends GuiBase
     {
         super.drawGuiForegroundLayer(mouseX, mouseY);
 
-        fontRenderer.drawStringWithShadow(Localization.getGuiString("dialDevice"), xSize / 2 - fontRenderer.getStringWidth(Localization.getGuiString("dialDevice")) / 2, -13, showOverlay ? 0x444444 : 0xFFFFFF);
-        fontRenderer.drawString(Localization.getGuiString("storedIdentifiers"), 7, 7, showOverlay ? 0x222222 : 0x404040);
-        fontRenderer.drawString(Localization.getGuiString("glyphs"), 8, 127, showOverlay ? 0x222222 : 0x404040);
+        getFontRenderer().drawStringWithShadow(Localization.getGuiString("dialDevice"), xSize / 2 - getFontRenderer().getStringWidth(Localization.getGuiString("dialDevice")) / 2, -13, showOverlay ? 0x444444 : 0xFFFFFF);
+        getFontRenderer().drawString(Localization.getGuiString("storedIdentifiers"), 7, 7, showOverlay ? 0x222222 : 0x404040);
+        getFontRenderer().drawString(Localization.getGuiString("glyphs"), 8, 127, showOverlay ? 0x222222 : 0x404040);
 
         if (showOverlay)
         {
-            fontRenderer.drawStringWithShadow(Localization.getGuiString("identifierName"), xSize / 2 - fontRenderer.getStringWidth(Localization.getGuiString("identifierName")) / 2, 25, 0xFFFFFF);
+            getFontRenderer().drawStringWithShadow(Localization.getGuiString("identifierName"), xSize / 2 - getFontRenderer().getStringWidth(Localization.getGuiString("identifierName")) / 2, 25, 0xFFFFFF);
         }
 
         if (warningTimer > 0)
         {
-            fontRenderer.drawString(warningMessage, xSize - 10 - fontRenderer.getStringWidth(warningMessage), 128, 0xFF0000);
+            getFontRenderer().drawString(warningMessage, xSize - 10 - getFontRenderer().getStringWidth(warningMessage), 128, 0xFF0000);
         }
     }
 
@@ -177,7 +176,7 @@ public class GuiDiallingDevice extends GuiBase
         else if (buttonName.startsWith("T"))
         {
             ClientProxy.editingDialEntry = num;
-            PacketDispatcher.sendPacketToServer(new PacketTextureData(num, dial.xCoord, dial.yCoord, dial.zCoord).getPacket());
+            //PacketDispatcher.sendPacketToServer(new PacketTextureData(num, dial.xCoord, dial.yCoord, dial.zCoord).getPacket()); // TODO
             GuiHandler.openGui(Minecraft.getMinecraft().thePlayer, dial, GuiHandler.TEXTURE_DIALLER);
         }
         else if (buttonName.startsWith("R"))
@@ -198,7 +197,7 @@ public class GuiDiallingDevice extends GuiBase
 
         cancelButton = new GuiButton(10, guiLeft + 20, guiTop + 70, 100, 20, Localization.getGuiString("cancel"));
         acceptButton = new GuiButton(11, guiLeft + xSize - 22 - 100, guiTop + 70, 100, 20, Localization.getGuiString("accept"));
-        textField = new GuiTextField(fontRenderer, guiLeft + 20, guiTop + 47, xSize - 42, 20);
+        textField = new GuiTextField(getFontRenderer(), guiLeft + 20, guiTop + 47, xSize - 42, 20);
 
         buttonList.add(new GuiButton(1, guiLeft + 175, guiTop + 104, 75, 20, controller.isPortalActive() ? Localization.getGuiString("terminate") : Localization.getGuiString("dial")));
         buttonList.add(new GuiButton(2, guiLeft + 175, guiTop + 150, 75, 20, Localization.getGuiString("add")));
@@ -206,7 +205,7 @@ public class GuiDiallingDevice extends GuiBase
         buttonList.add(cancelButton);
         buttonList.add(acceptButton);
 
-        cancelButton.drawButton = acceptButton.drawButton = showOverlay;
+        cancelButton.visible = acceptButton.visible = showOverlay;
         ((GuiButton) buttonList.get(0)).enabled = ((GuiButton) buttonList.get(1)).enabled = ((GuiButton) buttonList.get(2)).enabled = !showOverlay;
         
         if (controller.isPortalActive())
@@ -237,12 +236,12 @@ public class GuiDiallingDevice extends GuiBase
         {
             if (acceptButton.mousePressed(mc, par1, par2))
             {
-                mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                //mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F); // TODO
                 actionPerformed(acceptButton);
             }
             else if (cancelButton.mousePressed(mc, par1, par2))
             {
-                mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                //mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
                 actionPerformed(cancelButton);
             }
 
@@ -281,7 +280,7 @@ public class GuiDiallingDevice extends GuiBase
     {
         showOverlay = !showOverlay;
         textField.setText(Localization.getGuiString("name"));
-        cancelButton.drawButton = acceptButton.drawButton = showOverlay;
+        cancelButton.visible = acceptButton.visible = showOverlay;
         Keyboard.enableRepeatEvents(showOverlay);
         ((GuiButton) buttonList.get(0)).enabled = ((GuiButton) buttonList.get(1)).enabled = ((GuiButton) buttonList.get(2)).enabled = !showOverlay;
     }

@@ -165,7 +165,7 @@ public class EntityData
     {
         if (shouldCheckName())
         {
-            if (entity.getEntityName().equals(EntityDisplayName))
+            if (entity.getCommandSenderName().equals(EntityDisplayName))
             {
                 return disallow ? 0 : 1;
             }
@@ -179,7 +179,7 @@ public class EntityData
         }
         else if (shouldCheckNameAndClass())
         {
-            if (entity.getEntityName().equals(EntityDisplayName) && EntityClass.isInstance(entity))
+            if (entity.getCommandSenderName().equals(EntityDisplayName) && EntityClass.isInstance(entity))
             {
                 return disallow ? 0 : 1;
             }

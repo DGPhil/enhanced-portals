@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,30 +21,23 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.ForgeDirection;
 import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
 import uk.co.shadeddimensions.ep3.item.ItemLocationCard;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
-import uk.co.shadeddimensions.ep3.portal.EntityManager;
 import uk.co.shadeddimensions.ep3.portal.GlyphIdentifier;
 import uk.co.shadeddimensions.ep3.portal.PortalException;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
-import uk.co.shadeddimensions.ep3.tileentity.portal.TileModuleManipulator;
-import uk.co.shadeddimensions.ep3.tileentity.portal.TilePortal;
-import uk.co.shadeddimensions.ep3.tileentity.portal.TileRedstoneInterface;
 import uk.co.shadeddimensions.ep3.util.GeneralUtils;
 import uk.co.shadeddimensions.ep3.util.PortalTextureManager;
-import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
 import uk.co.shadeddimensions.library.util.ItemHelper;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyContainerItem;
-import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHandler
+public class TileStabilizerMain extends TileEP implements IInventory
 {
 	static final int ACTIVE_PORTALS_PER_ROW = 2, ENERGY_STORAGE_PER_ROW = CommonProxy.REDSTONE_FLUX_COST + CommonProxy.REDSTONE_FLUX_COST / 2;
 
@@ -74,7 +68,7 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 	{
 		ItemStack stack = player.inventory.getCurrentItem();
 
-		if (stack != null && stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlockID() == BlockStabilizer.ID)
+		if (stack != null && stack.getItem() instanceof ItemBlock && Block.getBlockFromItem(stack.getItem()) == BlockStabilizer.instance)
 		{
 			return false;
 		}
@@ -150,7 +144,7 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 		}
 	}
 
-	public void breakBlock(int oldBlockID, int oldMetadata)
+	public void breakBlock(Block oldBlockID, int oldMetadata)
 	{
 		for (int i = activeConnections.size() - 1; i > -1; i--) // Go backwards so we don't get messed up by connections getting removed from this list
 		{
@@ -166,7 +160,7 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 
 		for (ChunkCoordinates c : blockList)
 		{
-			TileEntity tile = worldObj.getBlockTileEntity(c.posX, c.posY, c.posZ);
+			TileEntity tile = worldObj.getTileEntity(c.posX, c.posY, c.posZ);
 
 			if (tile instanceof TileStabilizer)
 			{
@@ -186,26 +180,15 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 	}
 
 	@Override
-	public boolean canInterface(ForgeDirection from)
-	{
-		return true;
-	}
-
-	@Override
 	public boolean canUpdate()
 	{
 		return true;
 	}
 
-	@Override
-	public void closeChest()
-	{
-	}
-
 	public void deconstruct()
 	{
-		breakBlock(0, 0);
-		worldObj.setBlock(xCoord, yCoord, zCoord, BlockStabilizer.ID, 0, 3);
+		breakBlock(null, 0);
+		worldObj.setBlock(xCoord, yCoord, zCoord, BlockStabilizer.instance, 0, 3);
 	}
 
 	@Override
@@ -231,12 +214,6 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 		}
 
 		return stack;
-	}
-
-	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
-	{
-		return energyStorage.extractEnergy(maxExtract, simulate);
 	}
 
 	public int getActiveConnections()
@@ -269,27 +246,9 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 	}
 
 	@Override
-	public int getEnergyStored(ForgeDirection from)
-	{
-		return energyStorage.getEnergyStored();
-	}
-
-	@Override
 	public int getInventoryStackLimit()
 	{
 		return 64;
-	}
-
-	@Override
-	public String getInvName()
-	{
-		return "tile.ep3.stabilizer.name";
-	}
-
-	@Override
-	public int getMaxEnergyStored(ForgeDirection from)
-	{
-		return energyStorage.getMaxEnergyStored();
 	}
 
 	@Override
@@ -315,19 +274,14 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 	 */
 	public boolean hasEnoughPowerToStart()
 	{
-		if (CommonProxy.redstoneFluxPowerMultiplier == 0)
-		{
-			return true;
-		}
+	    return true;
+		//if (CommonProxy.redstoneFluxPowerMultiplier == 0)
+		//{
+		//	return true;
+		//}
 
-		int powerRequirement = CommonProxy.redstoneFluxPowerMultiplier * 1 * CommonProxy.REDSTONE_FLUX_COST;
-		return extractEnergy(null, (int) (powerRequirement * 0.3), true) == (int) (powerRequirement * 0.3);
-	}
-
-	@Override
-	public boolean isInvNameLocalized()
-	{
-		return false;
+		//int powerRequirement = CommonProxy.redstoneFluxPowerMultiplier * 1 * CommonProxy.REDSTONE_FLUX_COST;
+		//return extractEnergy(null, (int) (powerRequirement * 0.3), true) == (int) (powerRequirement * 0.3);
 	}
 
 	@Override
@@ -340,11 +294,6 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 	public boolean isUseableByPlayer(EntityPlayer entityplayer)
 	{
 		return true;
-	}
-
-	@Override
-	public void openChest()
-	{
 	}
 
 	@Override
@@ -403,15 +352,15 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 
 		if (tag.hasKey("activeConnections"))
 		{
-			NBTTagList c = tag.getTagList("activeConnections");
+			NBTTagList c = tag.getTagList("activeConnections", 9);
 
 			for (int i = 0; i < c.tagCount(); i++)
 			{
-				NBTTagCompound t = (NBTTagCompound) c.tagAt(i);
-				String A = t.getString("Key"), B = t.getString("Value");
+				//NBTTagCompound t = (NBTTagCompound) c.tagAt(i);
+				//String A = t.getString("Key"), B = t.getString("Value");
 
-				activeConnections.put(A, B);
-				activeConnectionsReverse.put(B, A);
+				//activeConnections.put(A, B);
+				//activeConnectionsReverse.put(B, A);
 			}
 		}
 
@@ -419,12 +368,6 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 		{
 			inventory = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("inventory"));
 		}
-	}
-
-	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
-	{
-		return energyStorage.receiveEnergy(maxReceive, simulate);
 	}
 
 	/***
@@ -690,24 +633,24 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 		{
 			int powerRequirement = CommonProxy.redstoneFluxPowerMultiplier * activeConnections.size() * CommonProxy.REDSTONE_FLUX_COST;
 
-			if (powerState == 0 && extractEnergy(null, powerRequirement, true) == powerRequirement) // Simulate the full power requirement
+			if (powerState == 0 /*&& extractEnergy(null, powerRequirement, true) == powerRequirement*/) // Simulate the full power requirement
 			{
-				extractEnergy(null, powerRequirement, false);
+				//extractEnergy(null, powerRequirement, false);
 				setInstability(0);
 			}
-			else if ((powerState == 1 || powerState == 0) && extractEnergy(null, (int) (powerRequirement * 0.8), true) == (int) (powerRequirement * 0.8)) // Otherwise, try it at 80%
+			else if ((powerState == 1 || powerState == 0) /*&& extractEnergy(null, (int) (powerRequirement * 0.8), true) == (int) (powerRequirement * 0.8)*/) // Otherwise, try it at 80%
 			{
-				extractEnergy(null, (int) (powerRequirement * 0.8), false);
+				//extractEnergy(null, (int) (powerRequirement * 0.8), false);
 				setInstability(20);
 			}
-			else if ((powerState == 2 || powerState == 0) && extractEnergy(null, (int) (powerRequirement * 0.5), true) == (int) (powerRequirement * 0.5)) // Otherwise, try it at 50%
+			else if ((powerState == 2 || powerState == 0) /*&& extractEnergy(null, (int) (powerRequirement * 0.5), true) == (int) (powerRequirement * 0.5)*/) // Otherwise, try it at 50%
 			{
-				extractEnergy(null, (int) (powerRequirement * 0.5), false);
+				//extractEnergy(null, (int) (powerRequirement * 0.5), false);
 				setInstability(50);
 			}
-			else if ((powerState == 3 || powerState == 0) && extractEnergy(null, (int) (powerRequirement * 0.3), true) == (int) (powerRequirement * 0.3)) // Otherwise, try it at 30%
+			else if ((powerState == 3 || powerState == 0) /*&& extractEnergy(null, (int) (powerRequirement * 0.3), true) == (int) (powerRequirement * 0.3)*/) // Otherwise, try it at 30%
 			{
-				extractEnergy(null, (int) (powerRequirement * 0.3), false);
+				//extractEnergy(null, (int) (powerRequirement * 0.3), false);
 				setInstability(70);
 			}
 			else
@@ -741,7 +684,7 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 					energyStorage.receiveEnergy(((IEnergyContainerItem) inventory.getItem()).extractEnergy(inventory, Math.min(requiredEnergy, 10000), false), false);
 				}
 			}
-			else if (inventory.itemID == ItemLocationCard.ID)
+			else if (inventory.isItemEqual(new ItemStack(ItemLocationCard.instance)))
 			{
 				if (!ItemLocationCard.hasDBSLocation(inventory) && !worldObj.isRemote)
 				{
@@ -785,4 +728,28 @@ public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHan
 			tag.setTag("inventory", t);
 		}
 	}
+
+    @Override
+    public String getInventoryName()
+    {
+        return "tile.stabilizer.name";
+    }
+
+    @Override
+    public boolean hasCustomInventoryName()
+    {
+        return false;
+    }
+
+    @Override
+    public void openInventory()
+    {
+        
+    }
+
+    @Override
+    public void closeInventory()
+    {
+        
+    }
 }

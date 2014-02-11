@@ -16,6 +16,6 @@ public class SlotDBS extends Slot
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return ItemHelper.isEnergyContainerItem(stack) || stack.itemID == ItemLocationCard.ID;
+        return ItemHelper.isEnergyContainerItem(stack) || stack.isItemEqual(new ItemStack(ItemLocationCard.instance));
     }
 }

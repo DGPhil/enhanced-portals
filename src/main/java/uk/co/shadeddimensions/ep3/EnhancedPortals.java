@@ -1,16 +1,13 @@
 package uk.co.shadeddimensions.ep3;
 
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.world.WorldEvent;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerClient;
-import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
 import uk.co.shadeddimensions.ep3.portal.NetworkManager;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
@@ -19,16 +16,12 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(name = Reference.NAME, modid = Reference.ID, dependencies = Reference.DEPENDENCIES, acceptedMinecraftVersions = Reference.MC_VERSION)
-@NetworkMod(clientSideRequired = true, serverSideRequired = true, serverPacketHandlerSpec = @SidedPacketHandler(channels = Reference.SHORT_ID, packetHandler = PacketHandlerServer.class), clientPacketHandlerSpec = @SidedPacketHandler(channels = Reference.SHORT_ID, packetHandler = PacketHandlerClient.class))
 public class EnhancedPortals
 {
     @Instance(Reference.ID)
@@ -40,7 +33,7 @@ public class EnhancedPortals
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        CommonProxy.logger.setParent(FMLLog.getLogger());
+        //CommonProxy.logger.setParent(FMLLog.getLogger());
         proxy.registerBlocks();
         proxy.registerTileEntities();
         proxy.registerItems();
@@ -48,7 +41,7 @@ public class EnhancedPortals
         proxy.miscSetup();
 
         MinecraftForge.EVENT_BUS.register(this);
-        NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
+        //NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
     }
     
     @EventHandler
@@ -64,7 +57,7 @@ public class EnhancedPortals
         CommonProxy.networkManager = new NetworkManager(event);
     }
 
-    @ForgeSubscribe
+    /*@ForgeSubscribe
     @SideOnly(Side.CLIENT)
     public void textureHook(TextureStitchEvent.Pre event)
     {
@@ -99,5 +92,5 @@ public class EnhancedPortals
         {
             CommonProxy.networkManager.saveAllData();
         }
-    }
+    }*/
 }

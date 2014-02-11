@@ -5,11 +5,12 @@ import java.util.Queue;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
@@ -106,7 +107,7 @@ public class PortalUtils
                     if (sides >= 2)
                     {
                         processed.add(c);
-                        world.setBlock(c.posX, c.posY, c.posZ, BlockPortal.ID, portalDirection, 2);
+                        world.setBlock(c.posX, c.posY, c.posZ, BlockPortal.instance, portalDirection, 2);
                         addNearbyBlocks(world, c, portalDirection, toProcess);
                     }
                 }
@@ -159,13 +160,13 @@ public class PortalUtils
         {
             controller.worldObj.setBlock(w.posX, w.posY, w.posZ, CommonProxy.blockPortal.blockID, controller.portalType, 2);
 
-            TilePortal portal = (TilePortal) controller.worldObj.getBlockTileEntity(w.posX, w.posY, w.posZ);
+            TilePortal portal = (TilePortal) controller.worldObj.getTileEntity(w.posX, w.posY, w.posZ);
             portal.portalController = controller.getWorldCoordinates();
         }
 
         for (ChunkCoordinates w : controller.blockManager.getPortals())
         {
-            CommonProxy.sendUpdatePacketToAllAround((TilePortal) controller.worldObj.getBlockTileEntity(w.posX, w.posY, w.posZ));
+            CommonProxy.sendUpdatePacketToAllAround((TilePortal) controller.worldObj.getTileEntity(w.posX, w.posY, w.posZ));
         }
 
         //CommonProxy.sendPacketToAllAround(controller, new PacketPortalCreated(controller).getPacket());
@@ -189,7 +190,7 @@ public class PortalUtils
             if (!processed.contains(c))
             {
                 processed.add(c);
-                TileEntity t = controller.worldObj.getBlockTileEntity(c.posX, c.posY, c.posZ);
+                TileEntity t = controller.getWorldObj().getTileEntity(c.posX, c.posY, c.posZ);
 
                 if (portalBlocks.contains(c) || t instanceof TilePortalPart)
                 {
@@ -204,12 +205,12 @@ public class PortalUtils
                         {
                             if (networkCounter == 1)
                             {
-                                player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("multipleNetworkInterfaces")));
+                                player.addChatMessage(new ChatComponentText(Localization.getChatString("multipleNetworkInterfaces")));
                                 return null;
                             }
                             else if (dialCounter == 1)
                             {
-                                player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("dialDeviceAndNetworkInterface")));
+                                player.addChatMessage(new ChatComponentText(Localization.getChatString("dialDeviceAndNetworkInterface")));
                                 return null;
                             }
 
@@ -219,12 +220,12 @@ public class PortalUtils
                         {
                             if (dialCounter == 1)
                             {
-                                player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("multipleDiallingDevices")));
+                                player.addChatMessage(new ChatComponentText(Localization.getChatString("multipleDiallingDevices")));
                                 return null;
                             }
                             else if (networkCounter == 1)
                             {
-                                player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("dialDeviceAndNetworkInterface")));
+                                player.addChatMessage(new ChatComponentText(Localization.getChatString("dialDeviceAndNetworkInterface")));
                                 return null;
                             }
 
@@ -234,7 +235,7 @@ public class PortalUtils
                         {
                             if (biometricCounter == 1)
                             {
-                                player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("multipleBiometricIdentifiers")));
+                                player.addChatMessage(new ChatComponentText(Localization.getChatString("multipleBiometricIdentifiers")));
                                 return null;
                             }
 
@@ -244,7 +245,7 @@ public class PortalUtils
                         {
                             if (moduleCounter == 1)
                             {
-                                player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("multipleModuleManipulators")));
+                                player.addChatMessage(new ChatComponentText(Localization.getChatString("multipleModuleManipulators")));
                                 return null;
                             }
 
@@ -252,14 +253,14 @@ public class PortalUtils
                         }
                         else if (t instanceof TileController && processed.size() > 1)
                         {
-                            player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("multiplePortalControllers")));
+                            player.addChatMessage(new ChatComponentText(Localization.getChatString("multiplePortalControllers")));
                             return null;
                         }
                     }
 
                     portalParts.add(c);
                     //addNearbyBlocks(controller.worldObj, c, controller.portalType, toProcess);
-                    addNearbyBlocks(controller.worldObj, c, 0, toProcess);
+                    addNearbyBlocks(controller.getWorldObj(), c, 0, toProcess);
                 }
             }
         }
@@ -278,7 +279,7 @@ public class PortalUtils
 
         for (ChunkCoordinates c : neighbors)
         {
-            if (ghostedParts.contains(c) || isPortalPart(world.getBlockTileEntity(c.posX, c.posY, c.posZ)))
+            if (ghostedParts.contains(c) || isPortalPart(world.getTileEntity(c.posX, c.posY, c.posZ)))
             {
                 sides++;
             }
@@ -298,7 +299,7 @@ public class PortalUtils
 
         for (ChunkCoordinates c : neighbors)
         {
-            if (isPortalPart(world.getBlockTileEntity(c.posX, c.posY, c.posZ)))
+            if (isPortalPart(world.getTileEntity(c.posX, c.posY, c.posZ)))
             {
                 sides++;
             }
@@ -313,7 +314,7 @@ public class PortalUtils
         {
             for (int i = 1; i < 6; i++)
             {
-                Queue<ChunkCoordinates> portalBlocks = ghostPortalAt(c.worldObj, c.getWorldCoordinates().offset(ForgeDirection.getOrientation(j)), i);
+                Queue<ChunkCoordinates> portalBlocks = ghostPortalAt(c.getWorldObj(), c.getWorldCoordinates().offset(ForgeDirection.getOrientation(j)), i);
 
                 if (!portalBlocks.isEmpty())
                 {
@@ -391,7 +392,7 @@ public class PortalUtils
      */
     public static boolean isPortalPart(World world, int x, int y, int z)
     {
-        return isPortalPart(world.getBlockTileEntity(x, y, z));
+        return isPortalPart(world.getTileEntity(x, y, z));
     }
 
     private static void removeFailedPortal(World world, Queue<ChunkCoordinates> processed)
@@ -445,12 +446,12 @@ public class PortalUtils
 
     static boolean isNetherPortalPart(World world, int x, int y, int z)
     {
-        return isNetherPortalPart(world.getBlockId(x, y, z));
+        return isNetherPortalPart(world.getBlock(x, y, z));
     }
     
-    public static boolean isNetherPortalPart(int id)
+    public static boolean isNetherPortalPart(Block block)
     {
-        return id == Block.portal.blockID || id == Block.obsidian.blockID;
+        return block == Blocks.portal || block == Blocks.obsidian;
     }
     
     static int getNetherSides(World world, ChunkCoordinates w, int portalDirection)
@@ -504,7 +505,7 @@ public class PortalUtils
                     if (sides >= 2)
                     {
                         processed.add(c);
-                        world.setBlock(c.posX, c.posY, c.posZ, Block.portal.blockID, 0, 2);
+                        world.setBlock(c.posX, c.posY, c.posZ, Blocks.portal, 0, 2);
                         addNearbyBlocks(world, c, portalDirection, toProcess);
                     }
                 }

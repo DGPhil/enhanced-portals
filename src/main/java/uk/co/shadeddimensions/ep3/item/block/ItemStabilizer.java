@@ -2,17 +2,18 @@ package uk.co.shadeddimensions.ep3.item.block;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 
 public class ItemStabilizer extends ItemBlock
 {
-    public ItemStabilizer(int par1)
+    public ItemStabilizer(Block par1)
     {
         super(par1);
         setMaxDamage(0);
@@ -30,7 +31,7 @@ public class ItemStabilizer extends ItemBlock
     }
 
     @Override
-    public Icon getIconFromDamage(int par1)
+    public IIcon getIconFromDamage(int par1)
     {
         return BlockStabilizer.instance.getBlockTextureFromSide(0);
     }

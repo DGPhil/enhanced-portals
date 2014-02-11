@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
@@ -121,7 +121,7 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
         {
             if (controller.getIdentifierUnique() == null)
             {
-                player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("noUidSet")));
+                player.addChatMessage(new ChatComponentText(Localization.getChatString("noUidSet")));
             }
             else if (!player.isSneaking())
             {
@@ -162,11 +162,11 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
     public void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);
-        NBTTagList list = tag.getTagList("glyphList");
+        NBTTagList list = tag.getTagList("glyphList", 9);
 
         for (int i = 0; i < list.tagCount(); i++)
         {
-            NBTTagCompound t = (NBTTagCompound) list.tagAt(i);
+            /*NBTTagCompound t = (NBTTagCompound) list.tagAt(i);
             String name = t.getString("Name"), glyph = t.getString("Identifier");
 
             if (t.hasKey("texture"))
@@ -179,7 +179,7 @@ public class TileDiallingDevice extends TileFrame implements IPeripheral
             else
             {
                 glyphList.add(new GlyphElement(name, new GlyphIdentifier(glyph)));
-            }
+            }*/
         }
     }
 

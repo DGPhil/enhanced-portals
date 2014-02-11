@@ -1,6 +1,6 @@
 package uk.co.shadeddimensions.library.gui.tab;
 
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import uk.co.shadeddimensions.library.gui.IGuiBase;
 import uk.co.shadeddimensions.library.gui.element.ElementRedstoneFlux;
 
@@ -19,7 +19,7 @@ public class TabRedstoneFlux extends TabBase
         elementFlux = flux;
         name = "Energy";
         backgroundColor = 0xDD6600;
-        icon = Item.redstone.getIconFromDamage(0);
+        icon = Items.redstone.getIconFromDamage(0);
         titleColour = 0xDDDD00;
         maxHeight = 75;
     }

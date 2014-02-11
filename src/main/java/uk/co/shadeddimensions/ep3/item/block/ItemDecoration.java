@@ -5,10 +5,11 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import uk.co.shadeddimensions.ep3.block.BlockDecoration;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
@@ -16,9 +17,9 @@ import uk.co.shadeddimensions.ep3.lib.Localization;
 
 public class ItemDecoration extends ItemBlock
 {
-    public ItemDecoration(int id)
+    public ItemDecoration(Block block)
     {
-        super(id);
+        super(block);
         setMaxDamage(0);
         setHasSubtypes(true);
     }
@@ -31,7 +32,7 @@ public class ItemDecoration extends ItemBlock
     }
 
     @Override
-    public Icon getIconFromDamage(int meta)
+    public IIcon getIconFromDamage(int meta)
     {
         return meta == 0 ? BlockFrame.instance.getIcon(0, 0) : meta == 1 ? BlockStabilizer.instance.getIcon(0, 1) : null;
     }
@@ -44,11 +45,11 @@ public class ItemDecoration extends ItemBlock
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List list)
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List list)
     {
         for (int i = 0; i < BlockDecoration.BLOCK_TYPES; i++)
         {
-            list.add(new ItemStack(itemID, 1, i));
+            list.add(new ItemStack(par1, 1, i));
         }
     }
 

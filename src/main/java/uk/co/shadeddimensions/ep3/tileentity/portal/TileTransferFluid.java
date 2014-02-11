@@ -4,16 +4,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import cofh.api.energy.IEnergyHandler;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -22,10 +18,12 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
-import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
+import dan200.computer.api.IPeripheral;
 
 public class TileTransferFluid extends TileFrameTransfer implements IFluidHandler, IPeripheral
 {
@@ -48,7 +46,7 @@ public class TileTransferFluid extends TileFrameTransfer implements IFluidHandle
                 GuiHandler.openGui(player, this, GuiHandler.TRANSFER_FLUID);
                 return true;
             }
-            else if (stack.itemID == ItemPaintbrush.ID)
+            else if (ItemHelper.isPaintbrush(stack))
             {
                 GuiHandler.openGui(player, controller, GuiHandler.TEXTURE_FRAME);
                 return true;
@@ -169,13 +167,13 @@ public class TileTransferFluid extends TileFrameTransfer implements IFluidHandle
 
                     if (controller != null && controller.isPortalActive() && tank.getFluidAmount() > 0)
                     {
-                        TileController exitController =  (TileController) controller.getDestinationLocation().getBlockTileEntity();
+                        TileController exitController =  (TileController) controller.getDestinationLocation().getTileEntity();
 
                         if (exitController != null)
                         {
                             for (ChunkCoordinates c : exitController.getTransferFluids())
                             {
-                                TileEntity tile = WorldUtils.getTileEntity(exitController.worldObj, c);
+                                TileEntity tile = WorldUtils.getTileEntity(exitController.getWorldObj(), c);
 
                                 if (tile != null && tile instanceof TileTransferFluid)
                                 {

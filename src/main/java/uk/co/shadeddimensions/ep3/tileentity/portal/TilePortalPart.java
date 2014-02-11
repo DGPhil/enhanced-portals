@@ -4,13 +4,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
 import uk.co.shadeddimensions.ep3.tileentity.TileEP;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
@@ -25,7 +26,7 @@ public class TilePortalPart extends TileEP
         return false;
     }
 
-    public void breakBlock(int oldID, int oldMeta)
+    public void breakBlock(Block oldBlock, int oldMeta)
     {
         TileController controller = getPortalController();
 
@@ -121,7 +122,7 @@ public class TilePortalPart extends TileEP
             portalController = null;
         }
 
-        worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     @Override

@@ -94,12 +94,12 @@ public class PortalTextureManager
         particleType = t.getInteger("particleType");
         customFrameTexture = t.getInteger("customFrameTexture");
         customPortalTexture = t.getInteger("customPortalTexture");
-        NBTTagList l = t.getTagList("Inventory");
+        NBTTagList l = t.getTagList("Inventory", 9);
 
         for (int i = 0; i < inventory.length; i++)
         {
-            NBTTagCompound T = (NBTTagCompound) l.tagAt(i);
-            inventory[i] = ItemStack.loadItemStackFromNBT(T);
+            //NBTTagCompound T = (NBTTagCompound) l.tagAt(i); // TODO
+            //inventory[i] = ItemStack.loadItemStackFromNBT(T);
         }
     }
 
@@ -162,7 +162,7 @@ public class PortalTextureManager
             }
             else
             {
-                inventory[i] = new ItemStack(ID, 1, meta);
+                //inventory[i] = new ItemStack(ID, 1, meta); // TODO
             }
         }
     }
@@ -207,7 +207,7 @@ public class PortalTextureManager
         {
             if (element != null)
             {
-                stream.writeInt(element.itemID);
+                //stream.writeInt(element.itemID); // TODO
                 stream.writeInt(element.getItemDamage());
             }
             else

@@ -136,15 +136,9 @@ public class TileTransferItem extends TileFrameTransfer implements IInventory, I
     }
 
     @Override
-    public String getInvName()
+    public String getInventoryName()
     {
         return "tile.frame.item.name";
-    }
-
-    @Override
-    public boolean isInvNameLocalized()
-    {
-        return false;
     }
 
     @Override
@@ -157,18 +151,6 @@ public class TileTransferItem extends TileFrameTransfer implements IInventory, I
     public boolean isUseableByPlayer(EntityPlayer entityplayer)
     {
         return true;
-    }
-
-    @Override
-    public void openChest()
-    {
-        
-    }
-
-    @Override
-    public void closeChest()
-    {
-        
     }
 
     @Override
@@ -196,13 +178,13 @@ public class TileTransferItem extends TileFrameTransfer implements IInventory, I
                     
                     if (controller != null && controller.isPortalActive() && stack != null)
                     {
-                        TileController exitController =  (TileController) controller.getDestinationLocation().getBlockTileEntity();
+                        TileController exitController =  (TileController) controller.getDestinationLocation().getTileEntity();
                         
                         if (exitController != null)
                         {
                             for (ChunkCoordinates c : exitController.getTransferItems())
                             {
-                                TileEntity tile = WorldUtils.getTileEntity(exitController.worldObj, c);
+                                TileEntity tile = WorldUtils.getTileEntity(exitController.getWorldObj(), c);
                                 
                                 if (tile != null && tile instanceof TileTransferItem)
                                 {
@@ -213,9 +195,9 @@ public class TileTransferItem extends TileFrameTransfer implements IInventory, I
                                         if (item.getStackInSlot(0) == null)
                                         {
                                             item.setInventorySlotContents(0, stack);
-                                            item.onInventoryChanged();
+                                            item.markDirty();
                                             stack = null;
-                                            onInventoryChanged();
+                                            markDirty();
                                         }
                                     }
                                 }
@@ -251,7 +233,7 @@ public class TileTransferItem extends TileFrameTransfer implements IInventory, I
     {
         if (method == 0)
         {
-            return new Object[] { stack != null ? stack.itemID : 0 };
+            return new Object[] { stack != null ? stack.getItem() : 0 }; // TODO
         }
         else if (method == 1)
         {
@@ -283,6 +265,24 @@ public class TileTransferItem extends TileFrameTransfer implements IInventory, I
 
     @Override
     public void detach(IComputerAccess computer)
+    {
+        
+    }
+
+    @Override
+    public boolean hasCustomInventoryName()
+    {
+        return false;
+    }
+
+    @Override
+    public void openInventory()
+    {
+        
+    }
+
+    @Override
+    public void closeInventory()
     {
         
     }

@@ -3,7 +3,7 @@ package uk.co.shadeddimensions.ep3.tileentity.portal;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
@@ -22,9 +22,9 @@ public class TileFrame extends TilePortalPart implements ISidedBlockTexture
     }
     
     @Override
-    public void breakBlock(int oldBlockID, int oldMetadata)
+    public void breakBlock(Block oldBlock, int oldMetadata)
     {
-        if (oldBlockID == worldObj.getBlockId(xCoord, yCoord, zCoord))
+        if (oldBlock == worldObj.getBlock(xCoord, yCoord, zCoord))
         {
             return;
         }
@@ -38,7 +38,7 @@ public class TileFrame extends TilePortalPart implements ISidedBlockTexture
     }
 
     @Override
-    public Icon getBlockTexture(int side, int pass)
+    public IIcon getBlockTexture(int side, int pass)
     {
         if (pass == 0)
         {
@@ -52,7 +52,7 @@ public class TileFrame extends TilePortalPart implements ISidedBlockTexture
                 }
                 else if (controller.activeTextureData.getFrameItem() != null && controller.activeTextureData.getFrameItem().getItem() instanceof ItemBlock)
                 {
-                    return Block.blocksList[((ItemBlock) controller.activeTextureData.getFrameItem().getItem()).getBlockID()].getIcon(side, controller.activeTextureData.getFrameItem().getItemDamage());
+                    return Block.getBlockFromItem(controller.activeTextureData.getFrameItem().getItem()).getIcon(side, controller.activeTextureData.getFrameItem().getItemDamage());
                 }
             }
             else
@@ -106,7 +106,7 @@ public class TileFrame extends TilePortalPart implements ISidedBlockTexture
 
             if (wGoggles != wearingGoggles)
             {
-                worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 wearingGoggles = wGoggles;
             }
         }

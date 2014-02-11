@@ -6,24 +6,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
 import uk.co.shadeddimensions.ep3.item.ItemLocationCard;
-import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
-import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
-import uk.co.shadeddimensions.ep3.network.packet.PacketRerender;
 import uk.co.shadeddimensions.ep3.portal.EntityManager;
 import uk.co.shadeddimensions.ep3.portal.GlyphIdentifier;
 import uk.co.shadeddimensions.ep3.portal.PortalException;
@@ -35,15 +34,12 @@ import uk.co.shadeddimensions.ep3.util.PortalTextureManager;
 import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
 
-public class TileController extends TileFrame implements IPeripheral
+public class TileController extends TileFrame //implements IPeripheral
 {
     enum ControlState
     {
@@ -111,12 +107,12 @@ public class TileController extends TileFrame implements IPeripheral
             {
                 if (portalState == ControlState.REQUIRES_LOCATION)
                 {
-                    if (stack.itemID == ItemLocationCard.ID && !worldObj.isRemote)
+                    if (ItemHelper.isLocationCard(stack) && !worldObj.isRemote)
                     {
                         boolean reconfiguring = dimensionalBridgeStabilizer != null;
                         setDBS(player, stack);
                         configurePortal();
-                        player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getSuccessString(!reconfiguring ? "create" : "reconfigure")));
+                        player.addChatMessage(new ChatComponentText(Localization.getSuccessString(!reconfiguring ? "create" : "reconfigure")));
                     }
 
                     return true;
@@ -126,7 +122,7 @@ public class TileController extends TileFrame implements IPeripheral
                     if (ItemHelper.isWrench(stack) && !worldObj.isRemote)
                     {
                         configurePortal();
-                        player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getSuccessString("reconfigure")));
+                        player.addChatMessage(new ChatComponentText(Localization.getSuccessString("reconfigure")));
                     }
 
                     return true;
@@ -138,7 +134,7 @@ public class TileController extends TileFrame implements IPeripheral
                         GuiHandler.openGui(player, this, GuiHandler.PORTAL_CONTROLLER);
                         return true;
                     }
-                    else if (stack.itemID == ItemPaintbrush.ID)
+                    else if (ItemHelper.isPaintbrush(stack))
                     {
                         GuiHandler.openGui(player, this, GuiHandler.TEXTURE_FRAME);
                         return true;
@@ -148,7 +144,7 @@ public class TileController extends TileFrame implements IPeripheral
         }
         catch (PortalException e)
         {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText(e.getMessage()));
+            player.addChatMessage(new ChatComponentText(e.getMessage()));
         }
 
         return false;
@@ -170,7 +166,7 @@ public class TileController extends TileFrame implements IPeripheral
 	}
     
     @Override
-    public void breakBlock(int oldBlockID, int oldMetadata)
+    public void breakBlock(Block oldBlockID, int oldMetadata)
     {
     	try
     	{
@@ -210,7 +206,7 @@ public class TileController extends TileFrame implements IPeripheral
 
         for (ChunkCoordinates c : portalStructure)
         {
-            TileEntity tile = worldObj.getBlockTileEntity(c.posX, c.posY, c.posZ);
+            TileEntity tile = worldObj.getTileEntity(c.posX, c.posY, c.posZ);
 
             if (tile instanceof TileController)
             {
@@ -291,7 +287,7 @@ public class TileController extends TileFrame implements IPeripheral
             
             if (player != null)
             {
-                player.sendChatToPlayer(ChatMessageComponent.createFromText(e.getMessage()));
+                player.addChatMessage(new ChatComponentText(e.getMessage()));
             }
         }
 	}
@@ -323,7 +319,7 @@ public class TileController extends TileFrame implements IPeripheral
 
             if (player != null)
             {
-                player.sendChatToPlayer(ChatMessageComponent.createFromText(e.getMessage()));
+                player.addChatMessage(new ChatComponentText(e.getMessage()));
             }
         }
     }
@@ -475,7 +471,7 @@ public class TileController extends TileFrame implements IPeripheral
     {
         if (biometricIdentifier != null)
         {
-            TileEntity tile = worldObj.getBlockTileEntity(biometricIdentifier.posX, biometricIdentifier.posY, biometricIdentifier.posZ);
+            TileEntity tile = worldObj.getTileEntity(biometricIdentifier.posX, biometricIdentifier.posY, biometricIdentifier.posZ);
 
             if (tile instanceof TileBiometricIdentifier)
             {
@@ -551,7 +547,7 @@ public class TileController extends TileFrame implements IPeripheral
         if (dimensionalBridgeStabilizer != null)
         {
             World w = dimensionalBridgeStabilizer.getWorld();
-            TileEntity tile = w.getBlockTileEntity(dimensionalBridgeStabilizer.posX, dimensionalBridgeStabilizer.posY, dimensionalBridgeStabilizer.posZ);
+            TileEntity tile = w.getTileEntity(dimensionalBridgeStabilizer.posX, dimensionalBridgeStabilizer.posY, dimensionalBridgeStabilizer.posZ);
 
             if (tile instanceof TileStabilizerMain)
             {
@@ -645,7 +641,7 @@ public class TileController extends TileFrame implements IPeripheral
     {
         if (moduleManipulator != null)
         {
-            TileEntity tile = worldObj.getBlockTileEntity(moduleManipulator.posX, moduleManipulator.posY, moduleManipulator.posZ);
+            TileEntity tile = worldObj.getTileEntity(moduleManipulator.posX, moduleManipulator.posY, moduleManipulator.posZ);
 
             if (tile instanceof TileModuleManipulator)
             {
@@ -785,7 +781,7 @@ public class TileController extends TileFrame implements IPeripheral
         }
         
         onEntityTouchPortal(entity);
-        TileEntity tile = cachedDestinationLoc.getBlockTileEntity();
+        TileEntity tile = cachedDestinationLoc.getTileEntity();
 
         if (tile != null && tile instanceof TileController)
         {
@@ -799,7 +795,7 @@ public class TileController extends TileFrame implements IPeripheral
             {
                 if (entity instanceof EntityPlayer)
                 {
-                	((EntityPlayer) entity).sendChatToPlayer(ChatMessageComponent.createFromText(e.getMessage()));
+                	((EntityPlayer) entity).addChatMessage(new ChatComponentText(e.getMessage()));
                 }
             }
         }
@@ -819,7 +815,7 @@ public class TileController extends TileFrame implements IPeripheral
     {
         for (ChunkCoordinates c : getRedstoneInterfaces())
         {
-            ((TileRedstoneInterface) worldObj.getBlockTileEntity(c.posX, c.posY, c.posZ)).entityTeleport(entity);
+            ((TileRedstoneInterface) worldObj.getTileEntity(c.posX, c.posY, c.posZ)).entityTeleport(entity);
         }
     }
 
@@ -868,7 +864,7 @@ public class TileController extends TileFrame implements IPeripheral
             {
                 NBTTagCompound errorTag = new NBTTagCompound();
                 errorTag.setInteger("controller", 0);
-                PacketDispatcher.sendPacketToPlayer(new PacketGuiData(errorTag).getPacket(), (Player) player);
+                //PacketDispatcher.sendPacketToPlayer(new PacketGuiData(errorTag).getPacket(), (Player) player); // TODO
             }
         }
         else if (tag.hasKey("nid"))
@@ -925,12 +921,12 @@ public class TileController extends TileFrame implements IPeripheral
 
         if (tag.hasKey("portalItemID"))
         {
-            setPortalItem(tag.getInteger("portalItemID"), tag.getInteger("portalItemMeta"));
+            setPortalItem(Item.getItemById(tag.getInteger("portalItemID")), tag.getInteger("portalItemMeta"));
         }
 
         if (tag.hasKey("frameItemID"))
         {
-            setFrameItem(tag.getInteger("frameItemID"), tag.getInteger("frameItemMeta"));
+            setFrameItem(Item.getItemById(tag.getInteger("frameItemID")), tag.getInteger("frameItemMeta"));
         }
     }
 
@@ -990,7 +986,7 @@ public class TileController extends TileFrame implements IPeripheral
         	moduleManipulator = new ChunkCoordinates(stream.readInt(), stream.readInt(), stream.readInt());
         }
         
-        worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     /**
@@ -1004,7 +1000,7 @@ public class TileController extends TileFrame implements IPeripheral
             {
                 if (CommonProxy.portalsDestroyBlocks)
                 {
-                    worldObj.destroyBlock(c.posX, c.posY, c.posZ, true);
+                    //worldObj.destroyBlock(c.posX, c.posY, c.posZ, true); // TODO
                 }
                 else
                 {
@@ -1015,7 +1011,7 @@ public class TileController extends TileFrame implements IPeripheral
 
         for (ChunkCoordinates c : portalBlocks)
         {
-            worldObj.setBlock(c.posX, c.posY, c.posZ, BlockPortal.ID, portalType, 2);
+            worldObj.setBlock(c.posX, c.posY, c.posZ, BlockPortal.instance, portalType, 2);
             
             TilePortal portal = (TilePortal) WorldUtils.getTileEntity(worldObj, c);
             portal.portalController = getChunkCoordinates();
@@ -1110,7 +1106,7 @@ public class TileController extends TileFrame implements IPeripheral
             {
                 if (!chunks.contains(new ChunkCoordIntPair(c.posX >> 4, c.posZ >> 4)))
                 {
-                    PacketHandlerServer.sendPacketToAllAround(this, new PacketRerender(c.posX, c.posY, c.posZ).getPacket());
+                    //PacketHandlerServer.sendPacketToAllAround(this, new PacketRerender(c.posX, c.posY, c.posZ).getPacket()); // TODO
                     chunks.add(new ChunkCoordIntPair(c.posX >> 4, c.posZ >> 4));
                 }
             }
@@ -1138,7 +1134,7 @@ public class TileController extends TileFrame implements IPeripheral
     {
         WorldCoordinates stabilizer = ItemLocationCard.getDBSLocation(stack);
 
-        if (!(stabilizer.getBlockTileEntity() instanceof TileStabilizerMain))
+        if (!(stabilizer.getTileEntity() instanceof TileStabilizerMain))
         {
             ItemLocationCard.clearDBSLocation(stack);
             throw new PortalException("voidLinkCard");
@@ -1168,9 +1164,9 @@ public class TileController extends TileFrame implements IPeripheral
         sendUpdatePacket(true);
     }
 
-    void setFrameItem(int ID, int Meta)
+    void setFrameItem(Item item, int Meta)
     {
-        ItemStack s = ID == 0 ? null : new ItemStack(ID, 1, Meta);
+        ItemStack s = item == null ? null : new ItemStack(item, 1, Meta);
         activeTextureData.setFrameItem(s);        
         sendUpdatePacket(true);
     }
@@ -1283,9 +1279,9 @@ public class TileController extends TileFrame implements IPeripheral
         sendUpdatePacket(true);
     }
 
-	void setPortalItem(int ID, int Meta)
+	void setPortalItem(Item Item, int Meta)
     {
-        ItemStack s = ID == 0 ? null : new ItemStack(ID, 1, Meta);
+        ItemStack s = Item == null ? null : new ItemStack(Item, 1, Meta);
         activeTextureData.setPortalItem(s);        
         sendUpdatePacket(true);
     }
@@ -1331,10 +1327,9 @@ public class TileController extends TileFrame implements IPeripheral
         }
     }
 
-    @Override
+    /*@Override
     public String getType()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1510,5 +1505,5 @@ public class TileController extends TileFrame implements IPeripheral
     public void detach(IComputerAccess computer)
     {
         
-    }
+    }*/
 }

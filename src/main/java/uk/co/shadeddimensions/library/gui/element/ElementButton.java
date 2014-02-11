@@ -88,7 +88,7 @@ public class ElementButton extends ElementBase
     {
         if (!isDisabled() && isVisible())
         {
-            Minecraft.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+            //Minecraft.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F); // TODO
             gui.handleElementButtonClick(ID, mouseButton);
             return true;
         }

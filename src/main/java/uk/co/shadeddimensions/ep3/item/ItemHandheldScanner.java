@@ -2,14 +2,14 @@ package uk.co.shadeddimensions.ep3.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.container.ContainerScanner;
@@ -31,12 +31,11 @@ public class ItemHandheldScanner extends ItemEnergyContainer
         return new InventoryScanner(stack);
     }
 
-    Icon texture;
+    IIcon texture;
 
     public ItemHandheldScanner()
     {
-        super(ID, 2000, 250, 250);
-        ID += 256;
+        super(2000, 250, 250);
         instance = this;
         setUnlocalizedName("scanner");
         setCreativeTab(Reference.creativeTab);
@@ -56,7 +55,7 @@ public class ItemHandheldScanner extends ItemEnergyContainer
         }
 
         par3List.add(String.format(Localization.getItemString("charge") + " %s / %s " + Localization.getGuiString("redstoneFluxShort"), tag.getInteger("Energy"), capacity));
-        par3List.add(String.format(Localization.getItemString("scanned") + " %s", tag.getTagList("scanned").tagCount()));
+        par3List.add(String.format(Localization.getItemString("scanned") + " %s", tag.getTagList("scanned", 9).tagCount()));
     }
 
     private boolean drainPower(ItemStack itemStack)
@@ -78,7 +77,7 @@ public class ItemHandheldScanner extends ItemEnergyContainer
     }
 
     @Override
-    public Icon getIconFromDamage(int par1)
+    public IIcon getIconFromDamage(int par1)
     {
         return texture;
     }
@@ -124,7 +123,7 @@ public class ItemHandheldScanner extends ItemEnergyContainer
                     {
                         if (scanner.scannerInventory.getStackInSlot(1) == null)
                         {
-                            NBTTagList list = itemStack.getTagCompound().getTagList("scanned");
+                            NBTTagList list = itemStack.getTagCompound().getTagList("scanned", 9);
                             ItemStack s = new ItemStack(ItemEntityCard.instance, 1);
                             NBTTagCompound t = new NBTTagCompound();
                             t.setTag("entities", list);
@@ -139,14 +138,14 @@ public class ItemHandheldScanner extends ItemEnergyContainer
                         }
                         else
                         {
-                            NBTTagList list = itemStack.getTagCompound().getTagList("scanned");
+                            NBTTagList list = itemStack.getTagCompound().getTagList("scanned", 9);
                             ItemStack s = scanner.scannerInventory.getStackInSlot(1);
                             NBTTagCompound t = s.getTagCompound();
-                            NBTTagList l = t.getTagList("entities");
+                            NBTTagList l = t.getTagList("entities", 9);
 
                             for (int i = 0; i < list.tagCount(); i++)
                             {
-                                l.appendTag(list.tagAt(i));
+                                l.appendTag(list.getCompoundTagAt(i));
                             }
 
                             t.setTag("entities", l);
@@ -163,14 +162,14 @@ public class ItemHandheldScanner extends ItemEnergyContainer
                     }
                     else if (scanner.scannerInventory.getStackInSlot(0) == null && scanner.scannerInventory.getStackInSlot(1) != null && drainPower(itemStack))
                     {
-                        NBTTagList list = itemStack.getTagCompound().getTagList("scanned");
+                        NBTTagList list = itemStack.getTagCompound().getTagList("scanned", 9);
                         ItemStack s = scanner.scannerInventory.getStackInSlot(1);
                         NBTTagCompound t = s.getTagCompound();
-                        NBTTagList l = t.getTagList("entities");
+                        NBTTagList l = t.getTagList("entities", 9);
 
                         for (int i = 0; i < list.tagCount(); i++)
                         {
-                            l.appendTag(list.tagAt(i));
+                            l.appendTag(list.getCompoundTagAt(i));
                         }
 
                         t.setTag("entities", l);
@@ -194,7 +193,7 @@ public class ItemHandheldScanner extends ItemEnergyContainer
     }
 
     @Override
-    public void registerIcons(IconRegister par1IconRegister)
+    public void registerIcons(IIconRegister par1IconRegister)
     {
         texture = par1IconRegister.registerIcon("enhancedportals:handheldScanner");
     }
@@ -216,7 +215,7 @@ public class ItemHandheldScanner extends ItemEnergyContainer
 
         if (tag.hasKey("scanned"))
         {
-            list = tag.getTagList("scanned");
+            list = tag.getTagList("scanned", 9);
         }
         else
         {
@@ -245,7 +244,7 @@ public class ItemHandheldScanner extends ItemEnergyContainer
         }
 
         NBTTagCompound t = new NBTTagCompound();
-        t.setString("Name", entity.getEntityName());
+        t.setString("Name", entity.getCommandSenderName());
         t.setInteger("ID", id);
         list.appendTag(t);
 

@@ -15,7 +15,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class ComparableItemStack
 {
 
-    public int itemID = -1;
+    public Item item = null;
     public int metadata = -1;
     public int stackSize = -1;
     public int oreID = -1;
@@ -23,16 +23,16 @@ public class ComparableItemStack
     public ComparableItemStack(ComparableItemStack stack)
     {
 
-        itemID = stack.itemID;
+        item = stack.item;
         metadata = stack.metadata;
         stackSize = stack.stackSize;
         oreID = stack.oreID;
     }
 
-    public ComparableItemStack(int itemID, int damage, int stackSize)
+    public ComparableItemStack(Item item, int damage, int stackSize)
     {
 
-        this.itemID = itemID;
+        this.item = item;
         metadata = damage;
         this.stackSize = stackSize;
         oreID = OreDictionary.getOreID(toItemStack());
@@ -43,7 +43,7 @@ public class ComparableItemStack
 
         if (stack != null)
         {
-            itemID = stack.itemID;
+            item = stack.getItem();
             metadata = stack.getItemDamage();
             stackSize = stack.stackSize;
             oreID = OreDictionary.getOreID(stack);
@@ -56,7 +56,7 @@ public class ComparableItemStack
         if (!OreDictionary.getOres(oreName).isEmpty())
         {
             ItemStack ore = OreDictionary.getOres(oreName).get(0);
-            itemID = ore.itemID;
+            item = ore.getItem();
             metadata = ore.getItemDamage();
             stackSize = 1;
             oreID = OreDictionary.getOreID(oreName);
@@ -84,20 +84,13 @@ public class ComparableItemStack
     public Item getItem()
     {
 
-        return itemID < 0 || itemID >= 32000 ? null : Item.itemsList[itemID];
-    }
-
-    @Override
-    public int hashCode()
-    {
-
-        return oreID != -1 ? oreID : metadata | itemID << 16;
+        return item;
     }
 
     public boolean isItemEqual(ComparableItemStack other)
     {
 
-        return other != null && (oreID != -1 && oreID == other.oreID || itemID == other.itemID && metadata == other.metadata);
+        return other != null && (oreID != -1 && oreID == other.oreID || item == other.item && metadata == other.metadata);
     }
 
     public boolean isStackEqual(ComparableItemStack other)
@@ -117,14 +110,14 @@ public class ComparableItemStack
 
         if (stack != null)
         {
-            itemID = stack.itemID;
+            item = stack.item;
             metadata = stack.metadata;
             stackSize = stack.stackSize;
             oreID = stack.oreID;
         }
         else
         {
-            itemID = -1;
+            item = null;
             metadata = -1;
             stackSize = -1;
             oreID = -1;
@@ -137,14 +130,14 @@ public class ComparableItemStack
 
         if (stack != null)
         {
-            itemID = stack.itemID;
+            item = stack.getItem();
             metadata = stack.getItemDamage();
             stackSize = stack.stackSize;
             oreID = OreDictionary.getOreID(stack);
         }
         else
         {
-            itemID = -1;
+            item = null;
             metadata = -1;
             stackSize = -1;
             oreID = -1;
@@ -155,7 +148,7 @@ public class ComparableItemStack
     public ItemStack toItemStack()
     {
 
-        return itemID < 0 || itemID >= 32000 ? null : new ItemStack(itemID, stackSize, metadata);
+        return new ItemStack(item, stackSize, metadata);
     }
 
 }

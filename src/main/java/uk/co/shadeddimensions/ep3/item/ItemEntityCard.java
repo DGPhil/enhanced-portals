@@ -2,29 +2,27 @@ package uk.co.shadeddimensions.ep3.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 
 public class ItemEntityCard extends Item
 {
-    public static int ID;
     public static ItemEntityCard instance;
     
-    Icon texture;
+    IIcon texture;
 
     public ItemEntityCard()
     {
-        super(ID);
-        ID += 256;
+        super();
         instance = this;
         setCreativeTab(Reference.creativeTab);
         setUnlocalizedName("entityCard");
@@ -40,7 +38,7 @@ public class ItemEntityCard extends Item
         {
             list.add(EnumChatFormatting.GRAY + Localization.getItemString("contains"));
 
-            NBTTagList tagList = tag.getTagList("entities");
+            NBTTagList tagList = tag.getTagList("entities", 9);
 
             for (int i = 0; i < 5; i++)
             {
@@ -49,7 +47,7 @@ public class ItemEntityCard extends Item
                     break;
                 }
 
-                NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i);
+                NBTTagCompound t = (NBTTagCompound) tagList.getCompoundTagAt(i);
                 String s = t.getString("Name");
 
                 if (s.contains("item.item."))
@@ -72,13 +70,13 @@ public class ItemEntityCard extends Item
     }
 
     @Override
-    public Icon getIconFromDamage(int par1)
+    public IIcon getIconFromDamage(int par1)
     {
         return texture;
     }
 
     @Override
-    public void registerIcons(IconRegister par1IconRegister)
+    public void registerIcons(IIconRegister par1IconRegister)
     {
         texture = par1IconRegister.registerIcon("enhancedportals:idCard");
     }

@@ -5,21 +5,21 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
 import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
 import uk.co.shadeddimensions.ep3.util.GeneralUtils;
 import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
 import uk.co.shadeddimensions.library.util.ItemHelper;
-import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileStabilizer extends TileEP implements IEnergyHandler
+public class TileStabilizer extends TileEP
 {
     ChunkCoordinates mainBlock;
     int rows;
@@ -52,17 +52,17 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
             {
                 WorldCoordinates topLeft = getWorldCoordinates();
 
-                while (topLeft.offset(ForgeDirection.WEST).getBlockId() == BlockStabilizer.ID) // Get the westernmost block
+                while (topLeft.offset(ForgeDirection.WEST).getBlock() == BlockStabilizer.instance) // Get the westernmost block
                 {
                     topLeft = topLeft.offset(ForgeDirection.WEST);
                 }
 
-                while (topLeft.offset(ForgeDirection.NORTH).getBlockId() == BlockStabilizer.ID) // Get the northenmost block
+                while (topLeft.offset(ForgeDirection.NORTH).getBlock() == BlockStabilizer.instance) // Get the northenmost block
                 {
                     topLeft = topLeft.offset(ForgeDirection.NORTH);
                 }
 
-                while (topLeft.offset(ForgeDirection.UP).getBlockId() == BlockStabilizer.ID) // Get the highest block
+                while (topLeft.offset(ForgeDirection.UP).getBlock() == BlockStabilizer.instance) // Get the highest block
                 {
                     topLeft = topLeft.offset(ForgeDirection.UP);
                 }
@@ -83,7 +83,7 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
                 {
                     for (ChunkCoordinates c : blocks) // make sure we're not interrupting something
                     {
-                        TileEntity tile = worldObj.getBlockTileEntity(c.posX, c.posY, c.posZ);
+                        TileEntity tile = worldObj.getTileEntity(c.posX, c.posY, c.posZ);
                         
                         if (tile instanceof TileStabilizer)
                         {
@@ -101,9 +101,9 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
                     
                     for (ChunkCoordinates c : blocks)
                     {
-                        worldObj.setBlock(c.posX, c.posY, c.posZ, BlockStabilizer.ID, 0, 2);
+                        worldObj.setBlock(c.posX, c.posY, c.posZ, BlockStabilizer.instance, 0, 2);
                         
-                        TileEntity tile = worldObj.getBlockTileEntity(c.posX, c.posY, c.posZ);
+                        TileEntity tile = worldObj.getTileEntity(c.posX, c.posY, c.posZ);
 
                         if (tile instanceof TileStabilizer)
                         {
@@ -113,9 +113,9 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
                         }
                     }
 
-                    worldObj.setBlock(topLeft.posX, topLeft.posY, topLeft.posZ, BlockStabilizer.ID, 1, 3);
+                    worldObj.setBlock(topLeft.posX, topLeft.posY, topLeft.posZ, BlockStabilizer.instance, 1, 3);
                     
-                    TileEntity tile = topLeft.getBlockTileEntity();
+                    TileEntity tile = topLeft.getTileEntity();
 
                     if (tile instanceof TileStabilizerMain)
                     {
@@ -129,7 +129,7 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
         return false;
     }
 
-    public void breakBlock(int oldBlockID, int oldMetadata)
+    public void breakBlock(Block oldBlockID, int oldMetadata)
     {
         TileStabilizerMain main = getMainBlock();
 
@@ -141,19 +141,13 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
         main.deconstruct();
     }
 
-    @Override
-    public boolean canInterface(ForgeDirection from)
-    {
-        return getMainBlock() != null;
-    }
-
     ArrayList<ChunkCoordinates> checkShapeThreeWide(WorldCoordinates topLeft)
     {
         ArrayList<ChunkCoordinates> blocks = new ArrayList<ChunkCoordinates>();
         ChunkCoordinates heightChecker = new ChunkCoordinates(topLeft);
         rows = 0;
 
-        while (worldObj.getBlockId(heightChecker.posX, heightChecker.posY, heightChecker.posZ) == BlockStabilizer.ID)
+        while (worldObj.getBlock(heightChecker.posX, heightChecker.posY, heightChecker.posZ) == BlockStabilizer.instance)
         {
             heightChecker.posY--;
             rows++;
@@ -171,7 +165,7 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
             {
                 for (int k = 0; k < rows; k++)
                 {
-                    if (worldObj.getBlockId(topLeft.posX + i, topLeft.posY - k, topLeft.posZ + j) != BlockStabilizer.ID)
+                    if (worldObj.getBlock(topLeft.posX + i, topLeft.posY - k, topLeft.posZ + j) != BlockStabilizer.instance)
                     {
                         return new ArrayList<ChunkCoordinates>();
                     }
@@ -191,7 +185,7 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
         ChunkCoordinates heightChecker = new ChunkCoordinates(topLeft);
         rows = 0;
 
-        while (worldObj.getBlockId(heightChecker.posX, heightChecker.posY, heightChecker.posZ) == BlockStabilizer.ID)
+        while (worldObj.getBlock(heightChecker.posX, heightChecker.posY, heightChecker.posZ) == BlockStabilizer.instance)
         {
             heightChecker.posY--;
             rows++;
@@ -209,7 +203,7 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
             {
                 for (int k = 0; k < rows; k++)
                 {
-                    if (worldObj.getBlockId(topLeft.posX + (isX ? i : j), topLeft.posY - k, topLeft.posZ + (!isX ? i : j)) != BlockStabilizer.ID)
+                    if (worldObj.getBlock(topLeft.posX + (isX ? i : j), topLeft.posY - k, topLeft.posZ + (!isX ? i : j)) != BlockStabilizer.instance)
                     {
                         return new ArrayList<ChunkCoordinates>();
                     }
@@ -223,32 +217,6 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
         return blocks;
     }
 
-    @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
-    {
-        TileStabilizerMain main = getMainBlock();
-
-        if (main == null)
-        {
-            return 0;
-        }
-
-        return main.extractEnergy(from, maxExtract, simulate);
-    }
-
-    @Override
-    public int getEnergyStored(ForgeDirection from)
-    {
-        TileStabilizerMain main = getMainBlock();
-
-        if (main == null)
-        {
-            return 0;
-        }
-
-        return main.getEnergyStored(from);
-    }
-
     /***
      * Gets the block that does all the processing for this multiblock. If that block is self, will return self.
      */
@@ -256,7 +224,7 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
     {
         if (mainBlock != null)
         {
-            TileEntity tile = worldObj.getBlockTileEntity(mainBlock.posX, mainBlock.posY, mainBlock.posZ);
+            TileEntity tile = worldObj.getTileEntity(mainBlock.posX, mainBlock.posY, mainBlock.posZ);
 
             if (tile != null && tile instanceof TileStabilizerMain)
             {
@@ -265,19 +233,6 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
         }
 
         return null;
-    }
-
-    @Override
-    public int getMaxEnergyStored(ForgeDirection from)
-    {
-        TileStabilizerMain main = getMainBlock();
-
-        if (main == null)
-        {
-            return 0;
-        }
-
-        return main.getMaxEnergyStored(from);
     }
 
     @Override
@@ -293,7 +248,7 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
         if (stream.available() == 1)
         {
             isFormed = stream.readBoolean();
-            worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
     }
 
@@ -301,19 +256,6 @@ public class TileStabilizer extends TileEP implements IEnergyHandler
     public void packetFill(DataOutputStream stream) throws IOException
     {
         stream.writeBoolean(mainBlock != null);
-    }
-
-    @Override
-    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
-    {
-        TileStabilizerMain main = getMainBlock();
-
-        if (main == null)
-        {
-            return 0;
-        }
-
-        return main.receiveEnergy(from, maxReceive, simulate);
     }
 
     @Override

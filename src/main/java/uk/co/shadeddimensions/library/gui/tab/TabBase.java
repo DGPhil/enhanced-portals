@@ -1,7 +1,7 @@
 package uk.co.shadeddimensions.library.gui.tab;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -42,7 +42,7 @@ public abstract class TabBase extends ElementBaseContainer
     public static final ResourceLocation DEFAULT_TEXTURE_RIGHT = new ResourceLocation("alzlib", "textures/gui/tabRight.png");
 
     public int titleColour = 0xFFFFFF;
-    public Icon icon;
+    public IIcon icon;
     public ItemStack stack;
     public String ID;
 

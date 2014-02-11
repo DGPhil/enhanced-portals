@@ -5,17 +5,17 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileDiallingDevice;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileModuleManipulator;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileNetworkInterface;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TilePortalPart;
-import uk.co.shadeddimensions.ep3.tileentity.portal.TileRedstoneInterface;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 
 public class PortalUtilsNew
@@ -76,7 +76,7 @@ public class PortalUtilsNew
         {
             for (int i = 1; i < 6; i++)
             {
-                Queue<ChunkCoordinates> portalBlocks = getGhostedPortalBlocks(controller.worldObj, WorldUtils.getChunkCoordinatesOffset(controller.getChunkCoordinates(), ForgeDirection.getOrientation(j)), i); 
+                Queue<ChunkCoordinates> portalBlocks = getGhostedPortalBlocks(controller.getWorldObj(), WorldUtils.getChunkCoordinatesOffset(controller.getChunkCoordinates(), ForgeDirection.getOrientation(j)), i); 
 
                 if (!portalBlocks.isEmpty())
                 {
@@ -180,7 +180,7 @@ public class PortalUtilsNew
 
             if (!portalComponents.contains(c))
             {
-                TileEntity t = WorldUtils.getTileEntity(controller.worldObj, c);
+                TileEntity t = WorldUtils.getTileEntity(controller.getWorldObj(), c);
                 
                 if (portalBlocks.contains(c) || t instanceof TilePortalPart)
                 {
@@ -226,11 +226,11 @@ public class PortalUtilsNew
                     }
 
                     portalComponents.add(c);
-                    addNearbyBlocks(controller.worldObj, c, 0, toProcess);
+                    addNearbyBlocks(controller.getWorldObj(), c, 0, toProcess);
 
                     if (controller.portalType >= 4)
                     {
-                        addNearbyBlocks(controller.worldObj, c, controller.portalType, toProcess); // Adds diagonals for those that require it
+                        addNearbyBlocks(controller.getWorldObj(), c, controller.portalType, toProcess); // Adds diagonals for those that require it
                     }
                 }
             }
@@ -280,7 +280,7 @@ public class PortalUtilsNew
                     if (sides >= 2)
                     {
                         processed.add(c);
-                        world.setBlock(c.posX, c.posY, c.posZ, Block.portal.blockID, 0, 2);
+                        world.setBlock(c.posX, c.posY, c.posZ, Blocks.portal, 0, 2);
                         addNearbyBlocks(world, c, portalDirection, toProcess);
                     }
                 }
@@ -312,14 +312,14 @@ public class PortalUtilsNew
         return sides;
     }
 
-    static boolean netherIsPortalPart(int id)
+    static boolean netherIsPortalPart(Block id)
     {
-        return id == Block.portal.blockID || id == Block.obsidian.blockID;
+        return id == Blocks.portal || id == Blocks.obsidian;
     }
 
     static boolean netherIsPortalPart(World world, int x, int y, int z)
     {
-        return netherIsPortalPart(world.getBlockId(x, y, z));
+        return netherIsPortalPart(world.getBlock(x, y, z));
     }
 
     static void netherRemoveFailedPortal(World world, Queue<ChunkCoordinates> processed)

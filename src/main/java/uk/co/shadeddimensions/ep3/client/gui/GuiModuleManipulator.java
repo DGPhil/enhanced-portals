@@ -22,7 +22,7 @@ public class GuiModuleManipulator extends GuiBaseContainer
     {
         super.drawGuiContainerForegroundLayer(par1, par2);
 
-        fontRenderer.drawStringWithShadow(Localization.getGuiString("moduleManipulator"), xSize / 2 - fontRenderer.getStringWidth(Localization.getGuiString("moduleManipulator")) / 2, -13, 0xFFFFFF);
-        fontRenderer.drawString(Localization.getGuiString("modules"), 8, 8, 0x404040);
+        getFontRenderer().drawStringWithShadow(Localization.getGuiString("moduleManipulator"), xSize / 2 - getFontRenderer().getStringWidth(Localization.getGuiString("moduleManipulator")) / 2, -13, 0xFFFFFF);
+        getFontRenderer().drawString(Localization.getGuiString("modules"), 8, 8, 0x404040);
     }
 }

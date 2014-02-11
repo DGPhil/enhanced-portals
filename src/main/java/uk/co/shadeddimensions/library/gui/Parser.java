@@ -38,17 +38,6 @@ public class Parser
 
     public ArrayList<ElementBase> parse(String string)
     {
-        // testing, for now
-        parsedElements.add(new ElementCrafting(parentGui, maxWidth / 2 - 5, currentY, 0).addAllGridSlots(new ItemStack[] { new ItemStack(Block.stone), new ItemStack(Block.stone), null, new ItemStack(Block.stone), new ItemStack(Block.stone), null, null, null, null }).addOutputSlot(new ItemStack(Block.stoneBrick)));
-        parsedElements.add(new ElementCrafting(parentGui, 0, currentY, 1).addBothFurnaceSlots(new ItemStack[] { new ItemStack(Block.cobblestone), new ItemStack(Item.coal) }).addOutputSlot(new ItemStack(Block.stone)));
-        currentY += parsedElements.get(parsedElements.size() - 1).getHeight() + 5;
-        parseText(string);
-        currentY += 5;
-        parsedElements.add(new ElementCrafting(parentGui, maxWidth / 2 - 5, currentY, 0).addAllGridSlots(new ItemStack[] { new ItemStack(Block.stone), new ItemStack(Block.stone), null, new ItemStack(Block.stone), new ItemStack(Block.stone), null, null, null, null }).addOutputSlot(new ItemStack(Block.stoneBrick)));
-        parsedElements.add(new ElementCrafting(parentGui, 0, currentY, 1).addBothFurnaceSlots(new ItemStack[] { new ItemStack(Block.cobblestone), new ItemStack(Item.coal) }).addOutputSlot(new ItemStack(Block.stone)));
-        currentY += parsedElements.get(parsedElements.size() - 1).getHeight() + 5;
-        parseText("And that's how you make Stone Bricks!");
-
         return parsedElements;
     }
 

@@ -144,7 +144,7 @@ public class NetworkManager
             return null;
         }
 
-        TileEntity tile = w.getBlockTileEntity();
+        TileEntity tile = w.getTileEntity();
 
         if (tile == null || !(tile instanceof TileController))
         {
@@ -220,26 +220,26 @@ public class NetworkManager
             return;
         }
 
-        NBTTagCompound baseTag = (NBTTagCompound) NBTBase.readNamedTag(new DataInputStream(new FileInputStream(dataFile)));
+        NBTTagCompound baseTag = null; //(NBTTagCompound) NBTBase.readNamedTag(new DataInputStream(new FileInputStream(dataFile)));
 
         if (baseTag == null)
         {
             return;
         }
 
-        NBTTagList portalLocations = baseTag.getTagList("PortalLocations");
-        NBTTagList portalNetworks = baseTag.getTagList("PortalNetworks");
+        NBTTagList portalLocations = baseTag.getTagList("PortalLocations", 9);
+        NBTTagList portalNetworks = baseTag.getTagList("PortalNetworks", 9);
 
         for (int i = 0; i < portalLocations.tagCount(); i++)
         {
-            NBTTagCompound t = (NBTTagCompound) portalLocations.tagAt(i);
+            /*NBTTagCompound t = (NBTTagCompound) portalLocations.tagAt(i);
 
-            addPortal(new GlyphIdentifier(t), new WorldCoordinates(t));
+            addPortal(new GlyphIdentifier(t), new WorldCoordinates(t));*/  // TODO
         }
 
         for (int i = 0; i < portalNetworks.tagCount(); i++)
         {
-            NBTTagCompound t = (NBTTagCompound) portalNetworks.tagAt(i);
+            /*NBTTagCompound t = (NBTTagCompound) portalNetworks.tagAt(i);
             NBTTagList l = t.getTagList("Portals");
 
             GlyphIdentifier identifier = new GlyphIdentifier(t);
@@ -248,7 +248,7 @@ public class NetworkManager
             {
                 NBTTagCompound tag = (NBTTagCompound) l.tagAt(j);
                 addPortalToNetwork(new GlyphIdentifier(tag), identifier);
-            }
+            }*/  // TODO
         }
     }
 
@@ -367,7 +367,7 @@ public class NetworkManager
         try
         {
             DataOutputStream s = new DataOutputStream(new FileOutputStream(dataFile));
-            NBTBase.writeNamedTag(baseTag, s);
+            //NBTBase.writeNamedTag(baseTag, s);  // TODO
             s.close();
         }
         catch (Exception e)

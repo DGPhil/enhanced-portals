@@ -1,25 +1,22 @@
 package uk.co.shadeddimensions.ep3.item;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 
 public class ItemGoggles extends ItemArmor
 {
-    public static int ID;
     public static ItemGoggles instance;
     
-    Icon icon;
+    IIcon icon;
 
     public ItemGoggles()
     {
-        super(ID, EnumArmorMaterial.CLOTH, EnhancedPortals.proxy.gogglesRenderIndex, 0);
-        ID += 256;
+        super(ArmorMaterial.CLOTH, EnhancedPortals.proxy.gogglesRenderIndex, 0);
         instance = this;
         setCreativeTab(Reference.creativeTab);
         setUnlocalizedName("glasses");
@@ -32,7 +29,7 @@ public class ItemGoggles extends ItemArmor
     }
 
     @Override
-    public Icon getIcon(ItemStack stack, int pass)
+    public IIcon getIcon(ItemStack stack, int pass)
     {
         return icon;
     }
@@ -44,7 +41,7 @@ public class ItemGoggles extends ItemArmor
     }
 
     @Override
-    public void registerIcons(IconRegister iconRegister)
+    public void registerIcons(IIconRegister iconRegister)
     {
         icon = iconRegister.registerIcon("enhancedportals:goggles");
     }

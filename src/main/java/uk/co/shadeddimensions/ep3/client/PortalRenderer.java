@@ -3,10 +3,9 @@ package uk.co.shadeddimensions.ep3.client;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
-import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TilePortal;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -23,13 +22,13 @@ public class PortalRenderer implements ISimpleBlockRenderingHandler
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
     {
-        renderer.renderBlockAsItem(Block.portal, 0, 0xFFFFFF);
+        //renderer.renderBlockAsItem(Block.portal, 0, 0xFFFFFF); // TODO
     }
 
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
     {
-        TilePortal portal = (TilePortal) world.getBlockTileEntity(x, y, z);
+        TilePortal portal = (TilePortal) world.getTileEntity(x, y, z);
         TileController controller = portal.getPortalController();
         Tessellator tessellator = Tessellator.instance;
         int meta = world.getBlockMetadata(x, y, z), light = 230, colour = BlockPortal.instance.colorMultiplier(world, x, y, z);
@@ -98,7 +97,7 @@ public class PortalRenderer implements ISimpleBlockRenderingHandler
             tessellator.addTranslation(x, y, z);
             tessellator.setBrightness(light);
             tessellator.setColorOpaque_F(f11, f14, f17);
-            Icon c = block.getBlockTexture(world, x, y, z, 0);
+            IIcon c = block.getIcon(world, x, y, z, 0);
 
             float u = c.getMinU();
             float v = c.getMinV();
@@ -147,14 +146,14 @@ public class PortalRenderer implements ISimpleBlockRenderingHandler
     }
 
     @Override
-    public boolean shouldRender3DInInventory()
-    {
-        return true;
-    }
-
-    @Override
     public int getRenderId()
     {
         return ID;
+    }
+
+    @Override
+    public boolean shouldRender3DInInventory(int modelId)
+    {
+        return true;
     }
 }

@@ -25,7 +25,7 @@ public class TileFrameBasic extends TileFrame
 				GuiHandler.openGui(player, controller, GuiHandler.PORTAL_CONTROLLER);
 				return true;
 			}
-			else if (stack.itemID == ItemPaintbrush.ID)
+			else if (ItemHelper.isPaintbrush(stack))
 			{
 				GuiHandler.openGui(player, controller, GuiHandler.TEXTURE_FRAME);
 				return true;

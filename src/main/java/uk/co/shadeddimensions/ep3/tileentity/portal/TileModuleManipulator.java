@@ -7,14 +7,12 @@ import java.util.ArrayList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.Icon;
 import uk.co.shadeddimensions.ep3.api.IPortalModule;
-import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.client.particle.PortalFX;
-import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
 import uk.co.shadeddimensions.library.util.ItemHelper;
@@ -40,7 +38,7 @@ public class TileModuleManipulator extends TileFrame implements IInventory
                 GuiHandler.openGui(player, this, GuiHandler.MODULE_MANIPULATOR);
                 return true;
             }
-            else if (stack.itemID == ItemPaintbrush.ID)
+            else if (ItemHelper.isPaintbrush(stack))
             {
                 GuiHandler.openGui(player, controller, GuiHandler.TEXTURE_FRAME);
                 return true;
@@ -90,7 +88,7 @@ public class TileModuleManipulator extends TileFrame implements IInventory
         {
             if (getStackInSlot(i) != null)
             {
-                stream.writeInt(getStackInSlot(i).itemID);
+                stream.writeInt(Item.getIdFromItem(getStackInSlot(i).getItem()));
                 stream.writeInt(getStackInSlot(i).getItemDamage());
             }
             else
@@ -125,7 +123,7 @@ public class TileModuleManipulator extends TileFrame implements IInventory
     }
 
     @Override
-    public String getInvName()
+    public String getInventoryName()
     {
         return "tile.ep3.portalFrame.upgrade.name";
     }
@@ -210,10 +208,10 @@ public class TileModuleManipulator extends TileFrame implements IInventory
     }
 
     @Override
-    public void onInventoryChanged()
+    public void markDirty()
     {
-        super.onInventoryChanged();
-        worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+        super.markDirty();
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     @Override
@@ -256,10 +254,10 @@ public class TileModuleManipulator extends TileFrame implements IInventory
     {
         super.readFromNBT(tagCompound);
 
-        NBTTagList list = tagCompound.getTagList("Inventory");
+        NBTTagList list = tagCompound.getTagList("Inventory", 9);
         for (int i = 0; i < list.tagCount(); i++)
         {
-            inventory[i] = ItemStack.loadItemStackFromNBT((NBTTagCompound) list.tagAt(i));
+           // inventory[i] = ItemStack.loadItemStackFromNBT((NBTTagCompound) list.tagAt(i));
         }
     }
 
@@ -293,11 +291,11 @@ public class TileModuleManipulator extends TileFrame implements IInventory
 
             if (id != 0)
             {
-                setInventorySlotContents(i, new ItemStack(id, 1, meta));
+                setInventorySlotContents(i, new ItemStack(Item.getItemById(id), 1, meta));
             }
         }
 
-        worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     @Override
@@ -320,26 +318,26 @@ public class TileModuleManipulator extends TileFrame implements IInventory
     }
 
     @Override
-    public boolean isInvNameLocalized()
-    {
-        return false;
-    }
-
-    @Override
     public boolean isUseableByPlayer(EntityPlayer entityplayer)
     {
         return true;
     }
 
     @Override
-    public void openChest()
+    public boolean hasCustomInventoryName()
     {
-
+        return false;
     }
 
     @Override
-    public void closeChest()
+    public void openInventory()
     {
+        
+    }
 
+    @Override
+    public void closeInventory()
+    {
+        
     }
 }

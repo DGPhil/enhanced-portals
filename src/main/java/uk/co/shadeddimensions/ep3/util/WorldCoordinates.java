@@ -1,11 +1,12 @@
 package uk.co.shadeddimensions.ep3.util;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class WorldCoordinates extends ChunkCoordinates
 {
@@ -39,12 +40,12 @@ public class WorldCoordinates extends ChunkCoordinates
         dimension = coord.dimension;
     }
 
-    public int getBlockId()
+    public Block getBlock()
     {
         WorldServer world = getWorld();
         world.getChunkProvider().loadChunk(posX >> 4, posY >> 4);
 
-        return world.getBlockId(posX, posY, posZ);
+        return world.getBlock(posX, posY, posZ);
     }
 
     public int getBlockMetadata()
@@ -55,7 +56,7 @@ public class WorldCoordinates extends ChunkCoordinates
         return world.getBlockMetadata(posX, posY, posZ);
     }
 
-    public TileEntity getBlockTileEntity()
+    public TileEntity getTileEntity()
     {
         WorldServer world = getWorld();
 
@@ -72,7 +73,7 @@ public class WorldCoordinates extends ChunkCoordinates
 
         world.getChunkProvider().loadChunk(posX >> 4, posY >> 4);
 
-        return world.getBlockTileEntity(posX, posY, posZ);
+        return world.getTileEntity(posX, posY, posZ);
     }
 
     public WorldServer getWorld()

@@ -2,20 +2,19 @@ package uk.co.shadeddimensions.ep3.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
-import net.minecraft.util.Icon;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.item.block.ItemFrame;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.lib.Reference;
-import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
@@ -31,13 +30,12 @@ public class ItemUpgrade extends Item
 	public static int ID;
 	public static ItemUpgrade instance;
 
-	static Icon baseIcon;
-	static Icon[] overlayIcons = new Icon[BlockFrame.FRAME_TYPES - 2];
+	static IIcon baseIcon;
+	static IIcon[] overlayIcons = new IIcon[BlockFrame.FRAME_TYPES - 2];
 
 	public ItemUpgrade()
 	{
-		super(ID);
-		ID += 256;
+		super();
 		instance = this;
 		setCreativeTab(Reference.creativeTab);
 		setUnlocalizedName("upgrade");
@@ -59,7 +57,7 @@ public class ItemUpgrade extends Item
 	}
 
 	@Override
-	public Icon getIconFromDamageForRenderPass(int damage, int pass)
+	public IIcon getIconFromDamageForRenderPass(int damage, int pass)
 	{
 		if (pass == 1)
 		{
@@ -71,11 +69,11 @@ public class ItemUpgrade extends Item
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List)
+	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List)
 	{
 		for (int i = 0; i < overlayIcons.length; i++)
 		{
-			par3List.add(new ItemStack(itemID, 1, i));
+			par3List.add(new ItemStack(par1, 1, i));
 		}
 	}
 
@@ -93,7 +91,7 @@ public class ItemUpgrade extends Item
 			return false;
 		}
 
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 		int blockMeta = stack.getItemDamage() + 2;
 
 		if (tile instanceof TileFrame)
@@ -104,7 +102,7 @@ public class ItemUpgrade extends Item
 			if (controller == null)
 			{
 				frame = null;
-				world.setBlock(x, y, z, BlockFrame.ID, blockMeta, 2);
+				world.setBlock(x, y, z, BlockFrame.instance, blockMeta, 2);
 				decrementStack(player, stack);
 				return true;
 			}
@@ -112,30 +110,30 @@ public class ItemUpgrade extends Item
 			{
 				if (controller.getHasBiometricIdentifier() && blockMeta == BlockFrame.BIOMETRIC_IDENTIFIER)
 				{
-					player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("multipleBiometricIdentifiers")));
+					player.addChatMessage(new ChatComponentText(Localization.getChatString("multipleBiometricIdentifiers")));
 					return false;
 				}
 				else if (controller.getDiallingDeviceCount() > 0 && blockMeta == BlockFrame.NETWORK_INTERFACE)
 				{
-					player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("dialDeviceAndNetworkInterface")));
+					player.addChatMessage(new ChatComponentText(Localization.getChatString("dialDeviceAndNetworkInterface")));
 					return false;
 				}
 				else if (controller.getNetworkInterfaceCount() > 0 && blockMeta == BlockFrame.DIALLING_DEVICE)
 				{
-					player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("dialDeviceAndNetworkInterface")));
+					player.addChatMessage(new ChatComponentText(Localization.getChatString("dialDeviceAndNetworkInterface")));
 					return false;
 				}
 				else if (controller.getHasModuleManipulator() && blockMeta == BlockFrame.MODULE_MANIPULATOR)
 				{
-					player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("multipleModuleManipulators")));
+					player.addChatMessage(new ChatComponentText(Localization.getChatString("multipleModuleManipulators")));
 					return false;
 				}
 
 				controller.removeFrame(frame.getChunkCoordinates());
 				frame = null;
-				world.setBlock(x, y, z, BlockFrame.ID, blockMeta, 2);
+				world.setBlock(x, y, z, BlockFrame.instance, blockMeta, 2);
 				decrementStack(player, stack);
-				TilePortalPart t = (TilePortalPart) world.getBlockTileEntity(x, y, z);
+				TilePortalPart t = (TilePortalPart) world.getTileEntity(x, y, z);
 
 				if (t instanceof TileRedstoneInterface)
 				{
@@ -168,7 +166,7 @@ public class ItemUpgrade extends Item
 	}
 
 	@Override
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		baseIcon = register.registerIcon("enhancedportals:blankUpgrade");
 

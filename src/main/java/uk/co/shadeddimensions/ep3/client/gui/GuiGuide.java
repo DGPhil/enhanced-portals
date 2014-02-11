@@ -1,7 +1,7 @@
 package uk.co.shadeddimensions.ep3.client.gui;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -169,111 +169,111 @@ public class GuiGuide extends GuiBase
 			if (ClientProxy.manualPage.equals("blockFrame"))
 			{
 				craft.addOutputSlot(new ItemStack(BlockFrame.instance));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Block.stone), new ItemStack(Item.ingotIron), new ItemStack(Block.stone), new ItemStack(Item.ingotIron), new ItemStack(Block.blockNetherQuartz), new ItemStack(Item.ingotIron), new ItemStack(Block.stone), new ItemStack(Item.ingotIron), new ItemStack(Block.stone) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Blocks.stone), new ItemStack(Items.iron_ingot), new ItemStack(Blocks.stone), new ItemStack(Items.iron_ingot), new ItemStack(Blocks.quartz_block), new ItemStack(Items.iron_ingot), new ItemStack(Blocks.stone), new ItemStack(Items.iron_ingot), new ItemStack(Blocks.stone) });
 			}
 			else if (ClientProxy.manualPage.equals("blockController"))
 			{
 				craft.addOutputSlot(new ItemStack(BlockFrame.instance, 0, 1));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(BlockFrame.instance), new ItemStack(Item.diamond) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(BlockFrame.instance), new ItemStack(Items.diamond) });
 			}
 			else if (ClientProxy.manualPage.equals("blockRedstoneInterface"))
 			{
 				craft.addOutputSlot(new ItemStack(BlockFrame.instance, 0, 2));
-				craft.addAllGridSlots(new ItemStack[] { null, new ItemStack(Item.redstone), null, new ItemStack(Item.redstone), new ItemStack(BlockFrame.instance), new ItemStack(Item.redstone), null, new ItemStack(Item.redstone), null });
+				craft.addAllGridSlots(new ItemStack[] { null, new ItemStack(Items.redstone), null, new ItemStack(Items.redstone), new ItemStack(BlockFrame.instance), new ItemStack(Items.redstone), null, new ItemStack(Items.redstone), null });
 			}
 			else if (ClientProxy.manualPage.equals("blockNetworkInterface"))
 			{
 				craft.addOutputSlot(new ItemStack(BlockFrame.instance, 0, 3));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(BlockFrame.instance), new ItemStack(Item.enderPearl) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(BlockFrame.instance), new ItemStack(Items.ender_pearl) });
 			}
 			else if (ClientProxy.manualPage.equals("blockDiallingDevice"))
 			{
 				craft.addOutputSlot(new ItemStack(BlockFrame.instance, 0, 4));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(BlockFrame.instance, 0, 3), new ItemStack(Item.diamond) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(BlockFrame.instance, 0, 3), new ItemStack(Items.diamond) });
 			}
 			else if (ClientProxy.manualPage.equals("blockBiometric"))
 			{
 				craft.addOutputSlot(new ItemStack(BlockFrame.instance, 0, 5));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Item.porkCooked), new ItemStack(Item.beefCooked), new ItemStack(Item.chickenCooked), new ItemStack(Item.blazePowder), new ItemStack(BlockFrame.instance), new ItemStack(Item.blazePowder) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Items.cooked_porkchop), new ItemStack(Items.cooked_beef), new ItemStack(Items.cooked_chicken), new ItemStack(Items.blaze_powder), new ItemStack(BlockFrame.instance), new ItemStack(Items.blaze_powder) });
 
 				ElementCrafting craft2 = new ElementCrafting(this, scrollPanel.getWidth() / 2 - 58, 86, 0);
 				craft2.addOutputSlot(new ItemStack(BlockFrame.instance, 0, 5));
-				craft2.addAllGridSlots(new ItemStack[] { new ItemStack(Item.porkRaw), new ItemStack(Item.beefRaw), new ItemStack(Item.chickenRaw), new ItemStack(Item.blazePowder), new ItemStack(BlockFrame.instance), new ItemStack(Item.blazePowder) });
+				craft2.addAllGridSlots(new ItemStack[] { new ItemStack(Items.porkchop), new ItemStack(Items.beef), new ItemStack(Items.chicken), new ItemStack(Items.blaze_powder), new ItemStack(BlockFrame.instance), new ItemStack(Items.blaze_powder) });
 				scrollPanel.addElement(craft2);
 				offset += craft2.getHeight();
 			}
 			else if (ClientProxy.manualPage.equals("blockModule"))
 			{
 				craft.addOutputSlot(new ItemStack(BlockFrame.instance, 0, 6));
-				craft.addAllGridSlots(new ItemStack[] { null, new ItemStack(ItemMisc.instance), null, new ItemStack(Item.emerald), new ItemStack(BlockFrame.instance), new ItemStack(Item.diamond) });
+				craft.addAllGridSlots(new ItemStack[] { null, new ItemStack(ItemMisc.instance), null, new ItemStack(Items.emerald), new ItemStack(BlockFrame.instance), new ItemStack(Items.diamond) });
 			}
 			else if (ClientProxy.manualPage.equals("blockDbs"))
 			{
 				craft.addOutputSlot(new ItemStack(BlockStabilizer.instance, 6));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Block.blockIron), new ItemStack(Item.enderPearl), new ItemStack(Block.blockIron), new ItemStack(Item.enderPearl), new ItemStack(Item.diamond), new ItemStack(Item.enderPearl), new ItemStack(Block.blockIron), new ItemStack(Item.enderPearl), new ItemStack(Block.blockIron) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Blocks.iron_block), new ItemStack(Items.ender_pearl), new ItemStack(Blocks.iron_block), new ItemStack(Items.ender_pearl), new ItemStack(Items.diamond), new ItemStack(Items.ender_pearl), new ItemStack(Blocks.iron_block), new ItemStack(Items.ender_pearl), new ItemStack(Blocks.iron_block) });
 			}
 			else if (ClientProxy.manualPage.equals("blockDecoration"))
 			{
 				craft.addOutputSlot(new ItemStack(BlockDecoration.instance, 8, 0));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Block.stone), new ItemStack(Block.blockNetherQuartz), new ItemStack(Block.stone), new ItemStack(Block.blockNetherQuartz), new ItemStack(Block.blockNetherQuartz), new ItemStack(Block.blockNetherQuartz), new ItemStack(Block.stone), new ItemStack(Block.blockNetherQuartz), new ItemStack(Block.stone) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Blocks.stone), new ItemStack(Blocks.quartz_block), new ItemStack(Blocks.stone), new ItemStack(Blocks.quartz_block), new ItemStack(Blocks.quartz_block), new ItemStack(Blocks.quartz_block), new ItemStack(Blocks.stone), new ItemStack(Blocks.quartz_block), new ItemStack(Blocks.stone) });
 
 				ElementCrafting craft2 = new ElementCrafting(this, scrollPanel.getWidth() / 2 - 58, 86, 0);
 				craft2.addOutputSlot(new ItemStack(BlockDecoration.instance, 10, 1));
-				craft2.addAllGridSlots(new ItemStack[] { null, new ItemStack(Item.ingotIron), null, new ItemStack(Item.ingotIron), new ItemStack(Block.blockIron), new ItemStack(Item.ingotIron), null, new ItemStack(Item.ingotIron), null });
+				craft2.addAllGridSlots(new ItemStack[] { null, new ItemStack(Items.iron_ingot), null, new ItemStack(Items.iron_ingot), new ItemStack(Blocks.iron_block), new ItemStack(Items.iron_ingot), null, new ItemStack(Items.iron_ingot), null });
 				scrollPanel.addElement(craft2);
 				offset += craft2.getHeight();
 			}
 			else if (ClientProxy.manualPage.equals("itemGlasses"))
 			{
 				craft.addOutputSlot(new ItemStack(ItemGoggles.instance));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Item.dyePowder, 0, 1), null, new ItemStack(Item.dyePowder, 0, 6), new ItemStack(Block.thinGlass), new ItemStack(Item.leather), new ItemStack(Block.thinGlass), new ItemStack(Item.leather), null, new ItemStack(Item.leather) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Items.dye, 0, 1), null, new ItemStack(Items.dye, 0, 6), new ItemStack(Blocks.glass_pane), new ItemStack(Items.leather), new ItemStack(Blocks.glass_pane), new ItemStack(Items.leather), null, new ItemStack(Items.leather) });
 			}
 			else if (ClientProxy.manualPage.equals("itemWrench"))
 			{
 				craft.addOutputSlot(new ItemStack(ItemWrench.instance));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Item.ingotIron), null, new ItemStack(Item.ingotIron), null, new ItemStack(Item.netherQuartz), null, null, new ItemStack(Item.ingotIron) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Items.iron_ingot), null, new ItemStack(Items.iron_ingot), null, new ItemStack(Items.quartz), null, null, new ItemStack(Items.iron_ingot) });
 			}
 			else if (ClientProxy.manualPage.equals("itemNanobrush"))
 			{
 				craft.addOutputSlot(new ItemStack(ItemPaintbrush.instance));
-				craft.addAllGridSlots(new ItemStack[] { null, new ItemStack(Item.silk), new ItemStack(Block.cloth), null, new ItemStack(Item.stick), new ItemStack(Item.silk), new ItemStack(Item.stick) });
+				craft.addAllGridSlots(new ItemStack[] { null, new ItemStack(Items.string), new ItemStack(Blocks.wool), null, new ItemStack(Items.stick), new ItemStack(Items.string), new ItemStack(Items.stick) });
 			}
 			else if (ClientProxy.manualPage.equals("itemLocationCard"))
 			{
 				craft.addOutputSlot(new ItemStack(ItemLocationCard.instance, 16));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Item.ingotIron), new ItemStack(Item.paper), new ItemStack(Item.ingotIron), new ItemStack(Item.paper), new ItemStack(Item.paper), new ItemStack(Item.paper), new ItemStack(Item.ingotIron), new ItemStack(Item.dyePowder, 0, 4), new ItemStack(Item.ingotIron) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Items.iron_ingot), new ItemStack(Items.paper), new ItemStack(Items.iron_ingot), new ItemStack(Items.paper), new ItemStack(Items.paper), new ItemStack(Items.paper), new ItemStack(Items.iron_ingot), new ItemStack(Items.dye, 0, 4), new ItemStack(Items.iron_ingot) });
 			}
 			else if (ClientProxy.manualPage.equals("itemIdCard"))
 			{
 				craft.addOutputSlot(new ItemStack(ItemEntityCard.instance, 8));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Item.ingotGold), new ItemStack(Item.paper), new ItemStack(Item.ingotGold), new ItemStack(Item.paper), new ItemStack(Item.paper), new ItemStack(Item.paper), new ItemStack(Item.ingotGold), new ItemStack(Item.dyePowder, 0, 10), new ItemStack(Item.ingotGold) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Items.gold_ingot), new ItemStack(Items.paper), new ItemStack(Items.gold_ingot), new ItemStack(Items.paper), new ItemStack(Items.paper), new ItemStack(Items.paper), new ItemStack(Items.gold_ingot), new ItemStack(Items.dye, 0, 10), new ItemStack(Items.gold_ingot) });
 			}
 			else if (ClientProxy.manualPage.equals("itemScanner"))
 			{
 				craft.addOutputSlot(new ItemStack(ItemHandheldScanner.instance));
-				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Item.ingotGold), new ItemStack(Item.redstone), new ItemStack(Item.ingotGold), new ItemStack(Item.ingotIron), new ItemStack(Item.netherQuartz), new ItemStack(Item.ingotIron), new ItemStack(Item.ingotIron), new ItemStack(ItemEntityCard.instance), new ItemStack(Item.ingotIron) });
+				craft.addAllGridSlots(new ItemStack[] { new ItemStack(Items.gold_ingot), new ItemStack(Items.redstone), new ItemStack(Items.gold_ingot), new ItemStack(Items.iron_ingot), new ItemStack(Items.quartz), new ItemStack(Items.iron_ingot), new ItemStack(Items.iron_ingot), new ItemStack(ItemEntityCard.instance), new ItemStack(Items.iron_ingot) });
 			}
 			else if (ClientProxy.manualPage.equals("itemPortalModules"))
 			{
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30, 0).addOutputSlot(new ItemStack(ItemMisc.instance)).addAllGridSlots(new ItemStack[] { new ItemStack(Item.goldNugget), new ItemStack(Item.goldNugget), new ItemStack(Item.goldNugget), new ItemStack(Item.goldNugget), new ItemStack(Item.ingotIron), new ItemStack(Item.goldNugget), new ItemStack(Item.goldNugget), new ItemStack(Item.goldNugget), new ItemStack(Item.goldNugget) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 57, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance)).addAllGridSlots(new ItemStack[] { new ItemStack(Item.redstone), new ItemStack(ItemMisc.instance), new ItemStack(Item.gunpowder) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 114, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance, 0, 1)).addAllGridSlots(new ItemStack[] { new ItemStack(Item.dyePowder, 0, 1), new ItemStack(Item.dyePowder, 0, 2), new ItemStack(Item.dyePowder, 0, 4), null, new ItemStack(ItemMisc.instance), null, new ItemStack(Item.dyePowder, 0, 4), new ItemStack(Item.dyePowder, 0, 2), new ItemStack(Item.dyePowder, 0, 1) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 171, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance, 0, 2)).addAllGridSlots(new ItemStack[] { new ItemStack(Item.redstone), new ItemStack(ItemMisc.instance), new ItemStack(Block.music) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 228, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance, 0, 3)).addAllGridSlots(new ItemStack[] { new ItemStack(Block.anvil), new ItemStack(ItemMisc.instance), new ItemStack(Item.feather) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 285, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance, 0, 5)).addAllGridSlots(new ItemStack[] { new ItemStack(Item.dyePowder, 0, 15), new ItemStack(ItemMisc.instance), new ItemStack(Item.dyePowder) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 342, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance, 0, 7)).addAllGridSlots(new ItemStack[] { new ItemStack(Item.feather), new ItemStack(Item.feather), new ItemStack(Item.feather), new ItemStack(Item.feather), new ItemStack(ItemMisc.instance), new ItemStack(Item.feather), new ItemStack(Item.feather), new ItemStack(Item.feather), new ItemStack(Item.feather) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30, 0).addOutputSlot(new ItemStack(ItemMisc.instance)).addAllGridSlots(new ItemStack[] { new ItemStack(Items.gold_nugget), new ItemStack(Items.gold_nugget), new ItemStack(Items.gold_nugget), new ItemStack(Items.gold_nugget), new ItemStack(Items.iron_ingot), new ItemStack(Items.gold_nugget), new ItemStack(Items.gold_nugget), new ItemStack(Items.gold_nugget), new ItemStack(Items.gold_nugget) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 57, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance)).addAllGridSlots(new ItemStack[] { new ItemStack(Items.redstone), new ItemStack(ItemMisc.instance), new ItemStack(Items.gunpowder) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 114, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance, 0, 1)).addAllGridSlots(new ItemStack[] { new ItemStack(Items.dye, 0, 1), new ItemStack(Items.dye, 0, 2), new ItemStack(Items.dye, 0, 4), null, new ItemStack(ItemMisc.instance), null, new ItemStack(Items.dye, 0, 4), new ItemStack(Items.dye, 0, 2), new ItemStack(Items.dye, 0, 1) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 171, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance, 0, 2)).addAllGridSlots(new ItemStack[] { new ItemStack(Items.redstone), new ItemStack(ItemMisc.instance), new ItemStack(Blocks.noteblock) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 228, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance, 0, 3)).addAllGridSlots(new ItemStack[] { new ItemStack(Blocks.anvil), new ItemStack(ItemMisc.instance), new ItemStack(Items.feather) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 285, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance, 0, 5)).addAllGridSlots(new ItemStack[] { new ItemStack(Items.dye, 0, 15), new ItemStack(ItemMisc.instance), new ItemStack(Items.dye) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 342, 0).addOutputSlot(new ItemStack(ItemPortalModule.instance, 0, 7)).addAllGridSlots(new ItemStack[] { new ItemStack(Items.feather), new ItemStack(Items.feather), new ItemStack(Items.feather), new ItemStack(Items.feather), new ItemStack(ItemMisc.instance), new ItemStack(Items.feather), new ItemStack(Items.feather), new ItemStack(Items.feather), new ItemStack(Items.feather) }));
 
 				craft = null;
 				offset += 57 * 6;
 			}
 			else
 			{
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30, 0).addOutputSlot(new ItemStack(ItemMisc.instance, 1, 1)).addAllGridSlots(new ItemStack[] { new ItemStack(Item.diamond), null, null, new ItemStack(Item.paper), null, null, new ItemStack(Item.dyePowder, 0, 1) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 57, 0).addOutputSlot(new ItemStack(ItemUpgrade.instance)).addAllGridSlots(new ItemStack[] { null, new ItemStack(Item.redstone), null, new ItemStack(Item.redstone), new ItemStack(ItemMisc.instance, 1, 1), new ItemStack(Item.redstone), null, new ItemStack(Item.redstone) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 114, 0).addOutputSlot(new ItemStack(ItemUpgrade.instance, 1, 1)).addAllGridSlots(new ItemStack[] { new ItemStack(ItemMisc.instance, 1, 1), new ItemStack(Item.enderPearl) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 171, 0).addOutputSlot(new ItemStack(ItemUpgrade.instance, 1, 2)).addAllGridSlots(new ItemStack[] { new ItemStack(ItemUpgrade.instance, 1, 1), new ItemStack(Item.diamond) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 228, 0).addOutputSlot(new ItemStack(ItemUpgrade.instance, 1, 3)).addAllGridSlots(new ItemStack[] { new ItemStack(Item.porkCooked), new ItemStack(Item.beefCooked), new ItemStack(Item.chickenCooked), new ItemStack(Item.blazePowder), new ItemStack(ItemMisc.instance, 1, 1), new ItemStack(Item.blazePowder) }));
-				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 285, 0).addOutputSlot(new ItemStack(ItemUpgrade.instance, 1, 4)).addAllGridSlots(new ItemStack[] { null, new ItemStack(ItemMisc.instance), null, new ItemStack(Item.emerald), new ItemStack(ItemMisc.instance, 1, 1), new ItemStack(Item.diamond) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30, 0).addOutputSlot(new ItemStack(ItemMisc.instance, 1, 1)).addAllGridSlots(new ItemStack[] { new ItemStack(Items.diamond), null, null, new ItemStack(Items.paper), null, null, new ItemStack(Items.dye, 0, 1) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 57, 0).addOutputSlot(new ItemStack(ItemUpgrade.instance)).addAllGridSlots(new ItemStack[] { null, new ItemStack(Items.redstone), null, new ItemStack(Items.redstone), new ItemStack(ItemMisc.instance, 1, 1), new ItemStack(Items.redstone), null, new ItemStack(Items.redstone) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 114, 0).addOutputSlot(new ItemStack(ItemUpgrade.instance, 1, 1)).addAllGridSlots(new ItemStack[] { new ItemStack(ItemMisc.instance, 1, 1), new ItemStack(Items.ender_pearl) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 171, 0).addOutputSlot(new ItemStack(ItemUpgrade.instance, 1, 2)).addAllGridSlots(new ItemStack[] { new ItemStack(ItemUpgrade.instance, 1, 1), new ItemStack(Items.diamond) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 228, 0).addOutputSlot(new ItemStack(ItemUpgrade.instance, 1, 3)).addAllGridSlots(new ItemStack[] { new ItemStack(Items.cooked_porkchop), new ItemStack(Items.cooked_beef), new ItemStack(Items.cooked_chicken), new ItemStack(Items.blaze_powder), new ItemStack(ItemMisc.instance, 1, 1), new ItemStack(Items.blaze_powder) }));
+				scrollPanel.addElement(new ElementCrafting(this, craft.getRelativeX(), 30 + 285, 0).addOutputSlot(new ItemStack(ItemUpgrade.instance, 1, 4)).addAllGridSlots(new ItemStack[] { null, new ItemStack(ItemMisc.instance), null, new ItemStack(Items.emerald), new ItemStack(ItemMisc.instance, 1, 1), new ItemStack(Items.diamond) }));
 
 				craft = null;
 				offset += 57 * (BlockFrame.FRAME_TYPES - 2);

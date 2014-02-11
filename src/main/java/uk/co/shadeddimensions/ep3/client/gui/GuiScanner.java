@@ -36,7 +36,7 @@ public class GuiScanner extends GuiBaseContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y)
     {
-        fontRenderer.drawString(Localization.getGuiString("scanner"), 7, 7, 0x404040);
+        getFontRenderer().drawString(Localization.getGuiString("scanner"), 7, 7, 0x404040);
         super.drawGuiContainerForegroundLayer(x, y);
     }
 }

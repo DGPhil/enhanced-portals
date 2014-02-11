@@ -1,7 +1,8 @@
 package uk.co.shadeddimensions.library.ct;
 
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
 /***
@@ -11,8 +12,9 @@ import net.minecraft.world.IBlockAccess;
  */
 public class ConnectedTextures
 {
-    protected Icon[] textures;
-    protected int blockID, blockMeta, subMeta = -1;
+    protected IIcon[] textures;
+    protected Block block;
+    protected int blockMeta, subMeta = -1;
     protected String textureLoc;
 
     protected ConnectedTextures()
@@ -20,26 +22,26 @@ public class ConnectedTextures
 
     }
 
-    public ConnectedTextures(String textureLocation, int block, int meta)
+    public ConnectedTextures(String textureLocation, Block block, int meta)
     {
         textureLoc = textureLocation;
-        blockID = block;
+        this.block = block;
         blockMeta = meta;
-        textures = new Icon[16];
+        textures = new IIcon[16];
     }
 
-    public ConnectedTextures(String textureLocation, int block, int meta, int meta2)
+    public ConnectedTextures(String textureLocation, Block block, int meta, int meta2)
     {
         textureLoc = textureLocation;
-        blockID = block;
+        this.block = block;
         blockMeta = meta;
         subMeta = meta2;
-        textures = new Icon[16];
+        textures = new IIcon[16];
     }
 
     protected boolean canConnectTo(IBlockAccess blockAccess, int x, int y, int z)
     {
-        if (blockID == blockAccess.getBlockId(x, y, z))
+        if (block == blockAccess.getBlock(x, y, z))
         {
             int meta = blockAccess.getBlockMetadata(x, y, z);
 
@@ -60,33 +62,33 @@ public class ConnectedTextures
         return false;
     }
 
-    public ConnectedTextures copy(int id, int meta)
+    public ConnectedTextures copy(Block block, int meta)
     {
         ConnectedTextures ct = new ConnectedTextures();
         ct.textures = textures;
-        ct.blockID = id;
+        ct.block = block;
         ct.blockMeta = meta;
 
         return ct;
     }
 
-    public ConnectedTextures copy(int id, int meta, int meta2)
+    public ConnectedTextures copy(Block block, int meta, int meta2)
     {
         ConnectedTextures ct = new ConnectedTextures();
         ct.textures = textures;
-        ct.blockID = id;
+        ct.block = block;
         ct.blockMeta = meta;
         ct.subMeta = meta2;
 
         return ct;
     }
 
-    public Icon getBaseIcon()
+    public IIcon getBaseIcon()
     {
         return textures[0];
     }
 
-    public Icon getIconForSide(IBlockAccess blockAccess, int x, int y, int z, int side)
+    public IIcon getIconForSide(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
         boolean[] connectingBlock = new boolean[6];
         int index = 0;
@@ -191,7 +193,7 @@ public class ConnectedTextures
         return textures[index];
     }
 
-    public void registerIcons(IconRegister register)
+    public void registerIcons(IIconRegister register)
     {
         for (int i = 0; i < textures.length; i++)
         {

@@ -2,8 +2,7 @@ package uk.co.shadeddimensions.ep3.tileentity.portal;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatMessageComponent;
-import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
+import net.minecraft.util.ChatComponentText;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.library.util.ItemHelper;
@@ -31,7 +30,7 @@ public class TileNetworkInterface extends TileFrame implements IPeripheral
 				{
 					if (!worldObj.isRemote)
 					{
-						player.sendChatToPlayer(ChatMessageComponent.createFromText(Localization.getChatString("noUidSet")));
+					    player.addChatMessage(new ChatComponentText(Localization.getChatString("noUidSet")));
 					}
 				}
 				else
@@ -39,7 +38,7 @@ public class TileNetworkInterface extends TileFrame implements IPeripheral
 					GuiHandler.openGui(player, controller, GuiHandler.NETWORK_INTERFACE);
 				}
 			}
-			else if (stack.itemID == ItemPaintbrush.ID)
+			else if (ItemHelper.isPaintbrush(stack))
 			{
 				GuiHandler.openGui(player, controller, GuiHandler.TEXTURE_FRAME);
 				return true;

@@ -2,16 +2,15 @@ package uk.co.shadeddimensions.ep3.client.gui;
 
 import java.awt.Color;
 
-import codechicken.nei.VisiblityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
@@ -38,6 +37,7 @@ import uk.co.shadeddimensions.library.gui.element.ElementScrollPanelOverlay;
 import uk.co.shadeddimensions.library.gui.element.ElementText;
 import uk.co.shadeddimensions.library.gui.tab.TabBase;
 import uk.co.shadeddimensions.library.gui.tab.TabToggleButton;
+import codechicken.nei.VisiblityData;
 
 public class GuiTextureDialler extends GuiBaseContainer
 {
@@ -58,7 +58,7 @@ public class GuiTextureDialler extends GuiBaseContainer
         public void draw()
         {
             super.draw();
-            redSlider.drawButton = greenSlider.drawButton = blueSlider.drawButton = colourSaveButton.drawButton = colourResetButton.drawButton = isFullyOpened();
+            redSlider.visible = greenSlider.visible = blueSlider.visible = colourSaveButton.visible = colourResetButton.visible = isFullyOpened();
         }
     }
 
@@ -146,8 +146,8 @@ public class GuiTextureDialler extends GuiBaseContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y)
     {
-        fontRenderer.drawString(Localization.getGuiString("customIcon"), 8, 6, 0x404040);
-        fontRenderer.drawString(Localization.getGuiString("facade"), xSize - 28 - fontRenderer.getStringWidth(Localization.getGuiString("facade")), 79, 0x404040);
+        getFontRenderer().drawString(Localization.getGuiString("customIcon"), 8, 6, 0x404040);
+        getFontRenderer().drawString(Localization.getGuiString("facade"), xSize - 28 - getFontRenderer().getStringWidth(Localization.getGuiString("facade")), 79, 0x404040);
         super.drawGuiContainerForegroundLayer(x, y);
     }
 
@@ -178,7 +178,7 @@ public class GuiTextureDialler extends GuiBaseContainer
         buttonList.add(mainCancelButton);
         buttonList.add(mainSaveButton);
 
-        redSlider.drawButton = greenSlider.drawButton = blueSlider.drawButton = colourSaveButton.drawButton = colourResetButton.drawButton = tabs.get(tabs.size() - 1).isFullyOpened();
+        redSlider.visible = greenSlider.visible = blueSlider.visible = colourSaveButton.visible = colourResetButton.visible = tabs.get(tabs.size() - 1).isFullyOpened();
         setScreenState(screenState);
     }
 
@@ -197,7 +197,7 @@ public class GuiTextureDialler extends GuiBaseContainer
 
         int x = 8, y = 0, count = 0;
 
-        for (Icon i : ClientProxy.customFrameTextures)
+        for (IIcon i : ClientProxy.customFrameTextures)
         {
             ElementIconToggleButton button = new ElementIconToggleButton(this, x, y, "F" + count, i);
             button.setSelected(ClientProxy.dialEntryTexture.hasCustomFrameTexture() && ClientProxy.dialEntryTexture.getCustomFrameTexture() == count);
@@ -224,7 +224,7 @@ public class GuiTextureDialler extends GuiBaseContainer
         y = 0;
         count = 0;
 
-        for (Icon i : ClientProxy.customPortalTextures)
+        for (IIcon i : ClientProxy.customPortalTextures)
         {
             ElementIconToggleButton button = new ElementIconToggleButton(this, x, y, "P" + count, i);
             button.setSelected(ClientProxy.dialEntryTexture.hasCustomPortalTexture() && ClientProxy.dialEntryTexture.getCustomPortalTexture() == count);
@@ -297,7 +297,7 @@ public class GuiTextureDialler extends GuiBaseContainer
     {
         addTab(new TabToggleButton(this, "frame", Localization.getGuiString("frame"), new ItemStack(BlockFrame.instance, 1, 0)));
         addTab(new TabToggleButton(this, "portal", Localization.getGuiString("portal"), new ItemStack(BlockPortal.instance)));
-        addTab(new TabToggleButton(this, "particle", Localization.getGuiString("particle"), new ItemStack(Item.blazePowder)));
+        addTab(new TabToggleButton(this, "particle", Localization.getGuiString("particle"), new ItemStack(Items.blaze_powder)));
         addTab(new ColourTab(this));
     }
 

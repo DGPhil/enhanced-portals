@@ -5,20 +5,25 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT'
     }
 }
 
 apply plugin: 'forge'
 
-version = "1.6.4-3.0.0b5-dev"
+version = "1.6.4-3.0.0b6"
 group= "uk.co.shadeddimensions"
 archivesBaseName = "EnhancedPortals"
 
 minecraft {
-	version = "1.6.4-9.11.1.964"
+	version = "1.7.2-10.12.0.1025"
+    assetDir = "eclipse/assets"
 }
 
 processResources

@@ -1,20 +1,19 @@
 package uk.co.shadeddimensions.ep3.tileentity.portal;
 
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.ForgeDirection;
-import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
+import net.minecraftforge.common.util.ForgeDirection;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
+import dan200.computer.api.IPeripheral;
 
 public class TileTransferEnergy extends TileFrameTransfer implements IEnergyHandler, IPeripheral
 {
@@ -37,7 +36,7 @@ public class TileTransferEnergy extends TileFrameTransfer implements IEnergyHand
                 GuiHandler.openGui(player, this, GuiHandler.TRANSFER_ENERGY);
                 return true;
             }
-            else if (stack.itemID == ItemPaintbrush.ID)
+            else if (ItemHelper.isPaintbrush(stack))
             {
                 GuiHandler.openGui(player, controller, GuiHandler.TEXTURE_FRAME);
                 return true;
@@ -119,13 +118,13 @@ public class TileTransferEnergy extends TileFrameTransfer implements IEnergyHand
                     
                     if (controller != null && controller.isPortalActive() && storage.getEnergyStored() > 0)
                     {
-                        TileController exitController =  (TileController) controller.getDestinationLocation().getBlockTileEntity();
+                        TileController exitController =  (TileController) controller.getDestinationLocation().getTileEntity();
                         
                         if (exitController != null)
                         {
                             for (ChunkCoordinates c : exitController.getTransferEnergy())
                             {
-                                TileEntity tile = WorldUtils.getTileEntity(exitController.worldObj, c);
+                                TileEntity tile = WorldUtils.getTileEntity(exitController.getWorldObj(), c);
                                 
                                 if (tile != null && tile instanceof TileTransferEnergy)
                                 {

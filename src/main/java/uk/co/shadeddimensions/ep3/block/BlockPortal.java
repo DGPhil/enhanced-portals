@@ -2,15 +2,18 @@ package uk.co.shadeddimensions.ep3.block;
 
 import java.util.Random;
 
+import javax.swing.Icon;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import uk.co.shadeddimensions.ep3.client.PortalRenderer;
@@ -27,57 +30,43 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockPortal extends BlockContainer
 {
-    public static int ID;
     public static BlockPortal instance;
     
-    Icon texture;
+    IIcon texture;
 
     public BlockPortal()
     {
-        super(ID, Material.portal);
+        super(Material.portal);
         instance = this;
         setBlockUnbreakable();
         setResistance(2000);
-        setUnlocalizedName("portal");
         setLightOpacity(0);
-        setStepSound(soundGlassFootstep);
+        setStepSound(soundTypeGlass);
     }
 
     @Override
-    public void breakBlock(World world, int x, int y, int z, int oldID, int newID)
+    public void breakBlock(World world, int x, int y, int z, Block block, int newID)
     {
-        ((TilePortal) world.getBlockTileEntity(x, y, z)).breakBlock(oldID, newID);
-        super.breakBlock(world, x, y, z, oldID, newID);
-    }
-
-    @Override
-    public boolean canBeReplacedByLeaves(World world, int x, int y, int z)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean canCreatureSpawn(EnumCreatureType type, World world, int x, int y, int z)
-    {
-        return false;
+        ((TilePortal) world.getTileEntity(x, y, z)).breakBlock(block, newID);
+        super.breakBlock(world, x, y, z, block, newID);
     }
 
     @Override
     public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z)
     {
-        return ((TilePortal) blockAccess.getBlockTileEntity(x, y, z)).getColour();
+        return ((TilePortal) blockAccess.getTileEntity(x, y, z)).getColour();
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world)
+    public TileEntity createNewTileEntity(World world, int metadata)
     {
         return new TilePortal();
     }
 
     @Override
-    public Icon getBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side)
+    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
-        return ((TilePortal) blockAccess.getBlockTileEntity(x, y, z)).getBlockTexture(side);
+        return ((TilePortal) blockAccess.getTileEntity(x, y, z)).getBlockTexture(side);
     }
 
     @Override
@@ -87,7 +76,7 @@ public class BlockPortal extends BlockContainer
     }
 
     @Override
-    public Icon getIcon(int side, int meta)
+    public IIcon getIcon(int side, int meta)
     {
         return texture;
     }
@@ -111,13 +100,6 @@ public class BlockPortal extends BlockContainer
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public int idPicked(World par1World, int par2, int par3, int par4)
-    {
-        return 0;
-    }
-
-    @Override
     public boolean isOpaqueCube()
     {
         return false;
@@ -126,7 +108,7 @@ public class BlockPortal extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
     {
-        return ((TilePortal) world.getBlockTileEntity(x, y, z)).activate(player, player.inventory.getCurrentItem());
+        return ((TilePortal) world.getTileEntity(x, y, z)).activate(player, player.inventory.getCurrentItem());
     }
 
     @Override
@@ -138,10 +120,10 @@ public class BlockPortal extends BlockContainer
             {
                 if (entity instanceof EntityPlayer)
                 {
-                    ((EntityPlayer) entity).closeScreen();
+                    ((EntityPlayer) entity).openContainer = ((EntityPlayer) entity).inventoryContainer; // closeScreen();
                 }
 
-                ((TilePortal) world.getBlockTileEntity(x, y, z)).onEntityCollidedWithBlock(entity);
+                ((TilePortal) world.getTileEntity(x, y, z)).onEntityCollidedWithBlock(entity);
             }
 
             EntityManager.setEntityPortalCooldown(entity);
@@ -164,7 +146,7 @@ public class BlockPortal extends BlockContainer
         }
 
         int metadata = world.getBlockMetadata(x, y, z);
-        TileController controller = ((TilePortal) world.getBlockTileEntity(x, y, z)).getPortalController();
+        TileController controller = ((TilePortal) world.getTileEntity(x, y, z)).getPortalController();
         TileModuleManipulator module = controller == null ? null : controller.getModuleManipulator();
         boolean doSounds = !CommonProxy.disablePortalSounds && random.nextInt(100) == 0, doParticles = !CommonProxy.disableParticles;
         
@@ -236,7 +218,7 @@ public class BlockPortal extends BlockContainer
     }
 
     @Override
-    public void registerIcons(IconRegister iconRegister)
+    public void registerBlockIcons(IIconRegister iconRegister)
     {
         texture = iconRegister.registerIcon("enhancedportals:portal");
     }
@@ -250,7 +232,7 @@ public class BlockPortal extends BlockContainer
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TilePortal portal = (TilePortal) blockAccess.getBlockTileEntity(x, y, z);
+        TilePortal portal = (TilePortal) blockAccess.getTileEntity(x, y, z);
         TileController controller = portal.getPortalController();
         TileModuleManipulator manip = controller == null ? null : controller.getModuleManipulator();
 
@@ -289,7 +271,7 @@ public class BlockPortal extends BlockContainer
     @Override
     public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
-        if (blockAccess.getBlockMaterial(x, y, z) == Material.portal || blockAccess.getBlockId(x, y, z) == BlockFrame.ID)
+        if (blockAccess.getBlock(x, y, z) == this || blockAccess.getBlock(x, y, z) == BlockFrame.instance)
         {
             return false;
         }

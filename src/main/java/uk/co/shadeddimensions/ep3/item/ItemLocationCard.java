@@ -2,19 +2,18 @@ package uk.co.shadeddimensions.ep3.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
 
 public class ItemLocationCard extends Item
 {
-    public static int ID;
     public static ItemLocationCard instance;
     
     public static void clearDBSLocation(ItemStack s)
@@ -49,12 +48,11 @@ public class ItemLocationCard extends Item
         s.setTagCompound(t);
     }
 
-    Icon texture;
+    IIcon texture;
 
     public ItemLocationCard()
     {
-        super(ID);
-        ID += 256;
+        super();
         instance = this;
         setCreativeTab(Reference.creativeTab);
         setUnlocalizedName("locationCard");
@@ -75,7 +73,7 @@ public class ItemLocationCard extends Item
     }
 
     @Override
-    public Icon getIconFromDamage(int par1)
+    public IIcon getIconFromDamage(int par1)
     {
         return texture;
     }
@@ -93,7 +91,7 @@ public class ItemLocationCard extends Item
     }
 
     @Override
-    public void registerIcons(IconRegister register)
+    public void registerIcons(IIconRegister register)
     {
         texture = register.registerIcon("enhancedportals:locationCard");
     }

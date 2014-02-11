@@ -4,10 +4,11 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.portal.PortalUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -15,28 +16,27 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockNetherPortal extends net.minecraft.block.BlockPortal
 {
-    public static int ID;
     public static BlockNetherPortal instance;
     
     public BlockNetherPortal()
     {
-        super(ID);
+        super();
         instance = this;
     }
     
     @Override
     public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random)
     {
-        if (!CommonProxy.disablePigmen && par1World.provider.isSurfaceWorld() && par5Random.nextInt(2000) < par1World.difficultySetting)
+        if (!CommonProxy.disablePigmen && par1World.provider.isSurfaceWorld() && par5Random.nextInt(2000) < par1World.difficultySetting.ordinal())
         {
             int l;
 
-            for (l = par3; !par1World.doesBlockHaveSolidTopSurface(par2, l, par4) && l > 0; --l)
+            for (l = par3; !par1World.doesBlockHaveSolidTopSurface(par1World, par2, l, par4) && l > 0; --l)
             {
                 ;
             }
 
-            if (l > 0 && !par1World.isBlockNormalCube(par2, l + 1, par4))
+            if (l > 0 && !par1World.isBlockNormalCubeDefault(par2, l + 1, par4, true))
             {
                 Entity entity = ItemMonsterPlacer.spawnCreature(par1World, 57, (double)par2 + 0.5D, (double)l + 1.1D, (double)par4 + 0.5D);
 
@@ -52,12 +52,12 @@ public class BlockNetherPortal extends net.minecraft.block.BlockPortal
     @Override
     public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int par5)
     {
-        int blocks[] = new int[6];
+        Block blocks[] = new Block[6];
         
         for (int i = 0; i < 6; i++)
         {
             ForgeDirection d = ForgeDirection.getOrientation(i);
-            blocks[i] = blockAccess.getBlockId(x + d.offsetX, y + d.offsetY, z + d.offsetZ);
+            blocks[i] = blockAccess.getBlock(x + d.offsetX, y + d.offsetY, z + d.offsetZ);
         }
         
         if (PortalUtils.isNetherPortalPart(blocks[0]) & PortalUtils.isNetherPortalPart(blocks[1]))
@@ -80,16 +80,16 @@ public class BlockNetherPortal extends net.minecraft.block.BlockPortal
     }
     
     @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, int par5)
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        if (par5 == blockID || par5 == Block.obsidian.blockID)
+        if (block == this || block == Blocks.obsidian)
         {
-            int blocks[] = new int[6];
+            Block blocks[] = new Block[6];
             
             for (int i = 0; i < 6; i++)
             {
                 ForgeDirection d = ForgeDirection.getOrientation(i);
-                blocks[i] = world.getBlockId(x + d.offsetX, y + d.offsetY, z + d.offsetZ);
+                blocks[i] = world.getBlock(x + d.offsetX, y + d.offsetY, z + d.offsetZ);
             }
             
             if (PortalUtils.isNetherPortalPart(blocks[0]) & PortalUtils.isNetherPortalPart(blocks[1]))
@@ -115,12 +115,12 @@ public class BlockNetherPortal extends net.minecraft.block.BlockPortal
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
-        int blocks[] = new int[6];
+        Block blocks[] = new Block[6];
         
         for (int i = 0; i < 6; i++)
         {
             ForgeDirection d = ForgeDirection.getOrientation(i);
-            blocks[i] = blockAccess.getBlockId(x + d.offsetX, y + d.offsetY, z + d.offsetZ);
+            blocks[i] = blockAccess.getBlock(x + d.offsetX, y + d.offsetY, z + d.offsetZ);
         }
         
         if (PortalUtils.isNetherPortalPart(blocks[0]) & PortalUtils.isNetherPortalPart(blocks[1]))
@@ -164,7 +164,7 @@ public class BlockNetherPortal extends net.minecraft.block.BlockPortal
                 d4 = ((double)random.nextFloat() - 0.5D) * 0.5D;
                 d5 = ((double)random.nextFloat() - 0.5D) * 0.5D;
     
-                if (world.getBlockId(x - 1, y, z) != this.blockID && world.getBlockId(x + 1, y, z) != this.blockID)
+                if (world.getBlock(x - 1, y, z) != this && world.getBlock(x + 1, y, z) != this)
                 {
                     d0 = (double)x + 0.5D + 0.25D * (double)i1;
                     d3 = (double)(random.nextFloat() * 2.0F * (float)i1);
@@ -180,9 +180,9 @@ public class BlockNetherPortal extends net.minecraft.block.BlockPortal
         }
     }
     
-    @Override
-    public boolean tryToCreatePortal(World world, int x, int y, int z)
-    {
-        return PortalUtils.createNetherPortalFrom(world, x, y, z);
-    }
+    //@Override
+    //public boolean tryToCreatePortal(World world, int x, int y, int z)
+    //{
+    //    return PortalUtils.createNetherPortalFrom(world, x, y, z);
+    //}
 }

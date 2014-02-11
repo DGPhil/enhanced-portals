@@ -37,9 +37,9 @@ public class GuiBiometricIdentifier extends GuiBaseContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
-        fontRenderer.drawString(Localization.getGuiString("biometricIdentifier"), xSize / 2 - fontRenderer.getStringWidth(Localization.getGuiString("biometricIdentifier")) / 2, 6, 0x404040);
-        fontRenderer.drawString(Localization.getGuiString("idCard"), 27, ySize - 20, 0x404040);
-        fontRenderer.drawString(biometric.isActive ? Localization.getGuiString("active") : Localization.getGuiString("inactive"), xSize - fontRenderer.getStringWidth(biometric.isActive ? Localization.getGuiString("active") : Localization.getGuiString("inactive")) - 5, 6, biometric.isActive ? 0x00AA00 : 0xAA0000);
+        getFontRenderer().drawString(Localization.getGuiString("biometricIdentifier"), xSize / 2 - getFontRenderer().getStringWidth(Localization.getGuiString("biometricIdentifier")) / 2, 6, 0x404040);
+        getFontRenderer().drawString(Localization.getGuiString("idCard"), 27, ySize - 20, 0x404040);
+        getFontRenderer().drawString(biometric.isActive ? Localization.getGuiString("active") : Localization.getGuiString("inactive"), xSize - getFontRenderer().getStringWidth(biometric.isActive ? Localization.getGuiString("active") : Localization.getGuiString("inactive")) - 5, 6, biometric.isActive ? 0x00AA00 : 0xAA0000);
 
         super.drawGuiContainerForegroundLayer(par1, par2);
     }

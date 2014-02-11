@@ -63,7 +63,7 @@ public class GuiHandler implements IGuiHandler
     
     public static void openGui(EntityPlayer player, TileEntity tile, int gui)
     {
-        player.openGui(EnhancedPortals.instance, gui, tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
+        player.openGui(EnhancedPortals.instance, gui, tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord);
     }
     
     @Override
@@ -76,7 +76,7 @@ public class GuiHandler implements IGuiHandler
         }
         else
         {
-            TileEntity tile = world.getBlockTileEntity(x, y, z);
+            TileEntity tile = world.getTileEntity(x, y, z);
 
             if (ID == PORTAL_CONTROLLER)
             {
@@ -153,7 +153,7 @@ public class GuiHandler implements IGuiHandler
         }
         else
         {
-            TileEntity tile = world.getBlockTileEntity(x, y, z);
+            TileEntity tile = world.getTileEntity(x, y, z);
 
             if (ID == PORTAL_CONTROLLER)
             {

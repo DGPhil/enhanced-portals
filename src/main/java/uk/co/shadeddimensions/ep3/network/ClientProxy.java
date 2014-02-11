@@ -4,8 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.minecraft.client.resources.ReloadableResourceManager;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.DimensionManager;
 import uk.co.shadeddimensions.ep3.client.PortalRenderer;
@@ -33,8 +32,8 @@ public class ClientProxy extends CommonProxy
     public static int editingDialEntry = -1;
     public static PortalTextureManager dialEntryTexture = new PortalTextureManager();
 
-    public static ArrayList<Icon> customFrameTextures = new ArrayList<Icon>();
-    public static ArrayList<Icon> customPortalTextures = new ArrayList<Icon>();
+    public static ArrayList<IIcon> customFrameTextures = new ArrayList<IIcon>();
+    public static ArrayList<IIcon> customPortalTextures = new ArrayList<IIcon>();
     public static ArrayList<ParticleSet> particleSets = new ArrayList<ParticleSet>();
     public static Random random = new Random();
 

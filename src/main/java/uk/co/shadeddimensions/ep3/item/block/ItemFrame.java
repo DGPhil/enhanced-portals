@@ -2,21 +2,22 @@ package uk.co.shadeddimensions.ep3.item.block;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlockWithMetadata;
 import net.minecraft.item.ItemStack;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.lib.Localization;
-import uk.co.shadeddimensions.ep3.network.CommonProxy;
 
 public class ItemFrame extends ItemBlockWithMetadata
 {
     public static String[] unlocalizedName = new String[] { "frame", "controller", "redstone", "networkInterface", "dialDevice", "biometric", "upgrade", "fluid", "item", "energy" };
 
-    public ItemFrame(int par1)
+    public ItemFrame(Block block)
     {
-        super(par1, BlockFrame.instance);
+        super(block, block);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -33,11 +34,11 @@ public class ItemFrame extends ItemBlockWithMetadata
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List list)
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List list)
     {
         for (int i = 0; i < BlockFrame.FRAME_TYPES; i++)
         {
-            list.add(new ItemStack(BlockFrame.ID, 1, i));
+            list.add(new ItemStack(par1, 1, i));
         }
     }
 

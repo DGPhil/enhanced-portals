@@ -18,7 +18,7 @@ public class SlotBiometricIdentifier extends Slot
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return stack == null || stack.itemID == ItemEntityCard.ID && stack.hasTagCompound() && stack.getTagCompound().hasKey("entities");
+        return stack == null || stack.isItemEqual(new ItemStack(ItemEntityCard.instance, 1)) && stack.hasTagCompound() && stack.getTagCompound().hasKey("entities");
     }
 
     @Override

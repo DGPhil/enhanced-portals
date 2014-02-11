@@ -26,7 +26,7 @@ public class ElementGlyphIdentifier extends ElementBaseContainer
             if (elements.get(i).intersectsWith(x, y))
             {
                 selector.removeGlyphAt(i);
-                gui.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                //gui.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F); // TODO
 
                 return true;
             }

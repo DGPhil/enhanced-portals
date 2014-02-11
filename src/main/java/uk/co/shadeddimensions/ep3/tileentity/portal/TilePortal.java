@@ -5,9 +5,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
-import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.library.util.ItemHelper;
@@ -26,7 +25,7 @@ public class TilePortal extends TilePortalPart
                 GuiHandler.openGui(player, controller, GuiHandler.PORTAL_CONTROLLER);
                 return true;
             }
-            else if (stack.itemID == ItemPaintbrush.ID)
+            else if (ItemHelper.isPaintbrush(stack))
             {
                 GuiHandler.openGui(player, controller, player.isSneaking() ? GuiHandler.TEXTURE_PARTICLE : GuiHandler.TEXTURE_PORTAL);
                 return true;
@@ -36,7 +35,7 @@ public class TilePortal extends TilePortalPart
         return false;
     }
 
-    public Icon getBlockTexture(int side)
+    public IIcon getBlockTexture(int side)
     {
         TileController controller = getPortalController();
 
@@ -48,7 +47,7 @@ public class TilePortal extends TilePortalPart
             }
             else if (controller.activeTextureData.getPortalItem() != null && controller.activeTextureData.getPortalItem().getItem() instanceof ItemBlock)
             {
-                return Block.blocksList[((ItemBlock) controller.activeTextureData.getPortalItem().getItem()).getBlockID()].getIcon(side, controller.activeTextureData.getPortalItem().getItemDamage());
+                return Block.getBlockFromItem(controller.activeTextureData.getPortalItem().getItem()).getIcon(side, controller.activeTextureData.getPortalItem().getItemDamage());
             }
         }
 

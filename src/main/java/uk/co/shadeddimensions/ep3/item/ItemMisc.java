@@ -2,25 +2,23 @@ package uk.co.shadeddimensions.ep3.item;
 
 import java.util.List;
 
-import uk.co.shadeddimensions.ep3.lib.Reference;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
+import uk.co.shadeddimensions.ep3.lib.Reference;
 
 public class ItemMisc extends Item
 {
-    public static int ID;
     public static ItemMisc instance;
     
     final static String[] NAMES = new String[] { "blankPortalModule", "blankUpgrade" };
-    Icon[] texture;
+    IIcon[] texture;
 
     public ItemMisc()
     {
-        super(ID);
-        ID += 256;
+        super();
         instance = this;
         setCreativeTab(Reference.creativeTab);
         setUnlocalizedName("miscItems");
@@ -29,18 +27,18 @@ public class ItemMisc extends Item
     }
 
     @Override
-    public Icon getIconFromDamage(int par1)
+    public IIcon getIconFromDamage(int par1)
     {
         return texture[par1];
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List)
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List)
     {
         for (int i = 0; i < NAMES.length; i++)
         {
-            par3List.add(new ItemStack(itemID, 1, i));
+            par3List.add(new ItemStack(par1, 1, i));
         }
     }
 
@@ -51,9 +49,9 @@ public class ItemMisc extends Item
     }
 
     @Override
-    public void registerIcons(IconRegister register)
+    public void registerIcons(IIconRegister register)
     {
-        texture = new Icon[NAMES.length];
+        texture = new IIcon[NAMES.length];
 
         for (int i = 0; i < NAMES.length; i++)
         {

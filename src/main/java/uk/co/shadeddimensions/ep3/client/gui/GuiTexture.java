@@ -2,14 +2,14 @@ package uk.co.shadeddimensions.ep3.client.gui;
 
 import java.awt.Color;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
@@ -54,7 +54,7 @@ public class GuiTexture extends GuiBaseContainer
         public void draw()
         {
             super.draw();
-            redSlider.drawButton = greenSlider.drawButton = blueSlider.drawButton = colourSaveButton.drawButton = colourResetButton.drawButton = isFullyOpened();
+            redSlider.visible = greenSlider.visible = blueSlider.visible = colourSaveButton.visible = colourResetButton.visible = isFullyOpened();
         }
     }
 
@@ -130,8 +130,8 @@ public class GuiTexture extends GuiBaseContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y)
     {
-        fontRenderer.drawString(Localization.getGuiString("customIcon"), 8, 6, 0x404040);
-        fontRenderer.drawString(Localization.getGuiString("facade"), xSize - 28 - fontRenderer.getStringWidth(Localization.getGuiString("facade")), 79, 0x404040);
+        getFontRenderer().drawString(Localization.getGuiString("customIcon"), 8, 6, 0x404040);
+        getFontRenderer().drawString(Localization.getGuiString("facade"), xSize - 28 - getFontRenderer().getStringWidth(Localization.getGuiString("facade")), 79, 0x404040);
         super.drawGuiContainerForegroundLayer(x, y);
     }
 
@@ -156,7 +156,7 @@ public class GuiTexture extends GuiBaseContainer
         buttonList.add(colourSaveButton);
         buttonList.add(colourResetButton);
 
-        redSlider.drawButton = greenSlider.drawButton = blueSlider.drawButton = colourSaveButton.drawButton = colourResetButton.drawButton = tabs.get(tabs.size() - 1).isFullyOpened();
+        redSlider.visible = greenSlider.visible = blueSlider.visible = colourSaveButton.visible = colourResetButton.visible = tabs.get(tabs.size() - 1).isFullyOpened();
         setScreenState(screenState);
     }
 
@@ -175,7 +175,7 @@ public class GuiTexture extends GuiBaseContainer
 
         int x = 8, y = 0, count = 0;
 
-        for (Icon i : ClientProxy.customFrameTextures)
+        for (IIcon i : ClientProxy.customFrameTextures)
         {
             ElementIconToggleButton button = new ElementIconToggleButton(this, x, y, "F" + count, i);
             button.setSelected(controller.activeTextureData.hasCustomFrameTexture() && controller.activeTextureData.getCustomFrameTexture() == count);
@@ -202,7 +202,7 @@ public class GuiTexture extends GuiBaseContainer
         y = 0;
         count = 0;
 
-        for (Icon i : ClientProxy.customPortalTextures)
+        for (IIcon i : ClientProxy.customPortalTextures)
         {
             ElementIconToggleButton button = new ElementIconToggleButton(this, x, y, "P" + count, i);
             button.setSelected(controller.activeTextureData.hasCustomPortalTexture() && controller.activeTextureData.getCustomPortalTexture() == count);
@@ -275,7 +275,7 @@ public class GuiTexture extends GuiBaseContainer
     {
         addTab(new TabToggleButton(this, "frame", Localization.getGuiString("frame"), new ItemStack(BlockFrame.instance, 1, 0)));
         addTab(new TabToggleButton(this, "portal", Localization.getGuiString("portal"), new ItemStack(BlockPortal.instance)));
-        addTab(new TabToggleButton(this, "particle", Localization.getGuiString("particle"), new ItemStack(Item.blazePowder)));
+        addTab(new TabToggleButton(this, "particle", Localization.getGuiString("particle"), new ItemStack(Items.blaze_powder)));
         addTab(new ColourTab(this));
     }
 
@@ -314,7 +314,7 @@ public class GuiTexture extends GuiBaseContainer
             }
             else
             {
-                tag.setInteger("frameItemID", s.itemID);
+                tag.setInteger("frameItemID", Item.getIdFromItem(s.getItem()));
                 tag.setInteger("frameItemMeta", s.getItemDamage());
             }
         }
@@ -329,7 +329,7 @@ public class GuiTexture extends GuiBaseContainer
             }
             else
             {
-                tag.setInteger("portalItemID", s.itemID);
+                tag.setInteger("portalItemID", Item.getIdFromItem(s.getItem()));
                 tag.setInteger("portalItemMeta", s.getItemDamage());
             }
         }
@@ -463,7 +463,8 @@ public class GuiTexture extends GuiBaseContainer
     {
         if (screenState == 0)
         {
-            return stack == null || stack.getItem() instanceof ItemBlock && Block.blocksList[((ItemBlock) stack.getItem()).getBlockID()].isOpaqueCube();
+            // TODO
+            //return stack == null || stack.getItem() instanceof ItemBlock && Block.blocksList[((ItemBlock) stack.getItem()).getBlockID()].isOpaqueCube();
         }
 
         return stack == null || stack.getItem() instanceof ItemBlock || FluidContainerRegistry.isFilledContainer(stack);

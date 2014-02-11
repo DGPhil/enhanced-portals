@@ -19,12 +19,6 @@ public class InventoryScanner implements IInventory
     }
 
     @Override
-    public void closeChest()
-    {
-
-    }
-
-    @Override
     public ItemStack decrStackSize(int i, int j)
     {
         ItemStack stack = getStackInSlot(i);
@@ -56,12 +50,6 @@ public class InventoryScanner implements IInventory
     }
 
     @Override
-    public String getInvName()
-    {
-        return "item.ep3.scanner.name";
-    }
-
-    @Override
     public int getSizeInventory()
     {
         return inventory.length;
@@ -80,15 +68,9 @@ public class InventoryScanner implements IInventory
     }
 
     @Override
-    public boolean isInvNameLocalized()
-    {
-        return false;
-    }
-
-    @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack)
     {
-        return itemstack == null || i == 0 && itemstack.itemID == ItemEntityCard.ID;
+        return itemstack == null || i == 0 && itemstack.isItemEqual(new ItemStack(ItemEntityCard.instance));
     }
 
     @Override
@@ -106,31 +88,19 @@ public class InventoryScanner implements IInventory
 
         if (tag.hasKey("scannerInventory"))
         {
-            NBTTagList tagList = tag.getTagList("scannerInventory");
+            NBTTagList tagList = tag.getTagList("scannerInventory", 9);
 
             for (int i = 0; i < tagList.tagCount(); i++)
             {
-                NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i);
-                byte slot = t.getByte("Slot");
+                //NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i); // TODO
+                //byte slot = t.getByte("Slot");
 
-                if (slot >= 0 && slot < inventory.length)
-                {
-                    inventory[slot] = ItemStack.loadItemStackFromNBT(t);
-                }
+                //if (slot >= 0 && slot < inventory.length)
+                //{
+                //    inventory[slot] = ItemStack.loadItemStackFromNBT(t);
+                //}
             }
         }
-    }
-
-    @Override
-    public void onInventoryChanged()
-    {
-
-    }
-
-    @Override
-    public void openChest()
-    {
-
     }
 
     public void saveContentsToNBT(NBTTagCompound tag)
@@ -157,5 +127,35 @@ public class InventoryScanner implements IInventory
     public void setInventorySlotContents(int i, ItemStack itemstack)
     {
         inventory[i] = itemstack;
+    }
+
+    @Override
+    public String getInventoryName()
+    {
+        return "item.ep3.scanner.name";
+    }
+
+    @Override
+    public boolean hasCustomInventoryName()
+    {
+        return false;
+    }
+
+    @Override
+    public void markDirty()
+    {
+        
+    }
+
+    @Override
+    public void openInventory()
+    {
+        
+    }
+
+    @Override
+    public void closeInventory()
+    {
+        
     }
 }

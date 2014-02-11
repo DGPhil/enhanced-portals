@@ -150,12 +150,12 @@ public abstract class GuiBaseContainer extends GuiContainer implements INEIGuiHa
     {
         if (drawName)
         {
-            fontRenderer.drawString(StatCollector.translateToLocal(name), GuiUtils.getCenteredOffset(this, StatCollector.translateToLocal(name), xSize), 6, 0x404040);
+            getFontRenderer().drawString(StatCollector.translateToLocal(name), GuiUtils.getCenteredOffset(this, StatCollector.translateToLocal(name), xSize), 6, 0x404040);
         }
 
         if (drawInventory)
         {
-            fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 3, 0x404040);
+            getFontRenderer().drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 3, 0x404040);
         }
 
         TabBase tab = getTabAtPosition(mouseX - guiLeft, mouseY - guiTop);
@@ -231,7 +231,7 @@ public abstract class GuiBaseContainer extends GuiContainer implements INEIGuiHa
     @Override
     public FontRenderer getFontRenderer()
     {
-        return fontRenderer;
+        return fontRendererObj;
     }
 
     @Override
@@ -261,7 +261,7 @@ public abstract class GuiBaseContainer extends GuiContainer implements INEIGuiHa
     @Override
     public RenderItem getItemRenderer()
     {
-        return itemRenderer;
+        return itemRender;
     }
 
     @Override
@@ -451,45 +451,24 @@ public abstract class GuiBaseContainer extends GuiContainer implements INEIGuiHa
         }
     }
 
+    private boolean isMouseOverSlot(Slot p_146981_1_, int p_146981_2_, int p_146981_3_)
+    {
+        return this.func_146978_c(p_146981_1_.xDisplayPosition, p_146981_1_.yDisplayPosition, 16, 16, p_146981_2_, p_146981_3_);
+    }
+    
     Slot getSlotAtPos(int par1, int par2)
     {
         for (int k = 0; k < this.inventorySlots.inventorySlots.size(); ++k)
         {
             Slot slot = (Slot)this.inventorySlots.inventorySlots.get(k);
 
-            if (this.isMouseOnSlot(slot, par1, par2))
+            if (this.isMouseOverSlot(slot, par1, par2))
             {
                 return slot;
             }
         }
 
         return null;
-    }
-    
-    boolean isMouseOnSlot(Slot par1Slot, int par2, int par3)
-    {
-        return this.isPointInRegion(par1Slot.xDisplayPosition, par1Slot.yDisplayPosition, 16, 16, par2, par3);
-    }
-    
-    @Override
-    protected void mouseClickMove(int mX, int mY, int lastClick, long timeSinceClick)
-    {
-        Slot slot = getSlotAtPos(mX, mY);
-        ItemStack itemstack = getMinecraft().thePlayer.inventory.getItemStack();
-
-        if (field_94076_q && slot != null && itemstack != null && slot instanceof SlotFalseCopy)
-        {
-            if (lastIndex != slot.slotNumber)
-            {
-                lastIndex = slot.slotNumber;
-                handleMouseClick(slot, slot.slotNumber, 0, 0);
-            }
-        }
-        else
-        {
-            lastIndex = -1;
-            super.mouseClickMove(mX, mY, lastClick, timeSinceClick);
-        }
     }
 
     @Override

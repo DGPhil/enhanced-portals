@@ -11,9 +11,6 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet41EntityEffect;
-import net.minecraft.network.packet.Packet43Experience;
-import net.minecraft.network.packet.Packet9Respawn;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -62,7 +59,7 @@ public class EntityManager
     {
         if (controller.portalType == 1)
         {
-            if (controller.worldObj.isBlockOpaqueCube(loc.posX, loc.posY, loc.posZ + 1))
+            if (controller.getWorldObj().isBlockNormalCubeDefault(loc.posX, loc.posY, loc.posZ + 1, false))
             {
                 return 180f;
             }
@@ -71,7 +68,7 @@ public class EntityManager
         }
         else if (controller.portalType == 2)
         {
-            if (controller.worldObj.isBlockOpaqueCube(loc.posX - 1, loc.posY, loc.posZ))
+            if (controller.getWorldObj().isBlockNormalCubeDefault(loc.posX - 1, loc.posY, loc.posZ, false))
             {
                 return -90f;
             }
@@ -80,7 +77,7 @@ public class EntityManager
         }
         else if (controller.portalType == 4)
         {
-            if (controller.worldObj.isBlockOpaqueCube(loc.posX + 1, loc.posY, loc.posZ + 1))
+            if (controller.getWorldObj().isBlockNormalCubeDefault(loc.posX + 1, loc.posY, loc.posZ + 1, false))
             {
                 return 135f;
             }
@@ -89,7 +86,7 @@ public class EntityManager
         }
         else if (controller.portalType == 5)
         {
-            if (controller.worldObj.isBlockOpaqueCube(loc.posX - 1, loc.posY, loc.posZ + 1))
+            if (controller.getWorldObj().isBlockNormalCubeDefault(loc.posX - 1, loc.posY, loc.posZ + 1, false))
             {
                 return -135f;
             }
@@ -256,7 +253,7 @@ public class EntityManager
                 entity = entity.ridingEntity;
             }
 
-            transferEntityWithRider(entity, exitLoc.posX + 0.5, exitLoc.posY, exitLoc.posZ + 0.5, getRotation(entity, exit, exitLoc), (WorldServer) exit.worldObj, entry.portalType, exit.portalType, keepMomentum);
+            transferEntityWithRider(entity, exitLoc.posX + 0.5, exitLoc.posY, exitLoc.posZ + 0.5, getRotation(entity, exit, exitLoc), (WorldServer) exit.getWorldObj(), entry.portalType, exit.portalType, keepMomentum);
         }
     }
     
@@ -293,7 +290,7 @@ public class EntityManager
 
             player.closeScreen();
             player.dimension = enteringWorld.provider.dimensionId;
-            player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte) player.worldObj.difficultySetting, enteringWorld.getWorldInfo().getTerrainType(), enteringWorld.getHeight(), player.theItemInWorldManager.getGameType()));
+            //player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte) player.worldObj.difficultySetting, enteringWorld.getWorldInfo().getTerrainType(), enteringWorld.getHeight(), player.theItemInWorldManager.getGameType()));  // TODO
 
             exitingWorld.removePlayerEntityDangerously(player);
             player.isDead = false;
@@ -313,11 +310,11 @@ public class EntityManager
             Iterator potion = player.getActivePotionEffects().iterator();
             while (potion.hasNext())
             {
-                player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, (PotionEffect) potion.next()));
+               // player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, (PotionEffect) potion.next())); // TODO
             }
 
-            player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
-            GameRegistry.onPlayerChangedDimension(player);
+            // player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel))  // TODO
+            //GameRegistry.onPlayerChangedDimension(player);  // TODO
 
             setEntityPortalCooldown(player);
             return player;
@@ -336,7 +333,7 @@ public class EntityManager
             }
 
             exitingWorld.loadedEntityList.remove(entity);
-            exitingWorld.onEntityRemoved(entity);
+            //exitingWorld.onEntityRemoved(entity); // TODO
 
             Entity newEntity = EntityList.createEntityFromNBT(tag, enteringWorld);
 
@@ -393,7 +390,7 @@ public class EntityManager
             }
 
             world.loadedEntityList.remove(entity);
-            world.onEntityRemoved(entity);
+            //world.onEntityRemoved(entity); // TODO
 
             Entity newEntity = EntityList.createEntityFromNBT(tag, world);
 

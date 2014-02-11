@@ -5,16 +5,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
-import uk.co.shadeddimensions.ep3.item.ItemPaintbrush;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.network.PacketHandlerServer;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileDiallingDevice.GlyphElement;
@@ -88,7 +87,7 @@ public class TileRedstoneInterface extends TileFrame
 				GuiHandler.openGui(player, this, GuiHandler.REDSTONE_INTERFACE);
 				return true;
 			}
-			else if (stack.itemID == ItemPaintbrush.ID)
+			else if (ItemHelper.isPaintbrush(stack))
 			{
 				GuiHandler.openGui(player, controller, GuiHandler.TEXTURE_FRAME);
 				return true;
@@ -140,12 +139,12 @@ public class TileRedstoneInterface extends TileFrame
 
 	private void notifyNeighbors()
 	{
-		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, BlockFrame.ID);
+		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, BlockFrame.instance);
 
 		for (int i = 0; i < 6; i++)
 		{
 			ForgeDirection d = ForgeDirection.getOrientation(i);
-			worldObj.notifyBlocksOfNeighborChange(xCoord + d.offsetX, yCoord + d.offsetY, zCoord + d.offsetZ, BlockFrame.ID);
+			worldObj.notifyBlocksOfNeighborChange(xCoord + d.offsetX, yCoord + d.offsetY, zCoord + d.offsetZ, BlockFrame.instance);
 		}
 	}
 
@@ -357,7 +356,7 @@ public class TileRedstoneInterface extends TileFrame
 		tagCompound.setByte("timeUntilOff", timeUntilOff);
 	}
 
-	public void onNeighborBlockChange(int id)
+	public void onNeighborBlockChange(Block block)
 	{
 		if (!isOutput && System.currentTimeMillis() - lastInteractTime > 250 && !worldObj.isRemote)
         {
