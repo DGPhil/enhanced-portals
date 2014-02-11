@@ -1134,8 +1134,8 @@ public class TileController extends TileFrame //implements IPeripheral
     void setDBS(EntityPlayer player, ItemStack stack) throws PortalException
     {
         WorldCoordinates stabilizer = ItemLocationCard.getDBSLocation(stack);
-
-        if (!(stabilizer.getTileEntity() instanceof TileStabilizerMain))
+        
+        if (stabilizer == null || !(stabilizer.getTileEntity() instanceof TileStabilizerMain))
         {
             ItemLocationCard.clearDBSLocation(stack);
             throw new PortalException("voidLinkCard");

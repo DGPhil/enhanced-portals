@@ -102,14 +102,14 @@ public class TileStabilizer extends TileEP
                     
                     for (ChunkCoordinates c : blocks)
                     {
-                        //worldObj.setBlock(c.posX, c.posY, c.posZ, BlockStabilizer.instance, 0, 2);
-                        
                         TileEntity tile = worldObj.getTileEntity(c.posX, c.posY, c.posZ);
 
                         if (tile instanceof TileStabilizer)
                         {
                             TileStabilizer t = (TileStabilizer) tile;
                             t.mainBlock = topLeft;
+                            
+                            EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(t), t);
                         }
                     }
 

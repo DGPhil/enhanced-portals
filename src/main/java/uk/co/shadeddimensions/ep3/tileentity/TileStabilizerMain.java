@@ -158,7 +158,7 @@ public class TileStabilizerMain extends TileEP implements IInventory
 			{
 				TileStabilizer t = (TileStabilizer) tile;
 				t.mainBlock = null;
-				EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
+				EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(t), t);
 			}
 		}
 	}
@@ -379,7 +379,6 @@ public class TileStabilizerMain extends TileEP implements IInventory
 		rows = rows2;
 		blockList = blocks;
 		energyStorage = new EnergyStorage(rows * getEnergyStoragePerRow());
-		EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
 	}
 
 	void setInstability(int newInstability)
