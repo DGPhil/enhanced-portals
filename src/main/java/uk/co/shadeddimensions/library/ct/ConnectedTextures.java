@@ -102,8 +102,8 @@ public class ConnectedTextures
         }
         else if (side == 2)
         {
-            connectingBlock[0] = canConnectTo(blockAccess, x + 1, y, z);
-            connectingBlock[1] = canConnectTo(blockAccess, x - 1, y, z);
+            connectingBlock[1] = canConnectTo(blockAccess, x + 1, y, z);
+            connectingBlock[0] = canConnectTo(blockAccess, x - 1, y, z);
             connectingBlock[2] = canConnectTo(blockAccess, x, y - 1, z);
             connectingBlock[3] = canConnectTo(blockAccess, x, y + 1, z);
         }
@@ -123,8 +123,8 @@ public class ConnectedTextures
         }
         else
         {
-            connectingBlock[0] = canConnectTo(blockAccess, x, y, z + 1);
-            connectingBlock[1] = canConnectTo(blockAccess, x, y, z - 1);
+            connectingBlock[1] = canConnectTo(blockAccess, x, y, z + 1);
+            connectingBlock[0] = canConnectTo(blockAccess, x, y, z - 1);
             connectingBlock[2] = canConnectTo(blockAccess, x, y - 1, z);
             connectingBlock[3] = canConnectTo(blockAccess, x, y + 1, z);
         }

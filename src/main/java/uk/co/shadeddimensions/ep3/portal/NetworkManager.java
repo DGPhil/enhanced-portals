@@ -1,22 +1,26 @@
 package uk.co.shadeddimensions.ep3.portal;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+
+import org.apache.commons.io.FileUtils;
+
 import uk.co.shadeddimensions.ep3.EnhancedPortals;
-import uk.co.shadeddimensions.ep3.lib.Reference;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
-import uk.co.shadeddimensions.ep3.util.GeneralUtils;
 import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class NetworkManager
@@ -37,7 +41,7 @@ public class NetworkManager
      ***/
     HashMap<String, ArrayList<String>> networkedPortals;
 
-    File dataFile;
+    File portalFile, networkFile;
     MinecraftServer server;
 
     public NetworkManager(FMLServerStartingEvent event)
@@ -47,7 +51,8 @@ public class NetworkManager
         portalNetworks = new HashMap<String, String>();
         networkedPortals = new HashMap<String, ArrayList<String>>();
         server = event.getServer();
-        dataFile = new File(EnhancedPortals.proxy.getWorldDir(), Reference.NAME + ".dat");
+        portalFile = new File(EnhancedPortals.proxy.getWorldDir(), "EP3_PortalLocations.dat");
+        networkFile = new File(EnhancedPortals.proxy.getWorldDir(), "EP3_PortalNetworks.dat");
 
         try
         {
@@ -55,10 +60,11 @@ public class NetworkManager
         }
         catch (Exception e)
         {
+            EnhancedPortals.logger.catching(e);
             e.printStackTrace();
         }
     }
-    
+
     /***
      * Creates a new network if one does not already exist
      */
@@ -213,53 +219,60 @@ public class NetworkManager
 
     public void loadAllData() throws Exception
     {
-        if (makeFile())
+        if (!makeFiles())
         {
             return;
         }
 
-        NBTTagCompound baseTag = GeneralUtils.NBTJsonRead(dataFile);
+        Type type = new TypeToken<HashMap<String, WorldCoordinates>>(){}.getType();
+        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+        String portalData = FileUtils.readFileToString(portalFile), networkData = FileUtils.readFileToString(networkFile);
 
-        if (baseTag == null)
+        portalCoordinates = gson.fromJson(portalData, type);
+        portalNetworks = gson.fromJson(networkData, portalNetworks.getClass());
+
+
+        if (!portalCoordinates.isEmpty())
         {
-            return;
-        }
-
-        NBTTagList portalLocations = baseTag.getTagList("PortalLocations", 9);
-        NBTTagList portalNetworks = baseTag.getTagList("PortalNetworks", 9);
-
-        for (int i = 0; i < portalLocations.tagCount(); i++)
-        {
-            NBTTagCompound t = (NBTTagCompound) portalLocations.getCompoundTagAt(i);
-            addPortal(new GlyphIdentifier(t), new WorldCoordinates(t));
-        }
-
-        for (int i = 0; i < portalNetworks.tagCount(); i++)
-        {
-            NBTTagCompound t = (NBTTagCompound) portalNetworks.getCompoundTagAt(i);
-            NBTTagList l = t.getTagList("Portals", 10);
-
-            GlyphIdentifier identifier = new GlyphIdentifier(t);
-
-            for (int j = 0; j < l.tagCount(); j++)
+            for (Entry<String, WorldCoordinates> entry : portalCoordinates.entrySet())
             {
-                NBTTagCompound tag = (NBTTagCompound) l.getCompoundTagAt(j);
-                addPortalToNetwork(new GlyphIdentifier(tag), identifier);
+                portalCoordinatesReverse.put(entry.getValue(), entry.getKey());
             }
         }
-        
-        EnhancedPortals.logger.warn("!!!!!!!!!!!!!!!!!!!!!!! Portal Locations: " + portalCoordinates.size());
+
+        if (!portalNetworks.isEmpty())
+        {
+            for (Entry<String, String> entry : portalNetworks.entrySet())
+            {
+                if (networkedPortals.containsKey(entry.getValue()))
+                {
+                    networkedPortals.get(entry.getValue()).add(entry.getKey());
+                }
+                else
+                {
+                    ArrayList<String> list = new ArrayList<String>();
+                    list.add(entry.getKey());
+                    networkedPortals.put(entry.getValue(), list);
+                }
+            }
+        }
     }
 
-    private boolean makeFile()
+    private boolean makeFiles()
     {
         try
         {
-            if (!dataFile.exists())
+            if (!portalFile.exists())
             {
-                dataFile.createNewFile();
-                return true;
+                portalFile.createNewFile();
             }
+
+            if (!networkFile.exists())
+            {
+                networkFile.createNewFile();
+            }
+
+            return true;
         }
         catch (IOException e)
         {
@@ -272,101 +285,77 @@ public class NetworkManager
     /***
      * Removes a portal
      */
-    public void removePortal(GlyphIdentifier g)
-    {
-        removePortal(g, getPortalLocation(g));
-    }
+     public void removePortal(GlyphIdentifier g)
+     {
+         removePortal(g, getPortalLocation(g));
+     }
 
-    /***
-     * Removes a portal
-     */
-    public void removePortal(GlyphIdentifier g, WorldCoordinates w)
-    {
-        if (g == null || w == null)
-        {
-            return;
-        }
+     /***
+      * Removes a portal
+      */
+     public void removePortal(GlyphIdentifier g, WorldCoordinates w)
+     {
+         if (g == null || w == null)
+         {
+             return;
+         }
 
-        GlyphIdentifier n = getPortalNetwork(g);
+         GlyphIdentifier n = getPortalNetwork(g);
 
-        if (n != null)
-        {
-            removePortalFromNetwork(g, n);
-        }
+         if (n != null)
+         {
+             removePortalFromNetwork(g, n);
+         }
 
-        portalCoordinates.remove(g.getGlyphString());
-        portalCoordinatesReverse.remove(w);
-    }
+         portalCoordinates.remove(g.getGlyphString());
+         portalCoordinatesReverse.remove(w);
+     }
 
-    /***
-     * Removes a portal
-     */
-    public void removePortal(WorldCoordinates w)
-    {
-        removePortal(getPortalIdentifier(w), w);
-    }
+     /***
+      * Removes a portal
+      */
+     public void removePortal(WorldCoordinates w)
+     {
+         removePortal(getPortalIdentifier(w), w);
+     }
 
-    /***
-     * Removes a portal from a network
-     */
-    public void removePortalFromNetwork(GlyphIdentifier portal, GlyphIdentifier network)
-    {
-        if (portal == null || network == null)
-        {
-            return;
-        }
+     /***
+      * Removes a portal from a network
+      */
+     public void removePortalFromNetwork(GlyphIdentifier portal, GlyphIdentifier network)
+     {
+         if (portal == null || network == null)
+         {
+             return;
+         }
 
-        getNetwork(network).remove(portal.getGlyphString());
-        portalNetworks.remove(portal.getGlyphString());
-    }
+         getNetwork(network).remove(portal.getGlyphString());
+         portalNetworks.remove(portal.getGlyphString());
+     }
 
-    public void saveAllData()
-    {
-        makeFile();
+     public void saveAllData()
+     {
+         makeFiles();
 
-        NBTTagCompound baseTag = new NBTTagCompound();
-        NBTTagList portalLocations = new NBTTagList();
-        NBTTagList portalNetworks = new NBTTagList();
+         try
+         {
+             Gson gson = new GsonBuilder().create();
+             FileWriter portalWriter = new FileWriter(portalFile), networkWriter = new FileWriter(networkFile);
 
-        for (Entry<String, WorldCoordinates> entry : portalCoordinates.entrySet())
-        {
-            NBTTagCompound t = new NBTTagCompound();
-            t.setString("GlyphIdentifier", entry.getKey());
-            entry.getValue().writeToNBT(t);
+             gson.toJson(portalCoordinates, portalWriter);
+             gson.toJson(portalNetworks, networkWriter);
 
-            portalLocations.appendTag(t);
-        }
+             portalWriter.close();
+             networkWriter.close();
+         }
+         catch (Exception e)
+         {
+             EnhancedPortals.logger.catching(e);
+         }
+     }
 
-        for (Entry<String, ArrayList<String>> entry : networkedPortals.entrySet())
-        {
-            if (entry.getValue().isEmpty())
-            {
-                continue;
-            }
-
-            NBTTagCompound t = new NBTTagCompound();
-            NBTTagList list = new NBTTagList();
-
-            t.setString("GlyphIdentifier", entry.getKey());
-
-            for (String i : entry.getValue())
-            {
-                NBTTagCompound c = new NBTTagCompound();
-                c.setString("GlyphIdentifier", i);
-                list.appendTag(c);
-            }
-
-            t.setTag("Portals", list);
-            portalNetworks.appendTag(t);
-        }
-
-        baseTag.setTag("PortalLocations", portalLocations);
-        baseTag.setTag("PortalNetworks", portalNetworks);
-        GeneralUtils.NBTJsonSave(baseTag, dataFile);
-    }
-
-    public boolean portalIdentifierExists(GlyphIdentifier id)
-    {
-        return portalCoordinates.containsKey(id.getGlyphString());
-    }
+     public boolean portalIdentifierExists(GlyphIdentifier id)
+     {
+         return portalCoordinates.containsKey(id.getGlyphString());
+     }
 }
