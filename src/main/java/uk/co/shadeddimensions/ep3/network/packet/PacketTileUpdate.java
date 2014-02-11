@@ -1,66 +1,60 @@
 package uk.co.shadeddimensions.ep3.network.packet;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
 import net.minecraft.tileentity.TileEntity;
 import uk.co.shadeddimensions.ep3.tileentity.TileEP;
-import cpw.mods.fml.common.network.Player;
 
-public class PacketTileUpdate extends PacketEnhancedPortals
+public class PacketTileUpdate extends PacketEP
 {
-    DataInputStream s;
+    ByteBuf buff;
+    TileEP tile;
     int x, y, z;
-    TileEP t;
-
+    
     public PacketTileUpdate()
     {
-
+        
     }
-
+    
     public PacketTileUpdate(TileEP tile)
     {
-        t = tile;
-        isChunkDataPacket = true;
+        this.tile = tile;
+    }
+    
+    @Override
+    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    {
+        buffer.writeInt(tile.xCoord);
+        buffer.writeInt(tile.yCoord);
+        buffer.writeInt(tile.zCoord);
+        
+        tile.packetFill(buffer);
     }
 
     @Override
-    public void clientPacket(INetworkManager manager, PacketEnhancedPortals packet, Player player)
+    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
     {
-        TileEntity t = ((EntityPlayer) player).worldObj.getBlockTileEntity(x, y, z);
+        x = buffer.readInt();
+        y = buffer.readInt();
+        z = buffer.readInt();
+        buff = buffer;
+    }
 
-        if (t != null && t instanceof TileEP)
+    @Override
+    public void handleClientSide(EntityPlayer player)
+    {
+        TileEntity tile = player.worldObj.getTileEntity(x, y, z);
+        
+        if (tile != null && tile instanceof TileEP)
         {
-            try
-            {
-                ((TileEP) t).packetUse(s);
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+            ((TileEP) tile).packetUse(buff);
         }
     }
 
     @Override
-    public void readPacketData(DataInputStream stream) throws IOException
+    public void handleServerSide(EntityPlayer player)
     {
-        x = stream.readInt();
-        y = stream.readInt();
-        z = stream.readInt();
-        s = stream;
-    }
-
-    @Override
-    public void writePacketData(DataOutputStream stream) throws IOException
-    {
-        stream.writeInt(t.xCoord);
-        stream.writeInt(t.yCoord);
-        stream.writeInt(t.zCoord);
-
-        t.packetFill(stream);
+        // We're never going to update the server with a packet like this.
     }
 }

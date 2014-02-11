@@ -11,6 +11,7 @@ import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.Configuration;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockCrafting;
 import uk.co.shadeddimensions.ep3.block.BlockDecoration;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
@@ -32,6 +33,7 @@ import uk.co.shadeddimensions.ep3.item.block.ItemDecoration;
 import uk.co.shadeddimensions.ep3.item.block.ItemFrame;
 import uk.co.shadeddimensions.ep3.item.block.ItemStabilizer;
 import uk.co.shadeddimensions.ep3.lib.Reference;
+import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.portal.NetworkManager;
 import uk.co.shadeddimensions.ep3.tileentity.TileStabilizer;
 import uk.co.shadeddimensions.ep3.tileentity.TileStabilizerMain;
@@ -220,5 +222,10 @@ public class CommonProxy
             ThermalExpansion.registerRecipes();
             ThermalExpansion.registerMachineRecipes();
         }
+    }
+    
+    public void registerPackets()
+    {
+        EnhancedPortals.packetPipeline.registerPacket(PacketTileUpdate.class);
     }
 }

@@ -1,8 +1,7 @@
 package uk.co.shadeddimensions.ep3.tileentity;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
@@ -243,19 +242,16 @@ public class TileStabilizer extends TileEP
     }
 
     @Override
-    public void packetUse(DataInputStream stream) throws IOException
+    public void packetUse(ByteBuf buffer)
     {
-        if (stream.available() == 1)
-        {
-            isFormed = stream.readBoolean();
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-        }
+        isFormed = buffer.readBoolean();
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     @Override
-    public void packetFill(DataOutputStream stream) throws IOException
+    public void packetFill(ByteBuf buffer)
     {
-        stream.writeBoolean(mainBlock != null);
+        buffer.writeBoolean(mainBlock != null);
     }
 
     @Override

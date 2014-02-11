@@ -8,6 +8,7 @@ import uk.co.shadeddimensions.ep3.lib.Reference;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
+import uk.co.shadeddimensions.ep3.network.PacketPipeline;
 import uk.co.shadeddimensions.ep3.portal.NetworkManager;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
@@ -15,6 +16,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -24,6 +26,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @Mod(name = Reference.NAME, modid = Reference.ID, dependencies = Reference.DEPENDENCIES, acceptedMinecraftVersions = Reference.MC_VERSION)
 public class EnhancedPortals
 {
+    public static final PacketPipeline packetPipeline = new PacketPipeline();
+    
     @Instance(Reference.ID)
     public static EnhancedPortals instance;
 
@@ -33,6 +37,8 @@ public class EnhancedPortals
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+        packetPipeline.initalise();
+        
         //CommonProxy.logger.setParent(FMLLog.getLogger());
         proxy.registerBlocks();
         proxy.registerTileEntities();
@@ -42,6 +48,12 @@ public class EnhancedPortals
 
         MinecraftForge.EVENT_BUS.register(this);
         //NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
+    }
+    
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event)
+    {
+        packetPipeline.postInitialise();
     }
     
     @EventHandler

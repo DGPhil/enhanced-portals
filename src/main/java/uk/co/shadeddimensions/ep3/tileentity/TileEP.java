@@ -1,5 +1,7 @@
 package uk.co.shadeddimensions.ep3.tileentity;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -28,23 +30,13 @@ public class TileEP extends TileEntity
     {
         return new WorldCoordinates(getChunkCoordinates(), worldObj.provider.dimensionId);
     }
-
-    /**
-     * Should only be used for essential data to display the block in-world. If it only needs to be displayed in the GUI, use packetGuiFill/packetGuiUse.
-     * @param stream
-     * @throws IOException
-     */
-    public void packetFill(DataOutputStream stream) throws IOException
+    
+    public void packetFill(ByteBuf buffer)
     {
 
     }
-
-    /**
-     * Should only be used for essential data to display the block in-world. If it only needs to be displayed in the GUI, use packetGuiFill/packetGuiUse.
-     * @param stream
-     * @throws IOException
-     */
-    public void packetUse(DataInputStream stream) throws IOException
+    
+    public void packetUse(ByteBuf buffer)
     {
 
     }
