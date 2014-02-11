@@ -1012,7 +1012,7 @@ public class TileController extends TileFrame //implements IPeripheral
             {
                 if (CommonProxy.portalsDestroyBlocks)
                 {
-                    //worldObj.destroyBlock(c.posX, c.posY, c.posZ, true); // TODO
+                    worldObj.setBlockToAir(c.posX, c.posY, c.posZ);
                 }
                 else
                 {

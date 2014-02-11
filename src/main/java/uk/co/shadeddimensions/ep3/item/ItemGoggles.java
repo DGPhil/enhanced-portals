@@ -30,11 +30,6 @@ public class ItemGoggles extends ItemArmor
     }
 
     @Override
-    public boolean isBookEnchantable(ItemStack itemstack1, ItemStack itemstack2)
-    {
-        return false;
-    }
-    @Override
     public int getColor(ItemStack par1ItemStack)
     {
         NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();

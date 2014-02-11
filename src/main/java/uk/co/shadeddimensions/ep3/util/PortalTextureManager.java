@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -100,8 +101,9 @@ public class PortalTextureManager
 
         for (int i = 0; i < inventory.length; i++)
         {
-            //NBTTagCompound T = (NBTTagCompound) l.tagAt(i); // TODO
-            //inventory[i] = ItemStack.loadItemStackFromNBT(T);
+            NBTTagCompound T = (NBTTagCompound) l.getCompoundTagAt(i);
+            inventory[i] = ItemStack.loadItemStackFromNBT(T);
+            EnhancedPortals.logger.warn("Loaded: " + inventory[i]);
         }
     }
 
@@ -157,6 +159,7 @@ public class PortalTextureManager
         for (int i = 0; i < inventory.length; i++)
         {
             inventory[i] = ByteBufUtils.readItemStack(buffer);
+            EnhancedPortals.logger.warn("Read: " + inventory[i]);
         }
     }
 
@@ -177,6 +180,7 @@ public class PortalTextureManager
 
             if (element != null)
             {
+                EnhancedPortals.logger.warn("Saving: " + element);
                 element.writeToNBT(T);
             }
 
@@ -198,6 +202,7 @@ public class PortalTextureManager
 
         for (ItemStack element : inventory)
         {
+            EnhancedPortals.logger.warn("Writing: " + element);
             ByteBufUtils.writeItemStack(buffer, element);
         }
     }

@@ -14,10 +14,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
@@ -202,6 +202,16 @@ public class BlockFrame extends BlockContainer implements IDismantleable
         }
 
         connectedTextures.registerIcons(register);
+        
+        ClientProxy.customFrameTextures.clear();
+        int counter = 0;
+
+        while (ClientProxy.resourceExists("textures/blocks/customFrame/" + String.format("%02d", counter) + ".png"))
+        {
+            EnhancedPortals.logger.info("Registered custom frame Icon: " + String.format("%02d", counter) + ".png");
+            ClientProxy.customFrameTextures.add(register.registerIcon("enhancedportals:customFrame/" + String.format("%02d", counter)));
+            counter++;
+        }
     }
     
     @Override

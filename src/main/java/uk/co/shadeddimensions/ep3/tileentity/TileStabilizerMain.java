@@ -654,7 +654,7 @@ public class TileStabilizerMain extends TileEP implements IInventory
 					}
 					catch (PortalException e)
 					{
-						CommonProxy.logger.warn(e.getMessage());
+					    EnhancedPortals.logger.warn(e.getMessage());
 					}
 				}
 
