@@ -11,11 +11,15 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.S07PacketRespawn;
+import net.minecraft.network.play.server.S1DPacketEntityEffect;
+import net.minecraft.network.play.server.S1FPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
@@ -290,8 +294,8 @@ public class EntityManager
 
             player.closeScreen();
             player.dimension = enteringWorld.provider.dimensionId;
-            //player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte) player.worldObj.difficultySetting, enteringWorld.getWorldInfo().getTerrainType(), enteringWorld.getHeight(), player.theItemInWorldManager.getGameType()));  // TODO
-
+            player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.difficultySetting, enteringWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
+            
             exitingWorld.removePlayerEntityDangerously(player);
             player.isDead = false;
             player.setLocationAndAngles(x, y, z, yaw, player.rotationPitch);
@@ -310,11 +314,11 @@ public class EntityManager
             Iterator potion = player.getActivePotionEffects().iterator();
             while (potion.hasNext())
             {
-               // player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, (PotionEffect) potion.next())); // TODO
+                player.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(player.getEntityId(), (PotionEffect) potion.next()));
             }
 
-            // player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel))  // TODO
-            //GameRegistry.onPlayerChangedDimension(player);  // TODO
+            player.playerNetServerHandler.sendPacket(new S1FPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
+            //GameRegistry.onPlayerChangedDimension(player);  // TODO Required?
 
             setEntityPortalCooldown(player);
             return player;
@@ -332,7 +336,8 @@ public class EntityManager
                 exitingWorld.getChunkFromChunkCoords(chunkX, chunkZ).removeEntity(entity);
             }
 
-            exitingWorld.loadedEntityList.remove(entity);
+            exitingWorld.removeEntity(entity);
+            //exitingWorld.loadedEntityList.remove(entity);
             //exitingWorld.onEntityRemoved(entity); // TODO
 
             Entity newEntity = EntityList.createEntityFromNBT(tag, enteringWorld);
@@ -389,7 +394,8 @@ public class EntityManager
                 world.getChunkFromChunkCoords(chunkX, chunkZ).removeEntity(entity);
             }
 
-            world.loadedEntityList.remove(entity);
+            world.removeEntity(entity);
+            //world.loadedEntityList.remove(entity);
             //world.onEntityRemoved(entity); // TODO
 
             Entity newEntity = EntityList.createEntityFromNBT(tag, world);

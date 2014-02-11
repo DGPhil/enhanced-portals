@@ -23,6 +23,8 @@ import uk.co.shadeddimensions.ep3.item.ItemLocationCard;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
+import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
+import uk.co.shadeddimensions.ep3.network.packet.PacketRerender;
 import uk.co.shadeddimensions.ep3.network.packet.PacketTileGui;
 import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.portal.EntityManager;
@@ -277,7 +279,8 @@ public class TileController extends TileFrame //implements IPeripheral
 
             if (dbs == null)
             {
-                throw new PortalException("stabilizerNotFound");
+                setRequiresLocationCard();
+                throw new PortalException("stabilizerNotFoundSend");
             }
             
             dbs.setupNewConnection(getIdentifierUnique(), CommonProxy.networkManager.getDestination(getIdentifierUnique(),  getIdentifierNetwork()), null);
@@ -306,6 +309,7 @@ public class TileController extends TileFrame //implements IPeripheral
 
             if (dbs == null)
             {
+                setRequiresLocationCard();
                 throw new PortalException("stabilizerNotFound");
             }
 
@@ -865,7 +869,7 @@ public class TileController extends TileFrame //implements IPeripheral
             {
                 NBTTagCompound errorTag = new NBTTagCompound();
                 errorTag.setInteger("controller", 0);
-                //PacketDispatcher.sendPacketToPlayer(new PacketGuiData(errorTag).getPacket(), (Player) player); // TODO
+                EnhancedPortals.packetPipeline.sendTo(new PacketGuiData(errorTag), (EntityPlayerMP) player);
             }
         }
         else if (tag.hasKey("nid"))
@@ -1107,7 +1111,7 @@ public class TileController extends TileFrame //implements IPeripheral
             {
                 if (!chunks.contains(new ChunkCoordIntPair(c.posX >> 4, c.posZ >> 4)))
                 {
-                    //PacketHandlerServer.sendPacketToAllAround(this, new PacketRerender(c.posX, c.posY, c.posZ).getPacket()); // TODO
+                    EnhancedPortals.packetPipeline.sendToAllAround(new PacketRerender(c.posX, c.posY, c.posZ), this);
                     chunks.add(new ChunkCoordIntPair(c.posX >> 4, c.posZ >> 4));
                 }
             }
@@ -1328,6 +1332,12 @@ public class TileController extends TileFrame //implements IPeripheral
         }
     }
 
+    public void setRequiresLocationCard()
+    {
+        portalState = ControlState.REQUIRES_LOCATION;
+        EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
+    }
+
     /*@Override
     public String getType()
     {
@@ -1478,7 +1488,7 @@ public class TileController extends TileFrame //implements IPeripheral
             
             try
             {
-                int hex = Integer.parseInt(arguments.length == 1 ? arguments[0].toString() : "FFFFFF", 16); // TODO default particle colour
+                int hex = Integer.parseInt(arguments.length == 1 ? arguments[0].toString() : "FFFFFF", 16);
                 setParticleColour(hex);
             }
             catch (NumberFormatException ex)

@@ -475,6 +475,11 @@ public class TileStabilizerMain extends TileEP implements IInventory
 		{
 			throw new PortalException("receivingPortalNotInitialized");
 		}
+		else if (cB.getDimensionalBridgeStabilizer() == null)
+		{
+		    cB.setRequiresLocationCard();
+		    throw new PortalException("stabilizerNotFoundReceive");
+		}
 		else if (!cA.getDimensionalBridgeStabilizer().getWorldCoordinates().equals(cB.getDimensionalBridgeStabilizer().getWorldCoordinates())) // And make sure they're on the same DBS. We're getting the tile instead of the worldcoordinates to make sure the DBS hasn't expanded
 		{
 			throw new PortalException("notOnSameStabilizer");
