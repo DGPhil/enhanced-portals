@@ -11,7 +11,9 @@ import uk.co.shadeddimensions.library.gui.IGuiBase;
 
 public class ElementButton extends ElementBase
 {
-    protected String ID, displayText, hoverString;
+    protected String ID;
+    public String displayText;
+    protected String hoverString;
 
     public ElementButton(IGuiBase parent, int x, int y, int w, String id, String text)
     {
@@ -89,7 +91,7 @@ public class ElementButton extends ElementBase
         if (!isDisabled() && isVisible())
         {
             //Minecraft.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F); // TODO
-            gui.handleElementButtonClick(ID, mouseButton);
+            gui.handleElementButtonClick(this, mouseButton);
             return true;
         }
 

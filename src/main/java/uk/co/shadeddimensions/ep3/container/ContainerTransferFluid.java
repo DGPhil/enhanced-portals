@@ -9,12 +9,12 @@ public class ContainerTransferFluid extends ContainerBase
 {
     private int lastFluidID = -1, lastFluidAmt = -1;
     byte lastState = -1;
-    
+
     public ContainerTransferFluid(TileTransferFluid fluid)
     {
         object = fluid;
     }
-    
+
     @Override
     public void detectAndSendChanges()
     {
@@ -22,7 +22,7 @@ public class ContainerTransferFluid extends ContainerBase
         TileTransferFluid fluid = (TileTransferFluid) object;
         int fluidID = fluid.tank.getFluid() == null ? -1 : fluid.tank.getFluid().fluidID, fluidAmt = fluid.tank.getFluidAmount();
         byte state = (byte) (fluid.isSending ? 1 : 0);
-        
+
         for (int i = 0; i < crafters.size(); i++)
         {
             ICrafting icrafting = (ICrafting) crafters.get(i);
@@ -50,7 +50,7 @@ public class ContainerTransferFluid extends ContainerBase
     public void updateProgressBar(int par1, int par2)
     {
         TileTransferFluid fluid = (TileTransferFluid) object;
-        
+
         if (par1 == 1)
         {
             if (par2 == -1)

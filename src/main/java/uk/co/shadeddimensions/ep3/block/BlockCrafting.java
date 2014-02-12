@@ -1,7 +1,5 @@
 package uk.co.shadeddimensions.ep3.block;
 
-import javax.swing.Icon;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,7 +13,7 @@ public class BlockCrafting extends Block
     public static final int UNFILLED_STABILIZER = 0;
 
     IIcon dbsEmpty;
-    
+
     public BlockCrafting()
     {
         super(Material.rock);

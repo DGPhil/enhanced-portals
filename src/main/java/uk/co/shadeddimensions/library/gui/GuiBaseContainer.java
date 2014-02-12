@@ -18,6 +18,7 @@ import org.lwjgl.opengl.GL11;
 
 import uk.co.shadeddimensions.library.container.ContainerBase;
 import uk.co.shadeddimensions.library.gui.element.ElementBase;
+import uk.co.shadeddimensions.library.gui.element.ElementButton;
 import uk.co.shadeddimensions.library.gui.element.ElementFakeItemSlot;
 import uk.co.shadeddimensions.library.gui.slot.SlotFalseCopy;
 import uk.co.shadeddimensions.library.gui.tab.TabBase;
@@ -33,7 +34,7 @@ import codechicken.nei.api.TaggedInventoryArea;
  * @author Alz454
  * 
  */
-public abstract class GuiBaseContainer extends GuiContainer implements INEIGuiHandler, IGuiBase
+public class GuiBaseContainer extends GuiContainer implements INEIGuiHandler, IGuiBase
 {
     protected boolean drawInventory = true;
 
@@ -361,7 +362,7 @@ public abstract class GuiBaseContainer extends GuiContainer implements INEIGuiHa
     }
 
     @Override
-    public void handleElementButtonClick(String buttonName, int mouseButton)
+    public void handleElementButtonClick(ElementButton button, int mouseButton)
     {
 
     }
@@ -475,5 +476,11 @@ public abstract class GuiBaseContainer extends GuiContainer implements INEIGuiHa
     public void setZLevel(float zlevel)
     {
         zLevel = zlevel;
+    }
+
+    @Override
+    public void handleElementButtonClick(String iD, int mouseButton)
+    {
+        
     }
 }

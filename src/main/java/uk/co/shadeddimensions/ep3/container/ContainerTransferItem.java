@@ -1,6 +1,5 @@
 package uk.co.shadeddimensions.ep3.container;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
@@ -14,12 +13,12 @@ public class ContainerTransferItem extends ContainerBase
 {
     ItemStack lastItem = new ItemStack(BlockPortal.instance, 0);
     byte lastState = -1;
-    
+
     public ContainerTransferItem(TileTransferItem item)
     {
         object = item;
     }
-    
+
     @Override
     public void detectAndSendChanges()
     {
@@ -27,7 +26,7 @@ public class ContainerTransferItem extends ContainerBase
         TileTransferItem item = (TileTransferItem) object;
         byte state = (byte) (item.isSending ? 1 : 0);
         ItemStack itemStack = item.getStackInSlot(0);
-        
+
         for (int i = 0; i < crafters.size(); i++)
         {
             ICrafting icrafting = (ICrafting) crafters.get(i);
@@ -38,7 +37,7 @@ public class ContainerTransferItem extends ContainerBase
             }
             if (itemStack != lastItem)
             {
-                 EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(item), (EntityPlayerMP) icrafting);
+                EnhancedPortals.packetPipeline.sendTo(new PacketTileGui(item), (EntityPlayerMP) icrafting);
             }
         }
 
@@ -50,7 +49,7 @@ public class ContainerTransferItem extends ContainerBase
     public void updateProgressBar(int par1, int par2)
     {
         TileTransferItem item = (TileTransferItem) object;
-        
+
         if (par1 == 1)
         {
             item.isSending = par2 == 1;

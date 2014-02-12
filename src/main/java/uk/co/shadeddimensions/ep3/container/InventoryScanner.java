@@ -19,6 +19,12 @@ public class InventoryScanner implements IInventory
     }
 
     @Override
+    public void closeInventory()
+    {
+
+    }
+
+    @Override
     public ItemStack decrStackSize(int i, int j)
     {
         ItemStack stack = getStackInSlot(i);
@@ -41,6 +47,12 @@ public class InventoryScanner implements IInventory
         }
 
         return stack;
+    }
+
+    @Override
+    public String getInventoryName()
+    {
+        return "item.ep3.scanner.name";
     }
 
     @Override
@@ -68,6 +80,12 @@ public class InventoryScanner implements IInventory
     }
 
     @Override
+    public boolean hasCustomInventoryName()
+    {
+        return false;
+    }
+
+    @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack)
     {
         return itemstack == null || i == 0 && itemstack.isItemEqual(new ItemStack(ItemEntityCard.instance));
@@ -92,15 +110,27 @@ public class InventoryScanner implements IInventory
 
             for (int i = 0; i < tagList.tagCount(); i++)
             {
-                //NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i); // TODO
-                //byte slot = t.getByte("Slot");
+                // NBTTagCompound t = (NBTTagCompound) tagList.tagAt(i); // TODO
+                // byte slot = t.getByte("Slot");
 
-                //if (slot >= 0 && slot < inventory.length)
-                //{
-                //    inventory[slot] = ItemStack.loadItemStackFromNBT(t);
-                //}
+                // if (slot >= 0 && slot < inventory.length)
+                // {
+                // inventory[slot] = ItemStack.loadItemStackFromNBT(t);
+                // }
             }
         }
+    }
+
+    @Override
+    public void markDirty()
+    {
+
+    }
+
+    @Override
+    public void openInventory()
+    {
+
     }
 
     public void saveContentsToNBT(NBTTagCompound tag)
@@ -127,35 +157,5 @@ public class InventoryScanner implements IInventory
     public void setInventorySlotContents(int i, ItemStack itemstack)
     {
         inventory[i] = itemstack;
-    }
-
-    @Override
-    public String getInventoryName()
-    {
-        return "item.ep3.scanner.name";
-    }
-
-    @Override
-    public boolean hasCustomInventoryName()
-    {
-        return false;
-    }
-
-    @Override
-    public void markDirty()
-    {
-        
-    }
-
-    @Override
-    public void openInventory()
-    {
-        
-    }
-
-    @Override
-    public void closeInventory()
-    {
-        
     }
 }

@@ -2,14 +2,12 @@ package uk.co.shadeddimensions.ep3.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.lib.Reference;
@@ -46,7 +44,7 @@ public class ItemEntityCard extends Item
                     break;
                 }
 
-                NBTTagCompound t = (NBTTagCompound) tagList.getCompoundTagAt(i);
+                NBTTagCompound t = tagList.getCompoundTagAt(i);
                 String s = t.getString("Name");
 
                 if (s.contains("item.item."))

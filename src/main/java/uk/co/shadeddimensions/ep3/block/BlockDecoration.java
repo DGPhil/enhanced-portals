@@ -18,7 +18,7 @@ import uk.co.shadeddimensions.library.ct.ConnectedTextures;
 public class BlockDecoration extends Block
 {
     public static BlockDecoration instance;
-    
+
     public static final int BLOCK_TYPES = 2;
     ConnectedTextures[] connectedTextures;
 
@@ -57,7 +57,7 @@ public class BlockDecoration extends Block
     {
         return new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
     }
-    
+
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list)
     {

@@ -20,8 +20,6 @@ import uk.co.shadeddimensions.ep3.tileentity.portal.TileModuleManipulator;
 
 public class ItemPortalModule extends Item implements IPortalModule
 {
-    public static ItemPortalModule instance;
-    
     public static enum PortalModules
     {
         REMOVE_PARTICLES, RAINBOW_PARTICLES, REMOVE_SOUNDS, KEEP_MOMENTUM, INVISIBLE_PORTAL, TINTSHADE_PARTICLES, WALL, FEATHERFALL;
@@ -32,6 +30,8 @@ public class ItemPortalModule extends Item implements IPortalModule
             return ((IPortalModule) s.getItem()).getID(s);
         }
     }
+
+    public static ItemPortalModule instance;
 
     static IIcon baseIcon;
     static IIcon[] overlayIcons = new IIcon[PortalModules.values().length];

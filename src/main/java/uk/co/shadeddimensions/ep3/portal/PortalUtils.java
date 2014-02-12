@@ -68,6 +68,78 @@ public class PortalUtils
         }
     }
 
+    static boolean createNetherPortal(World world, ChunkCoordinates w, int portalDirection)
+    {
+        Queue<ChunkCoordinates> processed = new LinkedList<ChunkCoordinates>();
+        Queue<ChunkCoordinates> toProcess = new LinkedList<ChunkCoordinates>();
+        int chances = 0;
+        toProcess.add(w);
+
+        while (!toProcess.isEmpty())
+        {
+            ChunkCoordinates c = toProcess.remove();
+
+            if (!processed.contains(c))
+            {
+                if (world.isAirBlock(c.posX, c.posY, c.posZ))
+                {
+                    int sides = getNetherSides(world, c, portalDirection);
+
+                    if (sides < 2)
+                    {
+                        if (chances < MAXIMUM_CHANCES)
+                        {
+                            chances++;
+                            sides += 2;
+                        }
+                        else
+                        {
+                            removeFailedPortal(world, processed);
+                            return false;
+                        }
+                    }
+
+                    if (sides >= 2)
+                    {
+                        processed.add(c);
+                        world.setBlock(c.posX, c.posY, c.posZ, Blocks.portal, 0, 2);
+                        addNearbyBlocks(world, c, portalDirection, toProcess);
+                    }
+                }
+                else if (!isNetherPortalPart(world, c.posX, c.posY, c.posZ))
+                {
+                    removeFailedPortal(world, processed);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Creates a nether portal from the specified Fire block.
+     * 
+     * @param world
+     * @param x
+     * @param y
+     * @param z
+     */
+    public static boolean createNetherPortalFrom(World world, int x, int y, int z)
+    {
+        world.setBlockToAir(x, y, z);
+
+        for (int i = 1; i < 4; i++)
+        {
+            if (createNetherPortal(world, new ChunkCoordinates(x, y, z), i))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /***
      * Creates a portal at the specified location.
      */
@@ -127,50 +199,23 @@ public class PortalUtils
      */
     public static boolean createPortalFrom(TileController controller)
     {
-        /*if (controller.worldObj.isRemote || controller.isPortalActive || controller.processing || !controller.isFullyInitialized())
-        {
-            return false;
-        }
-
-        for (ChunkCoordinates w : controller.blockManager.getPortals())
-        {
-            if (!controller.worldObj.isAirBlock(w.posX, w.posY, w.posZ))
-            {
-                if (!CommonProxy.portalsDestroyBlocks)
-                {
-                    return false;
-                }
-
-                int id = controller.worldObj.getBlockId(w.posX, w.posY, w.posZ), metadata = controller.worldObj.getBlockMetadata(w.posX, w.posY, w.posZ);
-
-                if (id == Block.bedrock.blockID) // Stop users from being able to break out of the world with portals
-                {
-                    return false;
-                }
-                else
-                {
-                    controller.worldObj.playAuxSFX(2001, w.posX, w.posY, w.posZ, id + (metadata << 12));
-                    Block.blocksList[id].dropBlockAsItem(controller.worldObj, w.posX, w.posY, w.posZ, metadata, 0);
-                    controller.worldObj.setBlockToAir(w.posX, w.posY, w.posZ);
-                }
-            }
-        }
-
-        for (ChunkCoordinates w : controller.blockManager.getPortals())
-        {
-            controller.worldObj.setBlock(w.posX, w.posY, w.posZ, CommonProxy.blockPortal.blockID, controller.portalType, 2);
-
-            TilePortal portal = (TilePortal) controller.worldObj.getTileEntity(w.posX, w.posY, w.posZ);
-            portal.portalController = controller.getWorldCoordinates();
-        }
-
-        for (ChunkCoordinates w : controller.blockManager.getPortals())
-        {
-            CommonProxy.sendUpdatePacketToAllAround((TilePortal) controller.worldObj.getTileEntity(w.posX, w.posY, w.posZ));
-        }
-
-        //CommonProxy.sendPacketToAllAround(controller, new PacketPortalCreated(controller).getPacket());
-        controller.setPortalActive(true);*/
+        /*
+         * if (controller.worldObj.isRemote || controller.isPortalActive || controller.processing || !controller.isFullyInitialized()) { return false; }
+         * 
+         * for (ChunkCoordinates w : controller.blockManager.getPortals()) { if (!controller.worldObj.isAirBlock(w.posX, w.posY, w.posZ)) { if (!CommonProxy.portalsDestroyBlocks) { return false; }
+         * 
+         * int id = controller.worldObj.getBlockId(w.posX, w.posY, w.posZ), metadata = controller.worldObj.getBlockMetadata(w.posX, w.posY, w.posZ);
+         * 
+         * if (id == Block.bedrock.blockID) // Stop users from being able to break out of the world with portals { return false; } else { controller.worldObj.playAuxSFX(2001, w.posX, w.posY, w.posZ, id + (metadata << 12)); Block.blocksList[id].dropBlockAsItem(controller.worldObj, w.posX, w.posY, w.posZ, metadata, 0); controller.worldObj.setBlockToAir(w.posX, w.posY, w.posZ); } } }
+         * 
+         * for (ChunkCoordinates w : controller.blockManager.getPortals()) { controller.worldObj.setBlock(w.posX, w.posY, w.posZ, CommonProxy.blockPortal.blockID, controller.portalType, 2);
+         * 
+         * TilePortal portal = (TilePortal) controller.worldObj.getTileEntity(w.posX, w.posY, w.posZ); portal.portalController = controller.getWorldCoordinates(); }
+         * 
+         * for (ChunkCoordinates w : controller.blockManager.getPortals()) { CommonProxy.sendUpdatePacketToAllAround((TilePortal) controller.worldObj.getTileEntity(w.posX, w.posY, w.posZ)); }
+         * 
+         * //CommonProxy.sendPacketToAllAround(controller, new PacketPortalCreated(controller).getPacket()); controller.setPortalActive(true);
+         */
         return true;
     }
 
@@ -200,7 +245,7 @@ public class PortalUtils
                         {
                             continue;
                         }
-                        
+
                         if (t instanceof TileNetworkInterface)
                         {
                             if (networkCounter == 1)
@@ -259,7 +304,7 @@ public class PortalUtils
                     }
 
                     portalParts.add(c);
-                    //addNearbyBlocks(controller.worldObj, c, controller.portalType, toProcess);
+                    // addNearbyBlocks(controller.worldObj, c, controller.portalType, toProcess);
                     addNearbyBlocks(controller.getWorldObj(), c, 0, toProcess);
                 }
             }
@@ -318,13 +363,30 @@ public class PortalUtils
 
                 if (!portalBlocks.isEmpty())
                 {
-                    //c.portalType = (byte) i;
+                    // c.portalType = (byte) i;
                     return portalBlocks;
                 }
             }
         }
 
         return new LinkedList<ChunkCoordinates>();
+    }
+
+    static int getNetherSides(World world, ChunkCoordinates w, int portalDirection)
+    {
+        int sides = 0;
+        Queue<ChunkCoordinates> neighbors = new LinkedList<ChunkCoordinates>();
+        addNearbyBlocks(world, w, portalDirection, neighbors);
+
+        for (ChunkCoordinates c : neighbors)
+        {
+            if (isNetherPortalPart(world, c.posX, c.posY, c.posZ))
+            {
+                sides++;
+            }
+        }
+
+        return sides;
     }
 
     /***
@@ -379,6 +441,16 @@ public class PortalUtils
         return ghostedPortals;
     }
 
+    public static boolean isNetherPortalPart(Block block)
+    {
+        return block == Blocks.portal || block == Blocks.obsidian;
+    }
+
+    static boolean isNetherPortalPart(World world, int x, int y, int z)
+    {
+        return isNetherPortalPart(world.getBlock(x, y, z));
+    }
+
     /***
      * Checks to see if the specified block is a portal part.
      */
@@ -409,114 +481,12 @@ public class PortalUtils
      */
     public static void removePortalFrom(TileController controller)
     {
-        /*if (controller.worldObj.isRemote || !controller.isPortalActive || controller.processing || !controller.isFullyInitialized())
-        {
-            return;
-        }
-
-        for (ChunkCoordinates w : controller.blockManager.getPortals())
-        {
-            controller.worldObj.setBlockToAir(w.posX, w.posY, w.posZ);
-        }
-
-        controller.setPortalActive(false);*/
-    }
-
-    /**
-     * Creates a nether portal from the specified Fire block.
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     */
-    public static boolean createNetherPortalFrom(World world, int x, int y, int z)
-    {
-        world.setBlockToAir(x, y, z);
-        
-        for (int i = 1; i < 4; i++)
-        {
-            if (createNetherPortal(world, new ChunkCoordinates(x, y, z), i))
-            {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
-    static boolean isNetherPortalPart(World world, int x, int y, int z)
-    {
-        return isNetherPortalPart(world.getBlock(x, y, z));
-    }
-    
-    public static boolean isNetherPortalPart(Block block)
-    {
-        return block == Blocks.portal || block == Blocks.obsidian;
-    }
-    
-    static int getNetherSides(World world, ChunkCoordinates w, int portalDirection)
-    {
-        int sides = 0;
-        Queue<ChunkCoordinates> neighbors = new LinkedList<ChunkCoordinates>();
-        addNearbyBlocks(world, w, portalDirection, neighbors);
-
-        for (ChunkCoordinates c : neighbors)
-        {
-            if (isNetherPortalPart(world, c.posX, c.posY, c.posZ))
-            {
-                sides++;
-            }
-        }
-
-        return sides;
-    }
-    
-    static boolean createNetherPortal(World world, ChunkCoordinates w, int portalDirection)
-    {
-        Queue<ChunkCoordinates> processed = new LinkedList<ChunkCoordinates>();
-        Queue<ChunkCoordinates> toProcess = new LinkedList<ChunkCoordinates>();
-        int chances = 0;
-        toProcess.add(w);
-
-        while (!toProcess.isEmpty())
-        {
-            ChunkCoordinates c = toProcess.remove();
-
-            if (!processed.contains(c))
-            {
-                if (world.isAirBlock(c.posX, c.posY, c.posZ))
-                {
-                    int sides = getNetherSides(world, c, portalDirection);
-
-                    if (sides < 2)
-                    {
-                        if (chances < MAXIMUM_CHANCES)
-                        {
-                            chances++;
-                            sides += 2;
-                        }
-                        else
-                        {
-                            removeFailedPortal(world, processed);
-                            return false;
-                        }
-                    }
-
-                    if (sides >= 2)
-                    {
-                        processed.add(c);
-                        world.setBlock(c.posX, c.posY, c.posZ, Blocks.portal, 0, 2);
-                        addNearbyBlocks(world, c, portalDirection, toProcess);
-                    }
-                }
-                else if (!isNetherPortalPart(world, c.posX, c.posY, c.posZ))
-                {
-                    removeFailedPortal(world, processed);
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        /*
+         * if (controller.worldObj.isRemote || !controller.isPortalActive || controller.processing || !controller.isFullyInitialized()) { return; }
+         * 
+         * for (ChunkCoordinates w : controller.blockManager.getPortals()) { controller.worldObj.setBlockToAir(w.posX, w.posY, w.posZ); }
+         * 
+         * controller.setPortalActive(false);
+         */
     }
 }

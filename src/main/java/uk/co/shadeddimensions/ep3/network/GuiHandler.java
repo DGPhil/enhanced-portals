@@ -54,21 +54,21 @@ public class GuiHandler implements IGuiHandler
     public static final int TRANSFER_FLUID = 7;
     public static final int TRANSFER_ENERGY = 8;
     public static final int TRANSFER_ITEM = 9;
-    
+
     public static final int TEXTURE_FRAME = 10;
     public static final int TEXTURE_PORTAL = 11;
     public static final int TEXTURE_PARTICLE = 12;
     public static final int TEXTURE_DIALLER = 13;
-    
+
     public static final int DIMENSIONAL_BRIDGE_STABILIZER = 14;
     public static final int SCANNER = 15;
     public static final int GUIDE = 16;
-    
+
     public static void openGui(EntityPlayer player, TileEntity tile, int gui)
     {
         player.openGui(EnhancedPortals.instance, gui, tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord);
     }
-    
+
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {

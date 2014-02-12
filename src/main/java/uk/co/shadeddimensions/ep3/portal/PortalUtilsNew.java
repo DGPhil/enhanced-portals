@@ -70,13 +70,101 @@ public class PortalUtilsNew
         }
     }
 
+    public static ArrayList<ChunkCoordinates> getAllPortalComponents(TileController controller) throws PortalException
+    {
+        ArrayList<ChunkCoordinates> portalComponents = new ArrayList<ChunkCoordinates>();
+        Queue<ChunkCoordinates> toProcess = new LinkedList<ChunkCoordinates>();
+        Queue<ChunkCoordinates> portalBlocks = getGhostedPortalBlocks(controller);
+        toProcess.add(controller.getChunkCoordinates());
+
+        if (portalBlocks.isEmpty())
+        {
+            throw new PortalException("couldNotCreatePortalHere");
+        }
+
+        System.out.println("Parsing portal components with " + portalBlocks.size() + " portal blocks.");
+
+        boolean bio = false, mod = false, dialler = false, network = false;
+
+        while (!toProcess.isEmpty())
+        {
+            ChunkCoordinates c = toProcess.remove();
+
+            if (!portalComponents.contains(c))
+            {
+                TileEntity t = WorldUtils.getTileEntity(controller.getWorldObj(), c);
+
+                if (portalBlocks.contains(c) || t instanceof TilePortalPart)
+                {
+                    if (t instanceof TileNetworkInterface)
+                    {
+                        if (dialler)
+                        {
+                            throw new PortalException("dialAndNetwork");
+                        }
+
+                        network = true;
+                    }
+                    else if (t instanceof TileDiallingDevice)
+                    {
+                        if (network)
+                        {
+                            throw new PortalException("dialAndNetwork");
+                        }
+
+                        dialler = true;
+                    }
+                    else if (t instanceof TileBiometricIdentifier)
+                    {
+                        if (!bio)
+                        {
+                            bio = true;
+                        }
+                        else
+                        {
+                            throw new PortalException("multipleBio");
+                        }
+                    }
+                    else if (t instanceof TileModuleManipulator)
+                    {
+                        if (!mod)
+                        {
+                            mod = true;
+                        }
+                        else
+                        {
+                            throw new PortalException("multipleMod");
+                        }
+                    }
+
+                    portalComponents.add(c);
+                    addNearbyBlocks(controller.getWorldObj(), c, 0, toProcess);
+
+                    if (controller.portalType >= 4)
+                    {
+                        addNearbyBlocks(controller.getWorldObj(), c, controller.portalType, toProcess); // Adds diagonals for those that require it
+                    }
+                }
+            }
+        }
+
+        if (portalComponents.isEmpty())
+        {
+            throw new PortalException("unknown");
+        }
+
+        System.out.println("Done. Returning " + portalComponents.size() + " portal components.");
+
+        return portalComponents;
+    }
+
     static Queue<ChunkCoordinates> getGhostedPortalBlocks(TileController controller)
     {
         for (int j = 0; j < 6; j++)
         {
             for (int i = 1; i < 6; i++)
             {
-                Queue<ChunkCoordinates> portalBlocks = getGhostedPortalBlocks(controller.getWorldObj(), WorldUtils.getChunkCoordinatesOffset(controller.getChunkCoordinates(), ForgeDirection.getOrientation(j)), i); 
+                Queue<ChunkCoordinates> portalBlocks = getGhostedPortalBlocks(controller.getWorldObj(), WorldUtils.getChunkCoordinatesOffset(controller.getChunkCoordinates(), ForgeDirection.getOrientation(j)), i);
 
                 if (!portalBlocks.isEmpty())
                 {
@@ -87,12 +175,6 @@ public class PortalUtilsNew
         }
 
         return new LinkedList<ChunkCoordinates>();
-    }
-
-    static boolean isPortalPart(World world, ChunkCoordinates c)
-    {
-        TileEntity tile = WorldUtils.getTileEntity(world, c);        
-        return tile != null && tile instanceof TilePortalPart;
     }
 
     static Queue<ChunkCoordinates> getGhostedPortalBlocks(World world, ChunkCoordinates start, int portalType)
@@ -158,92 +240,10 @@ public class PortalUtilsNew
         return sides;
     }
 
-    public static ArrayList<ChunkCoordinates> getAllPortalComponents(TileController controller) throws PortalException
+    static boolean isPortalPart(World world, ChunkCoordinates c)
     {
-        ArrayList<ChunkCoordinates> portalComponents = new ArrayList<ChunkCoordinates>();
-        Queue<ChunkCoordinates> toProcess = new LinkedList<ChunkCoordinates>();
-        Queue<ChunkCoordinates> portalBlocks = getGhostedPortalBlocks(controller);
-        toProcess.add(controller.getChunkCoordinates());
-
-        if (portalBlocks.isEmpty())
-        {
-            throw new PortalException("couldNotCreatePortalHere");
-        }
-        
-        System.out.println("Parsing portal components with " + portalBlocks.size() + " portal blocks.");
-
-        boolean bio = false, mod = false, dialler = false, network = false;
-
-        while (!toProcess.isEmpty())
-        {
-            ChunkCoordinates c = toProcess.remove();
-
-            if (!portalComponents.contains(c))
-            {
-                TileEntity t = WorldUtils.getTileEntity(controller.getWorldObj(), c);
-                
-                if (portalBlocks.contains(c) || t instanceof TilePortalPart)
-                {
-                    if (t instanceof TileNetworkInterface)
-                    {
-                        if (dialler)
-                        {
-                            throw new PortalException("dialAndNetwork");
-                        }
-                        
-                        network = true;
-                    }
-                    else if (t instanceof TileDiallingDevice)
-                    {
-                        if (network)
-                        {
-                            throw new PortalException("dialAndNetwork");
-                        }
-                        
-                        dialler = true;
-                    }
-                    else if (t instanceof TileBiometricIdentifier)
-                    {
-                        if (!bio)
-                        {
-                            bio = true;
-                        }
-                        else
-                        {
-                            throw new PortalException("multipleBio");
-                        }
-                    }
-                    else if (t instanceof TileModuleManipulator)
-                    {
-                        if (!mod)
-                        {
-                            mod = true;
-                        }
-                        else
-                        {
-                            throw new PortalException("multipleMod");
-                        }
-                    }
-
-                    portalComponents.add(c);
-                    addNearbyBlocks(controller.getWorldObj(), c, 0, toProcess);
-
-                    if (controller.portalType >= 4)
-                    {
-                        addNearbyBlocks(controller.getWorldObj(), c, controller.portalType, toProcess); // Adds diagonals for those that require it
-                    }
-                }
-            }
-        }
-
-        if (portalComponents.isEmpty())
-        {
-            throw new PortalException("unknown");
-        }
-
-        System.out.println("Done. Returning " + portalComponents.size() + " portal components.");
-
-        return portalComponents;
+        TileEntity tile = WorldUtils.getTileEntity(world, c);
+        return tile != null && tile instanceof TilePortalPart;
     }
 
     public static boolean netherCreatePortal(World world, ChunkCoordinates w, int portalDirection)

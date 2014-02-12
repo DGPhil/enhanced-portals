@@ -41,7 +41,7 @@ import cofh.api.tileentity.ISidedBlockTexture;
 public class BlockFrame extends BlockContainer implements IDismantleable
 {
     public static BlockFrame instance;
-    
+
     public static int PORTAL_CONTROLLER = 1, REDSTONE_INTERFACE = 2, NETWORK_INTERFACE = 3, DIALLING_DEVICE = 4, BIOMETRIC_IDENTIFIER = 5, MODULE_MANIPULATOR = 6, TRANSFER_FLUID = 7, TRANSFER_ITEM = 8, TRANSFER_ENERGY = 9;
     public static int FRAME_TYPES = 10;
 
@@ -62,6 +62,13 @@ public class BlockFrame extends BlockContainer implements IDismantleable
     }
 
     @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int newID)
+    {
+        ((TileFrame) world.getTileEntity(x, y, z)).breakBlock(block, newID);
+        super.breakBlock(world, x, y, z, block, newID);
+    }
+
+    @Override
     public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z)
     {
         return true;
@@ -72,6 +79,12 @@ public class BlockFrame extends BlockContainer implements IDismantleable
     {
         ClientProxy.renderPass = pass;
         return pass < 2;
+    }
+
+    @Override
+    public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z)
+    {
+        return ((TileFrame) blockAccess.getTileEntity(x, y, z)).getColour();
     }
 
     @Override
@@ -117,7 +130,7 @@ public class BlockFrame extends BlockContainer implements IDismantleable
         {
             return new TileTransferEnergy();
         }
-        
+
         return null;
     }
 
@@ -166,7 +179,7 @@ public class BlockFrame extends BlockContainer implements IDismantleable
     {
         return fullIcons[meta];
     }
-    
+
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
     {
@@ -178,7 +191,7 @@ public class BlockFrame extends BlockContainer implements IDismantleable
     {
         return 1;
     }
-    
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void getSubBlocks(Item par1, CreativeTabs creativeTab, List list)
@@ -190,67 +203,55 @@ public class BlockFrame extends BlockContainer implements IDismantleable
     }
 
     @Override
-    public void registerBlockIcons(IIconRegister register)
+    public int isProvidingStrongPower(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
-        overlayIcons = new IIcon[FRAME_TYPES];
-        fullIcons = new IIcon[FRAME_TYPES];
-        
-        for (int i = 0; i < overlayIcons.length; i++)
+        TileEntity tile = blockAccess.getTileEntity(x, y, z);
+
+        if (tile instanceof TileRedstoneInterface)
         {
-            overlayIcons[i] = register.registerIcon("enhancedportals:portalFrame_" + i);
-            fullIcons[i] = register.registerIcon("enhancedportals:portalFrameFull_" + i);
+            return ((TileRedstoneInterface) tile).isProvidingStrongPower(side);
         }
 
-        connectedTextures.registerIcons(register);
-        
-        ClientProxy.customFrameTextures.clear();
-        int counter = 0;
-
-        while (ClientProxy.resourceExists("textures/blocks/customFrame/" + String.format("%02d", counter) + ".png"))
-        {
-            EnhancedPortals.logger.info("Registered custom frame Icon: " + String.format("%02d", counter) + ".png");
-            ClientProxy.customFrameTextures.add(register.registerIcon("enhancedportals:customFrame/" + String.format("%02d", counter)));
-            counter++;
-        }
+        return 0;
     }
-    
+
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int newID)
+    public int isProvidingWeakPower(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
-        ((TileFrame) world.getTileEntity(x, y, z)).breakBlock(block, newID);        
-        super.breakBlock(world, x, y, z, block, newID);
+        TileEntity tile = blockAccess.getTileEntity(x, y, z);
+
+        if (tile instanceof TileRedstoneInterface)
+        {
+            return ((TileRedstoneInterface) tile).isProvidingWeakPower(side);
+        }
+
+        return 0;
     }
-    
+
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
     {
         TileEntity tile = world.getTileEntity(x, y, z);
-        
+
         if (tile instanceof TileFrame)
         {
             return ((TileFrame) tile).activate(player, player.inventory.getCurrentItem());
         }
-        
+
         return false;
     }
-    
+
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack)
     {
         ((TilePortalPart) world.getTileEntity(x, y, z)).onBlockPlaced(entity, stack);
     }
-    
-    @Override
-    public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z)
-    {
-        return ((TileFrame) blockAccess.getTileEntity(x, y, z)).getColour();
-    }
-    
+
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
         TileEntity tile = world.getTileEntity(x, y, z);
-        
+
         if (tile instanceof TileRedstoneInterface)
         {
             ((TileRedstoneInterface) tile).onNeighborBlockChange(block);
@@ -264,30 +265,29 @@ public class BlockFrame extends BlockContainer implements IDismantleable
             ((TileFrameTransfer) tile).onNeighborChanged();
         }
     }
-    
+
     @Override
-    public int isProvidingStrongPower(IBlockAccess blockAccess, int x, int y, int z, int side)
+    public void registerBlockIcons(IIconRegister register)
     {
-        TileEntity tile = blockAccess.getTileEntity(x, y, z);
-        
-        if (tile instanceof TileRedstoneInterface)
+        overlayIcons = new IIcon[FRAME_TYPES];
+        fullIcons = new IIcon[FRAME_TYPES];
+
+        for (int i = 0; i < overlayIcons.length; i++)
         {
-            return ((TileRedstoneInterface) tile).isProvidingStrongPower(side);
+            overlayIcons[i] = register.registerIcon("enhancedportals:portalFrame_" + i);
+            fullIcons[i] = register.registerIcon("enhancedportals:portalFrameFull_" + i);
         }
-        
-        return 0;
-    }
-    
-    @Override
-    public int isProvidingWeakPower(IBlockAccess blockAccess, int x, int y, int z, int side)
-    {
-        TileEntity tile = blockAccess.getTileEntity(x, y, z);
-        
-        if (tile instanceof TileRedstoneInterface)
+
+        connectedTextures.registerIcons(register);
+
+        ClientProxy.customFrameTextures.clear();
+        int counter = 0;
+
+        while (ClientProxy.resourceExists("textures/blocks/customFrame/" + String.format("%02d", counter) + ".png"))
         {
-            return ((TileRedstoneInterface) tile).isProvidingWeakPower(side);
+            EnhancedPortals.logger.info("Registered custom frame Icon: " + String.format("%02d", counter) + ".png");
+            ClientProxy.customFrameTextures.add(register.registerIcon("enhancedportals:customFrame/" + String.format("%02d", counter)));
+            counter++;
         }
-        
-        return 0;
     }
 }

@@ -15,8 +15,6 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy
 {
-    public static int renderPass = 0;
-    
     public class ParticleSet
     {
         public int[] frames;
@@ -29,10 +27,11 @@ public class ClientProxy extends CommonProxy
         }
     }
 
+    public static int renderPass = 0;
+
     public static String manualPage = "mainMain";
     public static int editingDialEntry = -1;
     public static PortalTextureManager dialEntryTexture = new PortalTextureManager();
-
     public static ArrayList<IIcon> customFrameTextures = new ArrayList<IIcon>();
     public static ArrayList<IIcon> customPortalTextures = new ArrayList<IIcon>();
     public static ArrayList<ParticleSet> particleSets = new ArrayList<ParticleSet>();
@@ -92,9 +91,6 @@ public class ClientProxy extends CommonProxy
         particleSets.add(new ParticleSet(2, new int[] { 82 }));
         particleSets.add(new ParticleSet(2, new int[] { 83 }));
 
-        // Will play through their animation until they die
-        //particleSets.add(new ParticleSet(3, new int[] { 164, 165 }));
-        
         // Rendering
         PortalRenderer.ID = RenderingRegistry.getNextAvailableRenderId();
         RenderingRegistry.registerBlockHandler(PortalRenderer.ID, new PortalRenderer());
@@ -104,7 +100,6 @@ public class ClientProxy extends CommonProxy
     public void registerItems()
     {
         glassesRenderIndex = RenderingRegistry.addNewArmourRendererPrefix("epGoggles");
-
         super.registerItems();
     }
 }

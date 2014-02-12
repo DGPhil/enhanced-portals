@@ -1,23 +1,19 @@
 package uk.co.shadeddimensions.ep3.network;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockCrafting;
 import uk.co.shadeddimensions.ep3.block.BlockDecoration;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
 import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
-import uk.co.shadeddimensions.ep3.crafting.ThermalExpansion;
-import uk.co.shadeddimensions.ep3.crafting.Vanilla;
 import uk.co.shadeddimensions.ep3.item.ItemEntityCard;
 import uk.co.shadeddimensions.ep3.item.ItemGoggles;
 import uk.co.shadeddimensions.ep3.item.ItemGuide;
@@ -52,20 +48,41 @@ import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferEnergy;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferFluid;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferItem;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy
 {
+    public static class Properties
+    {
+        public static Property useAlternateGlyphs, forceShowFrameOverlays, disableSounds, disableParticles, portalsDestroyBlocks, fasterPortalCooldown, requirePower, powerMultiplier;
+    }
+
     public static final int REDSTONE_FLUX_COST = 10000;
+
     public static final int REDSTONE_FLUX_TIMER = 20;
 
     public int glassesRenderIndex = 0;
 
     public static NetworkManager networkManager;
 
-    public static boolean useAlternateGlyphs, customNetherPortals, portalsDestroyBlocks = true, fasterPortalCooldown, disableVanillaRecipes, disableTERecipes, disablePortalSounds, disableParticles, forceShowFrameOverlays, disablePigmen, netherDisableParticles, netherDisableSounds;
-    public static int redstoneFluxPowerMultiplier;
+    public static Configuration config;
+
+    public static boolean useAlternateGlyphs, forceShowFrameOverlays, disableSounds, disableParticles, portalsDestroyBlocks, fasterPortalCooldown, requirePower, disableVanillaRecipes, disableTERecipes;
+
+    public static int powerMultiplier;
+
+    public static void saveConfigs()
+    {
+        Properties.useAlternateGlyphs.set(useAlternateGlyphs);
+        Properties.forceShowFrameOverlays.set(forceShowFrameOverlays);
+        Properties.disableParticles.set(disableParticles);
+        Properties.disableSounds.set(disableSounds);
+        Properties.portalsDestroyBlocks.set(portalsDestroyBlocks);
+        Properties.fasterPortalCooldown.set(fasterPortalCooldown);
+        Properties.requirePower.set(requirePower);
+        Properties.powerMultiplier.set(powerMultiplier);
+        config.save();
+    }
 
     public File getBaseDir()
     {
@@ -82,68 +99,9 @@ public class CommonProxy
         return new File(getBaseDir(), DimensionManager.getWorld(0).getSaveHandler().getWorldDirectoryName());
     }
 
-    boolean reflectBlock(Block block, Class<? extends Block> clazz)
-    {
-        Field field = null;
-
-        for (Field f : net.minecraft.block.Block.class.getDeclaredFields())
-        {
-            if (f.getType() == clazz)
-            {
-                field = f;
-                break;
-            }
-        }
-
-        if (field == null)
-        {
-            return false;
-        }
-
-        field.setAccessible(true);
-
-        if ((field.getModifiers() & Modifier.FINAL) != 0)
-        {
-            try
-            {
-                Field modifiers = Field.class.getDeclaredField("modifiers");
-                modifiers.setAccessible(true);
-                modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
-
-        try
-        {
-            field.set(null, block);
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     public void miscSetup()
     {
         ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, new WeightedRandomChestContent(new ItemStack(ItemPortalModule.instance, 1, 4), 1, 1, 2));
-
-        //if (customNetherPortals)
-        //{
-            //BlockNetherPortal.ID = Block.portal.blockID;
-            //Block.blocksList[BlockNetherPortal.ID] = null;
-
-            //if (!reflectBlock(new BlockNetherPortal(), net.minecraft.block.BlockPortal.class))
-            //{
-                //Block.blocksList[BlockNetherPortal.ID] = null;
-                //Block.blocksList[BlockNetherPortal.ID] = new net.minecraft.block.BlockPortal(BlockNetherPortal.ID);
-            //    logger.warning("Unable to modify BlockPortal. Custom Nether Portals have been disabled.");
-            //}
-        //}
     }
 
     public void registerBlocks()
@@ -169,6 +127,16 @@ public class CommonProxy
         GameRegistry.registerItem(new ItemGuide(), "guide");
     }
 
+    public void registerPackets()
+    {
+        EnhancedPortals.packetPipeline.registerPacket(PacketTileUpdate.class);
+        EnhancedPortals.packetPipeline.registerPacket(PacketTileGui.class);
+        EnhancedPortals.packetPipeline.registerPacket(PacketTextureData.class);
+        EnhancedPortals.packetPipeline.registerPacket(PacketRerender.class);
+        EnhancedPortals.packetPipeline.registerPacket(PacketRequestData.class);
+        EnhancedPortals.packetPipeline.registerPacket(PacketGuiData.class);
+    }
+
     public void registerTileEntities()
     {
         GameRegistry.registerTileEntity(TilePortal.class, "epPortal");
@@ -188,50 +156,23 @@ public class CommonProxy
 
     public void setupConfiguration(Configuration theConfig)
     {
-        /*useAlternateGlyphs = configuration.get("Misc", "UseAlternateGlyphs", false);
-        forceShowFrameOverlays = configuration.get("Misc", "ForceShowFrameOverlays", false);
+        config = theConfig;
 
-        customNetherPortals = configuration.get("Overrides", "CustomNetherPortals", true);
-        disablePigmen = configuration.get("Overrides", "StopPigmenFromSpawningAtPortals", false);
-        netherDisableParticles = configuration.get("Overrides", "DisableNetherParticles", false);
-        netherDisableSounds = configuration.get("Overrides", "DisableNetherSounds", false);
-        disablePortalSounds = configuration.get("Overrides", "DisablePortalSounds", false);
-        disableParticles = configuration.get("Overrides", "DisableParticles", false);
+        config.load();
+        Properties.useAlternateGlyphs = config.get("Misc", "UseAlternateGlyphs", false);
+        Properties.forceShowFrameOverlays = config.get("Misc", "ForceShowFrameOverlays", false);
 
-        portalsDestroyBlocks = configuration.get("Portal", "PortalsDestroyBlocks", true);
-        fasterPortalCooldown = configuration.get("Portal", "FasterPortalCooldown", false);
+        Properties.disableSounds = config.get("Overrides", "DisableSounds", false);
+        Properties.disableParticles = config.get("Overrides", "DisableParticles", false);
 
-        redstoneFluxPowerMultiplier = configuration.get("Power", "PowerMultiplier", 1);
+        Properties.portalsDestroyBlocks = config.get("Portal", "PortalsDestroyBlocks", true);
+        Properties.fasterPortalCooldown = config.get("Portal", "FasterPortalCooldown", false);
 
-        disableVanillaRecipes = configuration.get("Recipes", "DisableVanillaRecipes", false);
-        disableTERecipes = configuration.get("Recipes", "DisableTERecipes", false);
+        Properties.requirePower = config.get("Power", "RequirePower", true);
+        Properties.powerMultiplier = config.get("Power", "PowerMultiplier", 1);
 
-        if (redstoneFluxPowerMultiplier < 0)
-        {
-            redstoneFluxPowerMultiplier = 0;
-        }
-
-        configuration.init();*/
-    }
-
-    public void setupCrafting()
-    {
-        Vanilla.registerRecipes();
-        
-        if (Loader.isModLoaded("ThermalExpansion") && !CommonProxy.disableTERecipes)
-        {
-            ThermalExpansion.registerRecipes();
-            ThermalExpansion.registerMachineRecipes();
-        }
-    }
-    
-    public void registerPackets()
-    {
-        EnhancedPortals.packetPipeline.registerPacket(PacketTileUpdate.class);
-        EnhancedPortals.packetPipeline.registerPacket(PacketTileGui.class);
-        EnhancedPortals.packetPipeline.registerPacket(PacketTextureData.class);
-        EnhancedPortals.packetPipeline.registerPacket(PacketRerender.class);
-        EnhancedPortals.packetPipeline.registerPacket(PacketRequestData.class);
-        EnhancedPortals.packetPipeline.registerPacket(PacketGuiData.class);
+        disableVanillaRecipes = config.get("Recipes", "DisableVanillaRecipes", false).getBoolean(false);
+        disableTERecipes = config.get("Recipes", "DisableTERecipes", false).getBoolean(false);
+        config.save();
     }
 }

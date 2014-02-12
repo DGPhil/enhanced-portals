@@ -1,12 +1,10 @@
 package uk.co.shadeddimensions.ep3.item;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 import buildcraft.api.tools.IToolWrench;
 import cofh.api.block.IDismantleable;
@@ -26,23 +24,17 @@ public class ItemWrench extends Item implements IToolWrench
     }
 
     @Override
-    public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
-    {
-        return true;
-    }
-
-    @Override
     public boolean canWrench(EntityPlayer player, int x, int y, int z)
     {
         return true;
     }
 
     @Override
-    public void wrenchUsed(EntityPlayer player, int x, int y, int z)
+    public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
     {
-
+        return true;
     }
-    
+
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
@@ -61,5 +53,11 @@ public class ItemWrench extends Item implements IToolWrench
         }
 
         return false;
+    }
+
+    @Override
+    public void wrenchUsed(EntityPlayer player, int x, int y, int z)
+    {
+
     }
 }

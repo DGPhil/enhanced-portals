@@ -19,12 +19,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileModuleManipulator;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class EntityManager
 {
@@ -33,25 +31,25 @@ public class EntityManager
     static ChunkCoordinates getActualExitLocation(Entity entity, TileController controller)
     {
         int entityHeight = Math.round(entity.height);
-        //boolean horizontal = controller.portalType == 3;
+        // boolean horizontal = controller.portalType == 3;
 
-        //forloop:
+        // forloop:
         for (ChunkCoordinates c : new ArrayList<ChunkCoordinates>(controller.getPortals()))
         {
-            //if (!horizontal)
-            //{
-            //    for (int i = 0; i < entityHeight; i++)
-            //    {
-            //        if (controller.worldObj.getBlockId(c.posX, c.posY + i, c.posZ) != CommonProxy.blockPortal.blockID && !controller.worldObj.isAirBlock(c.posX, c.posY + i, c.posZ))
-            //        {
-            //            continue forloop;
-            //        }
-            //    }
-            //}
-            //else if (horizontal && !controller.worldObj.isAirBlock(c.posX, c.posY + 1, c.posZ))
-            //{
-            //    return new ChunkCoordinates(c.posX, c.posY - 1, c.posZ);
-            //}
+            // if (!horizontal)
+            // {
+            // for (int i = 0; i < entityHeight; i++)
+            // {
+            // if (controller.worldObj.getBlockId(c.posX, c.posY + i, c.posZ) != CommonProxy.blockPortal.blockID && !controller.worldObj.isAirBlock(c.posX, c.posY + i, c.posZ))
+            // {
+            // continue forloop;
+            // }
+            // }
+            // }
+            // else if (horizontal && !controller.worldObj.isAirBlock(c.posX, c.posY + 1, c.posZ))
+            // {
+            // return new ChunkCoordinates(c.posX, c.posY - 1, c.posZ);
+            // }
 
             return new ChunkCoordinates(c.posX, c.posY, c.posZ);
         }
@@ -197,17 +195,17 @@ public class EntityManager
 
     public static void teleportEntityHighestInstability(Entity par1Entity) // TODO: CRIMSON
     {
-        //boolean nether = MinecraftServer.getServer().getAllowNether();
-        ChunkCoordinates spawn = /*nether ? DimensionManager.getWorld(-1).getSpawnPoint() :*/ par1Entity.worldObj.getSpawnPoint();
+        // boolean nether = MinecraftServer.getServer().getAllowNether();
+        ChunkCoordinates spawn = /* nether ? DimensionManager.getWorld(-1).getSpawnPoint() : */par1Entity.worldObj.getSpawnPoint();
 
-        //if (nether)
-        //{
-        //    transferEntityToDimension(par1Entity, spawn.posX, spawn.posY, spawn.posZ, 0f, (WorldServer) par1Entity.worldObj, DimensionManager.getWorld(-1), -1, -1, false);
-        //}
-        //else
-        //{
+        // if (nether)
+        // {
+        // transferEntityToDimension(par1Entity, spawn.posX, spawn.posY, spawn.posZ, 0f, (WorldServer) par1Entity.worldObj, DimensionManager.getWorld(-1), -1, -1, false);
+        // }
+        // else
+        // {
         transferEntityWithinDimension(par1Entity, spawn.posX, par1Entity.worldObj.getTopSolidOrLiquidBlock(spawn.posX, spawn.posY), spawn.posZ, 0f, -1, -1, false);
-        //}
+        // }
     }
 
     static Entity transferEntity(Entity entity, double x, double y, double z, float yaw, WorldServer world, int touchedPortalType, int exitPortalType, boolean keepMomentum)
@@ -260,7 +258,7 @@ public class EntityManager
             transferEntityWithRider(entity, exitLoc.posX + 0.5, exitLoc.posY, exitLoc.posZ + 0.5, getRotation(entity, exit, exitLoc), (WorldServer) exit.getWorldObj(), entry.portalType, exit.portalType, keepMomentum);
         }
     }
-    
+
     static Entity transferEntityToDimension(Entity entity, double x, double y, double z, float yaw, WorldServer exitingWorld, WorldServer enteringWorld, int touchedPortalType, int exitPortalType, boolean keepMomentum)
     {
         if (touchedPortalType == -1 && exitPortalType == -1)
@@ -295,7 +293,7 @@ public class EntityManager
             player.closeScreen();
             player.dimension = enteringWorld.provider.dimensionId;
             player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.difficultySetting, enteringWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
-            
+
             exitingWorld.removePlayerEntityDangerously(player);
             player.isDead = false;
             player.setLocationAndAngles(x, y, z, yaw, player.rotationPitch);
@@ -318,7 +316,7 @@ public class EntityManager
             }
 
             player.playerNetServerHandler.sendPacket(new S1FPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
-            //GameRegistry.onPlayerChangedDimension(player);  // TODO Required?
+            // GameRegistry.onPlayerChangedDimension(player); // TODO Required?
 
             setEntityPortalCooldown(player);
             return player;
@@ -337,8 +335,8 @@ public class EntityManager
             }
 
             exitingWorld.removeEntity(entity);
-            //exitingWorld.loadedEntityList.remove(entity);
-            //exitingWorld.onEntityRemoved(entity); // TODO
+            // exitingWorld.loadedEntityList.remove(entity);
+            // exitingWorld.onEntityRemoved(entity); // TODO
 
             Entity newEntity = EntityList.createEntityFromNBT(tag, enteringWorld);
 
@@ -395,8 +393,8 @@ public class EntityManager
             }
 
             world.removeEntity(entity);
-            //world.loadedEntityList.remove(entity);
-            //world.onEntityRemoved(entity); // TODO
+            // world.loadedEntityList.remove(entity);
+            // world.onEntityRemoved(entity); // TODO
 
             Entity newEntity = EntityList.createEntityFromNBT(tag, world);
 

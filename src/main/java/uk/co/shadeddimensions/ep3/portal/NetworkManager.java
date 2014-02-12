@@ -224,13 +224,14 @@ public class NetworkManager
             return;
         }
 
-        Type type = new TypeToken<HashMap<String, WorldCoordinates>>(){}.getType();
+        Type type = new TypeToken<HashMap<String, WorldCoordinates>>()
+        {
+        }.getType();
         Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
         String portalData = FileUtils.readFileToString(portalFile), networkData = FileUtils.readFileToString(networkFile);
 
         portalCoordinates = gson.fromJson(portalData, type);
         portalNetworks = gson.fromJson(networkData, portalNetworks.getClass());
-
 
         if (!portalCoordinates.isEmpty())
         {
@@ -282,80 +283,80 @@ public class NetworkManager
         return false;
     }
 
+    public boolean portalIdentifierExists(GlyphIdentifier id)
+    {
+        return portalCoordinates.containsKey(id.getGlyphString());
+    }
+
     /***
      * Removes a portal
      */
-     public void removePortal(GlyphIdentifier g)
-     {
-         removePortal(g, getPortalLocation(g));
-     }
+    public void removePortal(GlyphIdentifier g)
+    {
+        removePortal(g, getPortalLocation(g));
+    }
 
-     /***
-      * Removes a portal
-      */
-     public void removePortal(GlyphIdentifier g, WorldCoordinates w)
-     {
-         if (g == null || w == null)
-         {
-             return;
-         }
+    /***
+     * Removes a portal
+     */
+    public void removePortal(GlyphIdentifier g, WorldCoordinates w)
+    {
+        if (g == null || w == null)
+        {
+            return;
+        }
 
-         GlyphIdentifier n = getPortalNetwork(g);
+        GlyphIdentifier n = getPortalNetwork(g);
 
-         if (n != null)
-         {
-             removePortalFromNetwork(g, n);
-         }
+        if (n != null)
+        {
+            removePortalFromNetwork(g, n);
+        }
 
-         portalCoordinates.remove(g.getGlyphString());
-         portalCoordinatesReverse.remove(w);
-     }
+        portalCoordinates.remove(g.getGlyphString());
+        portalCoordinatesReverse.remove(w);
+    }
 
-     /***
-      * Removes a portal
-      */
-     public void removePortal(WorldCoordinates w)
-     {
-         removePortal(getPortalIdentifier(w), w);
-     }
+    /***
+     * Removes a portal
+     */
+    public void removePortal(WorldCoordinates w)
+    {
+        removePortal(getPortalIdentifier(w), w);
+    }
 
-     /***
-      * Removes a portal from a network
-      */
-     public void removePortalFromNetwork(GlyphIdentifier portal, GlyphIdentifier network)
-     {
-         if (portal == null || network == null)
-         {
-             return;
-         }
+    /***
+     * Removes a portal from a network
+     */
+    public void removePortalFromNetwork(GlyphIdentifier portal, GlyphIdentifier network)
+    {
+        if (portal == null || network == null)
+        {
+            return;
+        }
 
-         getNetwork(network).remove(portal.getGlyphString());
-         portalNetworks.remove(portal.getGlyphString());
-     }
+        getNetwork(network).remove(portal.getGlyphString());
+        portalNetworks.remove(portal.getGlyphString());
+    }
 
-     public void saveAllData()
-     {
-         makeFiles();
+    public void saveAllData()
+    {
+        makeFiles();
 
-         try
-         {
-             Gson gson = new GsonBuilder().create();
-             FileWriter portalWriter = new FileWriter(portalFile), networkWriter = new FileWriter(networkFile);
+        try
+        {
+            Gson gson = new GsonBuilder().create();
+            FileWriter portalWriter = new FileWriter(portalFile), networkWriter = new FileWriter(networkFile);
 
-             gson.toJson(portalCoordinates, portalWriter);
-             gson.toJson(portalNetworks, networkWriter);
+            gson.toJson(portalCoordinates, portalWriter);
+            gson.toJson(portalNetworks, networkWriter);
 
-             portalWriter.close();
-             networkWriter.close();
-         }
-         catch (Exception e)
-         {
-             EnhancedPortals.logger.catching(e);
-         }
-     }
-
-     public boolean portalIdentifierExists(GlyphIdentifier id)
-     {
-         return portalCoordinates.containsKey(id.getGlyphString());
-     }
+            portalWriter.close();
+            networkWriter.close();
+        }
+        catch (Exception e)
+        {
+            EnhancedPortals.logger.catching(e);
+        }
+    }
 }

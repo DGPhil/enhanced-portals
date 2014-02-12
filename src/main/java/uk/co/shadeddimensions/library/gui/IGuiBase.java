@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import uk.co.shadeddimensions.library.gui.element.ElementBase;
+import uk.co.shadeddimensions.library.gui.element.ElementButton;
 import uk.co.shadeddimensions.library.gui.element.ElementFakeItemSlot;
 import uk.co.shadeddimensions.library.gui.tab.TabBase;
 
@@ -51,11 +52,13 @@ public interface IGuiBase
 
     public float getZLevel();
 
-    public void handleElementButtonClick(String buttonName, int mouseButton);
+    public void handleElementButtonClick(ElementButton button, int mouseButton);
 
     public void handleElementFakeSlotItemChange(ElementFakeItemSlot slot);
 
     public boolean isItemStackAllowedInFakeSlot(ElementFakeItemSlot slot, ItemStack stack);
 
     public void setZLevel(float zlevel);
+
+    public void handleElementButtonClick(String iD, int mouseButton);
 }

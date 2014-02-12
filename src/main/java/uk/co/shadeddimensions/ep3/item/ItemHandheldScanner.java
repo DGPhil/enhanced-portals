@@ -2,14 +2,12 @@ package uk.co.shadeddimensions.ep3.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.container.ContainerScanner;
@@ -24,7 +22,7 @@ import cofh.api.energy.ItemEnergyContainer;
 public class ItemHandheldScanner extends ItemEnergyContainer
 {
     public static ItemHandheldScanner instance;
-    
+
     public static InventoryScanner getInventory(ItemStack stack)
     {
         return new InventoryScanner(stack);
@@ -58,15 +56,15 @@ public class ItemHandheldScanner extends ItemEnergyContainer
 
     private boolean drainPower(ItemStack itemStack)
     {
-        if (CommonProxy.redstoneFluxPowerMultiplier > 0)
+        if (CommonProxy.powerMultiplier > 0)
         {
-            if (((ItemEnergyContainer) itemStack.getItem()).extractEnergy(itemStack, 50 * CommonProxy.redstoneFluxPowerMultiplier, true) != 50 * CommonProxy.redstoneFluxPowerMultiplier)
+            if (((ItemEnergyContainer) itemStack.getItem()).extractEnergy(itemStack, 50 * CommonProxy.powerMultiplier, true) != 50 * CommonProxy.powerMultiplier)
             {
                 return false;
             }
             else
             {
-                ((ItemEnergyContainer) itemStack.getItem()).extractEnergy(itemStack, 50 * CommonProxy.redstoneFluxPowerMultiplier, false);
+                ((ItemEnergyContainer) itemStack.getItem()).extractEnergy(itemStack, 50 * CommonProxy.powerMultiplier, false);
                 return true;
             }
         }

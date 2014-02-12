@@ -7,6 +7,9 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
+import scala.tools.nsc.backend.icode.Members.Local;
+import uk.co.shadeddimensions.ep3.lib.Localization;
+import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.library.gui.GuiBase;
 import uk.co.shadeddimensions.library.gui.element.ElementBase;
 import uk.co.shadeddimensions.library.gui.element.ElementButton;
@@ -79,24 +82,24 @@ public class GuiConfig extends GuiBase
         ElementScrollPanel panel = new ElementScrollPanel(this, -90, -guiTop + 35, xSize * 2, height - 80);
 
         int y = 10;
-        panel.addElement(new ElementText(this, 0, y, "General", null, 0xFFFFFF, true));
-        panel.addElement(new ElementButton(this, 0, y + 15, 110, "glyphType", "Glyphs: Normal"));
+        panel.addElement(new ElementText(this, 0, y, Localization.getConfigString("general"), null, 0xFFFFFF, true));
+        panel.addElement(new ElementButton(this, 0, y + 15, 110, "glyphType", Localization.getConfigString("alternateGlyph." + CommonProxy.useAlternateGlyphs)));
         
         y += 50;
-        panel.addElement(new ElementText(this, 0, y, "Portal", null, 0xFFFFFF, true));
-        panel.addElement(new ElementButton(this, 0, y + 15, 110, "glyphType", "TODO: Sound Slider!"));
-        panel.addElement(new ElementButton(this, 115, y + 15, 110, "destroyBlocks", "Destroy Blocks: YES"));
-        panel.addElement(new ElementButton(this, 230, y + 15, 110, "forceOverlays", "Force Overlays: NO"));
-        panel.addElement(new ElementButton(this, 0, y + 40, 110, "particles", "Particles: YES"));
+        panel.addElement(new ElementText(this, 0, y, Localization.getConfigString("portal"), null, 0xFFFFFF, true));
+        panel.addElement(new ElementButton(this, 0, y + 15, 110, "sound", Localization.getConfigString("sounds." + CommonProxy.disableSounds)));
+        panel.addElement(new ElementButton(this, 115, y + 15, 110, "destroyBlocks", Localization.getConfigString("portalsDestroy." + CommonProxy.portalsDestroyBlocks)));
+        panel.addElement(new ElementButton(this, 230, y + 15, 110, "forceOverlays", Localization.getConfigString("showOverlays." + CommonProxy.forceShowFrameOverlays)));
+        panel.addElement(new ElementButton(this, 0, y + 40, 110, "particles", Localization.getConfigString("particles." + CommonProxy.disableParticles)));
         
         y += 70;
-        panel.addElement(new ElementText(this, 0, y, "Power", null, 0xFFFFFF, true));
-        panel.addElement(new ElementButton(this, 0, y + 15, 110, "powerRequired", "Required: YES"));
-        panel.addElement(new ElementButton(this, 115, y + 15, 110, "glyphType", "TODO: Slider!"));
+        panel.addElement(new ElementText(this, 0, y, Localization.getConfigString("power"), null, 0xFFFFFF, true));
+        panel.addElement(new ElementButton(this, 0, y + 15, 110, "powerRequired", Localization.getConfigString("requirePower." + CommonProxy.requirePower)));
+        panel.addElement(new ElementButton(this, 115, y + 15, 110, "powerMultiplier", Localization.getConfigString("multiplier") + CommonProxy.powerMultiplier));
         
         y += 50;
-        panel.addElement(new ElementText(this, 0, y, "Teleportation", null, 0xFFFFFF, true));
-        panel.addElement(new ElementButton(this, 0, y + 15, 110, "fastCooldown", "Fast Cooldown: NO"));
+        panel.addElement(new ElementText(this, 0, y, Localization.getConfigString("teleportation"), null, 0xFFFFFF, true));
+        panel.addElement(new ElementButton(this, 0, y + 15, 110, "fastCooldown", Localization.getConfigString("fastCooldown." + CommonProxy.fasterPortalCooldown)));
         
         ElementBase lastElement = panel.getElements().get(panel.getElements().size() - 1);
         panel.addElement(new ElementText(this, 0, lastElement.getRelativeY() + lastElement.getHeight() + 10, "", null));
@@ -112,20 +115,63 @@ public class GuiConfig extends GuiBase
         if (button.id == 0)
         {
             getMinecraft().currentScreen = parentScreen;
-        }
-        else if (button.id == 1)
-        {
-            String str = "Normal";
-
-            if (button.displayString.contains(str))
-            {
-                str = "Alternate";
-            }
-
-            button.displayString = "Glyphs: " + str;
+            CommonProxy.saveConfigs();
         }
     }
 
+    @Override
+    public void handleElementButtonClick(ElementButton button, int mouseButton)
+    {
+        if (button.getID().equals("glyphType"))
+        {
+            CommonProxy.useAlternateGlyphs = !CommonProxy.useAlternateGlyphs;
+            button.setText(Localization.getConfigString("alternateGlyph." + CommonProxy.useAlternateGlyphs));
+        }
+        else if (button.getID().equals("sound"))
+        {
+            CommonProxy.disableSounds = !CommonProxy.disableSounds;
+            button.setText(Localization.getConfigString("sounds." + CommonProxy.disableSounds));
+        }
+        else if (button.getID().equals("destroyBlocks"))
+        {
+            CommonProxy.portalsDestroyBlocks = !CommonProxy.portalsDestroyBlocks;
+            button.setText(Localization.getConfigString("portalsDestroy." + CommonProxy.portalsDestroyBlocks));
+        }
+        else if (button.getID().equals("forceOverlays"))
+        {
+            CommonProxy.forceShowFrameOverlays = !CommonProxy.forceShowFrameOverlays;
+            button.setText(Localization.getConfigString("showOverlays." + CommonProxy.forceShowFrameOverlays));
+        }
+        else if (button.getID().equals("particles"))
+        {
+            CommonProxy.disableParticles = !CommonProxy.disableParticles;
+            button.setText(Localization.getConfigString("particles." + CommonProxy.disableParticles));
+        }
+        else if (button.getID().equals("powerRequired"))
+        {
+            CommonProxy.requirePower = !CommonProxy.requirePower;
+            button.setText(Localization.getConfigString("requirePower." + CommonProxy.requirePower));
+        }
+        else if (button.getID().equals("powerMultiplier"))
+        {
+            if (CommonProxy.powerMultiplier < 10)
+            {
+                CommonProxy.powerMultiplier++;
+            }
+            else
+            {
+                CommonProxy.powerMultiplier = 1;
+            }
+            
+            button.setText(Localization.getConfigString("multiplier") + CommonProxy.powerMultiplier);
+        }
+        else if (button.getID().equals("fastCooldown"))
+        {
+            CommonProxy.fasterPortalCooldown = !CommonProxy.fasterPortalCooldown;
+            button.setText(Localization.getConfigString("fastCooldown." + CommonProxy.fasterPortalCooldown));
+        }
+    }
+    
     @Override
     protected void keyTyped(char character, int index)
     {

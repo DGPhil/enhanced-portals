@@ -1,9 +1,5 @@
 package uk.co.shadeddimensions.ep3;
 
-import java.util.Set;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.world.WorldEvent;
@@ -13,13 +9,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
+import uk.co.shadeddimensions.ep3.crafting.ThermalExpansion;
+import uk.co.shadeddimensions.ep3.crafting.Vanilla;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.network.PacketPipeline;
 import uk.co.shadeddimensions.ep3.portal.NetworkManager;
-import cpw.mods.fml.client.IModGuiFactory;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -36,7 +34,7 @@ public class EnhancedPortals
 {
     public static final PacketPipeline packetPipeline = new PacketPipeline();
     public static final Logger logger = LogManager.getLogger("EnhancedPortals");
-    
+
     @Instance(Reference.ID)
     public static EnhancedPortals instance;
 
@@ -49,31 +47,37 @@ public class EnhancedPortals
         LoggerConfig modConf = new LoggerConfig(logger.getName(), Level.ALL, true);
         modConf.setParent(fml);
     }
-    
+
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
         packetPipeline.initalise();
         proxy.registerPackets();
-        proxy.setupCrafting();
         proxy.miscSetup();
-        
+
+        Vanilla.registerRecipes();
+
+        if (Loader.isModLoaded("ThermalExpansion") && !CommonProxy.disableTERecipes)
+        {
+            ThermalExpansion.registerRecipes();
+            ThermalExpansion.registerMachineRecipes();
+        }
+
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         MinecraftForge.EVENT_BUS.register(this);
     }
-    
+
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
         packetPipeline.postInitialise();
     }
-    
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         event.getModMetadata().version = Reference.VERSION;
         proxy.setupConfiguration(new Configuration(event.getSuggestedConfigurationFile()));
-        
         proxy.registerBlocks();
         proxy.registerItems();
         proxy.registerTileEntities();
@@ -84,7 +88,7 @@ public class EnhancedPortals
     {
         CommonProxy.networkManager = new NetworkManager(event);
     }
-    
+
     @SubscribeEvent
     public void worldSave(WorldEvent.Save event)
     {

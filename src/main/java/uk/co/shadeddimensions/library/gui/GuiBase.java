@@ -19,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import uk.co.shadeddimensions.library.gui.element.ElementBase;
+import uk.co.shadeddimensions.library.gui.element.ElementButton;
 import uk.co.shadeddimensions.library.gui.element.ElementFakeItemSlot;
 import uk.co.shadeddimensions.library.gui.tab.TabBase;
 import uk.co.shadeddimensions.library.util.GuiUtils;
@@ -363,7 +364,7 @@ public class GuiBase extends GuiScreen implements IGuiBase
     }
 
     @Override
-    public void handleElementButtonClick(String buttonName, int mouseButton)
+    public void handleElementButtonClick(ElementButton button, int mouseButton)
     {
 
     }
@@ -458,5 +459,11 @@ public class GuiBase extends GuiScreen implements IGuiBase
                 getMinecraft().thePlayer.closeScreen();
             }
         }
+    }
+
+    @Override
+    public void handleElementButtonClick(String iD, int mouseButton)
+    {
+        
     }
 }

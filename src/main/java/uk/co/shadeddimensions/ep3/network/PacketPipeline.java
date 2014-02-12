@@ -43,7 +43,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Packet
         ByteBuf payload = msg.payload();
         byte discriminator = payload.readByte();
         Class<? extends PacketEP> clazz = packets.get(discriminator);
-        
+
         if (clazz == null)
         {
             throw new NullPointerException("No packet registered for discriminator: " + discriminator);
@@ -53,7 +53,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Packet
         pkt.decodeInto(ctx, payload.slice());
 
         EntityPlayer player;
-        
+
         switch (FMLCommonHandler.instance().getEffectiveSide())
         {
             case CLIENT:
@@ -79,7 +79,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Packet
     {
         ByteBuf buffer = Unpooled.buffer();
         Class<? extends PacketEP> clazz = msg.getClass();
-        
+
         if (!packets.contains(msg.getClass()))
         {
             throw new NullPointerException("No Packet Registered for: " + msg.getClass().getCanonicalName());
@@ -210,7 +210,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Packet
         channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point);
         channels.get(Side.SERVER).writeAndFlush(message);
     }
-    
+
     public void sendToAllAround(PacketEP message, TileEP tile)
     {
         EnhancedPortals.packetPipeline.sendToAllAround(message, new TargetPoint(tile.getWorldObj().provider.dimensionId, tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5, 128.0));

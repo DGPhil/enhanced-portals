@@ -33,14 +33,9 @@ import cpw.mods.fml.relauncher.Side;
 
 public class GeneralUtils
 {
-    public static void writeNBTTag(NBTTagCompound tag, DataOutput output)
-    {
-
-    }
-
     public static boolean hasEnergyCost()
     {
-        return CommonProxy.redstoneFluxPowerMultiplier > 0;
+        return CommonProxy.powerMultiplier > 0;
     }
 
     public static boolean isWearingGoggles()
@@ -113,6 +108,69 @@ public class GeneralUtils
         }
 
         return list;
+    }
+
+    public static NBTTagCompound NBTJsonRead(File file)
+    {
+        String fileData = "";
+
+        try
+        {
+            BufferedReader br = null;
+
+            try
+            {
+                br = new BufferedReader(new FileReader(file));
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
+
+                while (line != null)
+                {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
+                }
+
+                fileData = sb.toString();
+            }
+            finally
+            {
+                if (br != null)
+                {
+                    br.close();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            EnhancedPortals.logger.catching(e);
+            return null;
+        }
+
+        try
+        {
+            return (NBTTagCompound) JsonToNBT.func_150315_a(fileData);
+        }
+        catch (NBTException e)
+        {
+            EnhancedPortals.logger.catching(e);
+            return null;
+        }
+    }
+
+    public static void NBTJsonSave(NBTTagCompound baseTag, File file)
+    {
+        try
+        {
+            Writer writer = new FileWriter(file);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(baseTag, writer);
+            writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static ChunkCoordinates offset(ChunkCoordinates coord, ForgeDirection dir)
@@ -219,66 +277,8 @@ public class GeneralUtils
         stream.writeUTF(i == null ? "" : i.getGlyphString());
     }
 
-    public static void NBTJsonSave(NBTTagCompound baseTag, File file)
+    public static void writeNBTTag(NBTTagCompound tag, DataOutput output)
     {
-        try
-        {
-            Writer writer = new FileWriter(file);
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(baseTag, writer);
-            writer.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
 
-    public static NBTTagCompound NBTJsonRead(File file)
-    {
-        String fileData = "";
-        
-        try
-        {
-            BufferedReader br = null;
-
-            try
-            {
-                br = new BufferedReader(new FileReader(file));
-                StringBuilder sb = new StringBuilder();
-                String line = br.readLine();
-
-                while (line != null)
-                {
-                    sb.append(line);
-                    sb.append(System.lineSeparator());
-                    line = br.readLine();
-                }
-                
-                fileData = sb.toString();
-            }
-            finally
-            {
-                if (br != null)
-                {
-                    br.close();
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            EnhancedPortals.logger.catching(e);
-            return null;
-        }
-
-        try
-        {
-            return (NBTTagCompound) JsonToNBT.func_150315_a(fileData);
-        }
-        catch (NBTException e)
-        {
-            EnhancedPortals.logger.catching(e);
-            return null;
-        }
     }
 }

@@ -26,17 +26,17 @@ public class TileEP extends TileEntity
     {
         return new WorldCoordinates(getChunkCoordinates(), worldObj.provider.dimensionId);
     }
-    
+
     public void packetFill(ByteBuf buffer)
     {
 
     }
-    
-    public void packetUse(ByteBuf buffer)
+
+    public void packetGui(NBTTagCompound tag, EntityPlayer player)
     {
 
     }
-    
+
     public void packetGuiFill(ByteBuf buffer)
     {
 
@@ -46,17 +46,17 @@ public class TileEP extends TileEntity
     {
 
     }
-    
-    public void packetGui(NBTTagCompound tag, EntityPlayer player)
+
+    public void packetUse(ByteBuf buffer)
     {
-        
+
     }
-    
+
     @Override
     public void validate()
     {
         super.validate();
-        
+
         if (worldObj.isRemote)
         {
             EnhancedPortals.packetPipeline.sendToServer(new PacketRequestData(this));

@@ -12,7 +12,7 @@ import uk.co.shadeddimensions.ep3.lib.Reference;
 public class ItemMisc extends Item
 {
     public static ItemMisc instance;
-    
+
     final static String[] NAMES = new String[] { "blankPortalModule", "blankUpgrade" };
     IIcon[] texture;
 

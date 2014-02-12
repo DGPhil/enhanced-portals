@@ -23,12 +23,12 @@ public class EntityData
         {
             return "Animal";
         }
-        
+
         String name = (String) EntityList.classToStringMapping.get(data.EntityClass);
-        
+
         if (name != null)
         {
-        	return name;
+            return name;
         }
 
         return "Unknown";
@@ -71,18 +71,18 @@ public class EntityData
         {
             return -3;
         }
-        
+
         String name = (String) EntityList.classToStringMapping.get(clazz);
-        
+
         if (name != null)
         {
-        	Entity entity = EntityList.createEntityByName(name, null);
-        	
-        	if (entity != null)
-        	{
-	        	int entityID = EntityList.getEntityID(entity);
-	        	return entityID;
-        	}
+            Entity entity = EntityList.createEntityByName(name, null);
+
+            if (entity != null)
+            {
+                int entityID = EntityList.getEntityID(entity);
+                return entityID;
+            }
         }
 
         return 0;
@@ -124,6 +124,33 @@ public class EntityData
         checkType = type;
     }
 
+    public int isEntityAcceptable(Entity entity)
+    {
+        if (shouldCheckName())
+        {
+            if (entity.getCommandSenderName().equals(EntityDisplayName))
+            {
+                return disallow ? 0 : 1;
+            }
+        }
+        else if (shouldCheckClass())
+        {
+            if (EntityClass.isInstance(entity))
+            {
+                return disallow ? 0 : 1;
+            }
+        }
+        else if (shouldCheckNameAndClass())
+        {
+            if (entity.getCommandSenderName().equals(EntityDisplayName) && EntityClass.isInstance(entity))
+            {
+                return disallow ? 0 : 1;
+            }
+        }
+
+        return -1;
+    }
+
     public EntityData readFromNBT(NBTTagCompound t)
     {
         EntityDisplayName = t.getString("Name");
@@ -159,32 +186,5 @@ public class EntityData
     public boolean shouldCheckNameAndClass()
     {
         return checkType == 2;
-    }
-
-    public int isEntityAcceptable(Entity entity)
-    {
-        if (shouldCheckName())
-        {
-            if (entity.getCommandSenderName().equals(EntityDisplayName))
-            {
-                return disallow ? 0 : 1;
-            }
-        }
-        else if (shouldCheckClass())
-        {
-            if (EntityClass.isInstance(entity))
-            {
-                return disallow ? 0 : 1;
-            }
-        }
-        else if (shouldCheckNameAndClass())
-        {
-            if (entity.getCommandSenderName().equals(EntityDisplayName) && EntityClass.isInstance(entity))
-            {
-                return disallow ? 0 : 1;
-            }
-        }
-
-        return -1;
     }
 }

@@ -68,11 +68,11 @@ public class TileStabilizer extends TileEP
                 }
 
                 ArrayList<ChunkCoordinates> blocks = checkShapeThreeWide(topLeft); // 3x3
-                
+
                 if (blocks.isEmpty())
                 {
                     blocks = checkShapeTwoWide(topLeft, true); // Try the 3x2 X axis
-    
+
                     if (blocks.isEmpty())
                     {
                         blocks = checkShapeTwoWide(topLeft, false); // Try the 3x2 Z axis before failing
@@ -84,7 +84,7 @@ public class TileStabilizer extends TileEP
                     for (ChunkCoordinates c : blocks) // make sure we're not interrupting something
                     {
                         TileEntity tile = worldObj.getTileEntity(c.posX, c.posY, c.posZ);
-                        
+
                         if (tile instanceof TileStabilizer)
                         {
                             if (((TileStabilizer) tile).getMainBlock() != null)
@@ -99,7 +99,7 @@ public class TileStabilizer extends TileEP
                             worldObj.setBlock(c.posX, c.posY, c.posZ, BlockStabilizer.instance, 0, 2);
                         }
                     }
-                    
+
                     for (ChunkCoordinates c : blocks)
                     {
                         TileEntity tile = worldObj.getTileEntity(c.posX, c.posY, c.posZ);
@@ -108,13 +108,13 @@ public class TileStabilizer extends TileEP
                         {
                             TileStabilizer t = (TileStabilizer) tile;
                             t.mainBlock = topLeft;
-                            
+
                             EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(t), t);
                         }
                     }
 
                     worldObj.setBlock(topLeft.posX, topLeft.posY, topLeft.posZ, BlockStabilizer.instance, 1, 3);
-                    
+
                     TileEntity tile = topLeft.getTileEntity();
 
                     if (tile instanceof TileStabilizerMain)
@@ -152,7 +152,7 @@ public class TileStabilizer extends TileEP
             heightChecker.posY--;
             rows++;
         }
-        
+
         if (rows < 2)
         {
             rows = 0;
@@ -169,16 +169,16 @@ public class TileStabilizer extends TileEP
                     {
                         return new ArrayList<ChunkCoordinates>();
                     }
-    
+
                     blocks.add(new ChunkCoordinates(topLeft.posX + i, topLeft.posY - k, topLeft.posZ + j));
                 }
             }
         }
-        
+
         is3x3 = true;
         return blocks;
     }
-    
+
     ArrayList<ChunkCoordinates> checkShapeTwoWide(WorldCoordinates topLeft, boolean isX)
     {
         ArrayList<ChunkCoordinates> blocks = new ArrayList<ChunkCoordinates>();
@@ -196,7 +196,7 @@ public class TileStabilizer extends TileEP
             rows = 0;
             return new ArrayList<ChunkCoordinates>();
         }
-        
+
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 2; j++)
@@ -236,10 +236,9 @@ public class TileStabilizer extends TileEP
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound tag)
+    public void packetFill(ByteBuf buffer)
     {
-        super.readFromNBT(tag);
-        mainBlock = GeneralUtils.loadChunkCoord(tag, "mainBlock");
+        buffer.writeBoolean(mainBlock != null);
     }
 
     @Override
@@ -250,9 +249,10 @@ public class TileStabilizer extends TileEP
     }
 
     @Override
-    public void packetFill(ByteBuf buffer)
+    public void readFromNBT(NBTTagCompound tag)
     {
-        buffer.writeBoolean(mainBlock != null);
+        super.readFromNBT(tag);
+        mainBlock = GeneralUtils.loadChunkCoord(tag, "mainBlock");
     }
 
     @Override

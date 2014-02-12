@@ -14,40 +14,15 @@ public class WorldUtils
         {
             return null;
         }
-        
+
         return new ChunkCoordinates(c.posX + d.offsetX, c.posY + d.offsetY, c.posZ + d.offsetZ);
     }
-    
+
     public static ChunkCoordinates getChunkCoordinatesOffset(TileEP tile, ForgeDirection d)
     {
         return getChunkCoordinatesOffset(tile.getChunkCoordinates(), d);
     }
-    
-    public static TileEntity getTileEntity(World world, ChunkCoordinates c)
-    {
-        if (c == null)
-        {
-            return null;
-        }
-        
-        return world.getTileEntity(c.posX, c.posY, c.posZ);
-    }
-    
-    public static TileEntity getTileEntity(World world, ChunkCoordinates c, ForgeDirection d)
-    {
-        if (c == null)
-        {
-            return null;
-        }
-        
-        return world.getTileEntity(c.posX + d.offsetX, c.posY + d.offsetY, c.posZ + d.offsetZ);
-    }
-    
-    public static TileEntity getTileEntity(TileEP tile, ForgeDirection d)
-    {
-        return getTileEntity(tile.getWorldObj(), tile.getChunkCoordinates(), d);
-    }
-    
+
     public static int getHighestPowerState(TileEP tile)
     {
         byte highest = 0;
@@ -66,11 +41,31 @@ public class WorldUtils
         return highest;
     }
 
-    public static boolean isAirBlock(World world, ChunkCoordinates c, ForgeDirection d)
+    public static TileEntity getTileEntity(TileEP tile, ForgeDirection d)
     {
-        return isAirBlock(world, getChunkCoordinatesOffset(c, d));
+        return getTileEntity(tile.getWorldObj(), tile.getChunkCoordinates(), d);
     }
-    
+
+    public static TileEntity getTileEntity(World world, ChunkCoordinates c)
+    {
+        if (c == null)
+        {
+            return null;
+        }
+
+        return world.getTileEntity(c.posX, c.posY, c.posZ);
+    }
+
+    public static TileEntity getTileEntity(World world, ChunkCoordinates c, ForgeDirection d)
+    {
+        if (c == null)
+        {
+            return null;
+        }
+
+        return world.getTileEntity(c.posX + d.offsetX, c.posY + d.offsetY, c.posZ + d.offsetZ);
+    }
+
     public static boolean isAirBlock(TileEP tile, ForgeDirection orientation)
     {
         return isAirBlock(tile.getWorldObj(), tile.getChunkCoordinates(), orientation);
@@ -79,5 +74,10 @@ public class WorldUtils
     public static boolean isAirBlock(World world, ChunkCoordinates c)
     {
         return world.isAirBlock(c.posX, c.posY, c.posZ);
+    }
+
+    public static boolean isAirBlock(World world, ChunkCoordinates c, ForgeDirection d)
+    {
+        return isAirBlock(world, getChunkCoordinatesOffset(c, d));
     }
 }

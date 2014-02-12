@@ -2,12 +2,10 @@ package uk.co.shadeddimensions.ep3.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import uk.co.shadeddimensions.ep3.lib.Reference;
 import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
@@ -15,7 +13,7 @@ import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
 public class ItemLocationCard extends Item
 {
     public static ItemLocationCard instance;
-    
+
     public static void clearDBSLocation(ItemStack s)
     {
         s.setTagCompound(null);

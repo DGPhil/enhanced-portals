@@ -13,7 +13,7 @@ public class ItemGoggles extends ItemArmor
 {
     public static ItemGoggles instance;
     IIcon overlay;
-    
+
     public ItemGoggles()
     {
         super(ArmorMaterial.CLOTH, EnhancedPortals.proxy.glassesRenderIndex, 0);
@@ -41,23 +41,10 @@ public class ItemGoggles extends ItemArmor
         else
         {
             NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
-            return nbttagcompound1 == null ? 0xFFFFFF : (nbttagcompound1.hasKey("color", 3) ? nbttagcompound1.getInteger("color") : 0xFFFFFF);
+            return nbttagcompound1 == null ? 0xFFFFFF : nbttagcompound1.hasKey("color", 3) ? nbttagcompound1.getInteger("color") : 0xFFFFFF;
         }
     }
-    
-    @Override
-    public boolean requiresMultipleRenderPasses()
-    {
-        return true;
-    }
-    
-    @Override
-    public void registerIcons(IIconRegister register)
-    {
-        super.registerIcons(register);
-        overlay = register.registerIcon("enhancedportals:glasses_1");
-    }
-    
+
     @Override
     public IIcon getIconFromDamageForRenderPass(int damage, int pass)
     {
@@ -65,7 +52,20 @@ public class ItemGoggles extends ItemArmor
         {
             return overlay;
         }
-        
+
         return super.getIconFromDamageForRenderPass(damage, pass);
+    }
+
+    @Override
+    public void registerIcons(IIconRegister register)
+    {
+        super.registerIcons(register);
+        overlay = register.registerIcon("enhancedportals:glasses_1");
+    }
+
+    @Override
+    public boolean requiresMultipleRenderPasses()
+    {
+        return true;
     }
 }

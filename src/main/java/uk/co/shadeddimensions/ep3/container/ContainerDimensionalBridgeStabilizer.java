@@ -47,7 +47,7 @@ public class ContainerDimensionalBridgeStabilizer extends ContainerBase
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setInteger("energy", currentPower);
-                //PacketDispatcher.sendPacketToPlayer(new PacketGuiData(tag).getPacket(), (Player) icrafting); // TODO
+                // PacketDispatcher.sendPacketToPlayer(new PacketGuiData(tag).getPacket(), (Player) icrafting); // TODO
             }
             if (lastPortals != currentPortals)
             {

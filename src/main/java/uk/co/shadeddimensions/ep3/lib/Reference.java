@@ -6,8 +6,6 @@ import java.util.Properties;
 import net.minecraft.creativetab.CreativeTabs;
 import uk.co.shadeddimensions.ep3.creativetab.CreativeTabEP3;
 
-import com.google.common.base.Throwables;
-
 public class Reference
 {
     static
@@ -22,12 +20,12 @@ public class Reference
         }
         catch (Exception e)
         {
-            
+
         }
 
-        VERSION = properties.containsKey("ep3.version") ? properties.getProperty("ep3.version") : ""; 
+        VERSION = properties.containsKey("ep3.version") ? properties.getProperty("ep3.version") : "";
     }
-    
+
     public static final String ID = "ep3";
     public static final String NAME = "EnhancedPortals";
     public static final String VERSION;
@@ -36,7 +34,7 @@ public class Reference
 
     public static final String CLIENT_PROXY = "uk.co.shadeddimensions.ep3.network.ClientProxy";
     public static final String COMMON_PROXY = "uk.co.shadeddimensions.ep3.network.CommonProxy";
-    
+
     public static final String GUI_FACTORY = "uk.co.shadeddimensions.ep3.client.GuiFactory";
 
     public static CreativeTabs creativeTab = new CreativeTabEP3();

@@ -225,6 +225,27 @@ ep3.gui.particleType.2.info=Does not change at all
 ep3.gui.particleType.3.name=Loop
 ep3.gui.particleType.3.info=Continuously loops through its sequence
 
+# Config
+ep3.config.alternateGlyph.false=Glyphs: Normal
+ep3.config.alternateGlyph.true=Glyphs: Alternate
+ep3.config.sounds.false=Sounds: NO
+ep3.config.sounds.true=Sounds: YES
+ep3.config.portalsDestroy.false=Destroy Blocks: NO
+ep3.config.portalsDestroy.true=Destroy Blocks: YES
+ep3.config.showOverlays.false=Force Overlays: NO
+ep3.config.showOverlays.true=Force Overlays: YES
+ep3.config.particles.false=Particles: NO
+ep3.config.particles.true=Particles: YES
+ep3.config.requirePower.false=Require Power: NO
+ep3.config.requirePower.true=Require Power: YES
+ep3.config.multiplier=Multiplier: 
+ep3.config.fastCooldown.false=Fast Cooldown: NO
+ep3.config.fastCooldown.true=Fast Cooldown: YES
+ep3.config.general=General
+ep3.config.portal=Portal
+ep3.config.power=Power
+ep3.config.teleportation=Teleportation
+
 # Guide
 ep3.gui.mainMain=Welcome!
 ep3.gui.mainMain.information=This manual is split up into sections, you will find the categories on the left. When you have selected a category, its contents will show up in new tabs on the right.<N><N>Last Update: Beta 4.

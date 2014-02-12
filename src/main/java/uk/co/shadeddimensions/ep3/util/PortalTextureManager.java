@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
 import cpw.mods.fml.common.network.ByteBufUtils;
 
@@ -15,7 +14,7 @@ public class PortalTextureManager
     int particleColour, particleType;
     ItemStack[] inventory;
     TileController controller;
-    
+
     public PortalTextureManager()
     {
         frameColour = portalColour = 0xffffff;
@@ -23,12 +22,6 @@ public class PortalTextureManager
         particleType = 0;
         customFrameTexture = customPortalTexture = -1;
         inventory = new ItemStack[2];
-    }
-    
-    public PortalTextureManager(TileController controller)
-    {
-        this();
-        this.controller = controller;
     }
 
     public PortalTextureManager(PortalTextureManager p)
@@ -41,6 +34,12 @@ public class PortalTextureManager
         customPortalTexture = p.customPortalTexture;
         inventory = p.inventory;
         controller = p.controller;
+    }
+
+    public PortalTextureManager(TileController controller)
+    {
+        this();
+        this.controller = controller;
     }
 
     public int getCustomFrameTexture()
@@ -106,7 +105,7 @@ public class PortalTextureManager
 
         for (int i = 0; i < inventory.length; i++)
         {
-            NBTTagCompound T = (NBTTagCompound) l.getCompoundTagAt(i);
+            NBTTagCompound T = l.getCompoundTagAt(i);
             inventory[i] = ItemStack.loadItemStackFromNBT(T);
         }
     }

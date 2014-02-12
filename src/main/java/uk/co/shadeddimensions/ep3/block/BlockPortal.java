@@ -30,7 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockPortal extends BlockContainer
 {
     public static BlockPortal instance;
-    
+
     IIcon texture;
 
     public BlockPortal()
@@ -65,15 +65,15 @@ public class BlockPortal extends BlockContainer
     }
 
     @Override
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side)
-    {
-        return ((TilePortal) blockAccess.getTileEntity(x, y, z)).getBlockTexture(side);
-    }
-
-    @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4)
     {
         return null;
+    }
+
+    @Override
+    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side)
+    {
+        return ((TilePortal) blockAccess.getTileEntity(x, y, z)).getBlockTexture(side);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class BlockPortal extends BlockContainer
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-        if (CommonProxy.disablePortalSounds && CommonProxy.disableParticles)
+        if (CommonProxy.disableSounds && CommonProxy.disableParticles)
         {
             return;
         }
@@ -149,18 +149,18 @@ public class BlockPortal extends BlockContainer
         int metadata = world.getBlockMetadata(x, y, z);
         TileController controller = ((TilePortal) world.getTileEntity(x, y, z)).getPortalController();
         TileModuleManipulator module = controller == null ? null : controller.getModuleManipulator();
-        boolean doSounds = !CommonProxy.disablePortalSounds && random.nextInt(100) == 0, doParticles = !CommonProxy.disableParticles;
-        
+        boolean doSounds = !CommonProxy.disableSounds && random.nextInt(100) == 0, doParticles = !CommonProxy.disableParticles;
+
         if (module != null)
         {
-        	if (doSounds) // Don't want to force to play sounds 100% of the time with no upgrade
-        	{
-        		doSounds = !module.hasModule(ItemPortalModule.PortalModules.REMOVE_SOUNDS.getUniqueID());
-        	}
-        	
-        	doParticles = !module.hasModule(ItemPortalModule.PortalModules.REMOVE_PARTICLES.getUniqueID());
+            if (doSounds) // Don't want to force to play sounds 100% of the time with no upgrade
+            {
+                doSounds = !module.hasModule(ItemPortalModule.PortalModules.REMOVE_SOUNDS.getUniqueID());
+            }
+
+            doParticles = !module.hasModule(ItemPortalModule.PortalModules.REMOVE_PARTICLES.getUniqueID());
         }
-        
+
         if (doSounds)
         {
             world.playSound(x + 0.5D, y + 0.5D, z + 0.5D, "portal.portal", 0.5F, random.nextFloat() * 0.4F + 0.8F, false);
@@ -207,12 +207,12 @@ public class BlockPortal extends BlockContainer
                 }
 
                 PortalFX fx = new PortalFX(world, controller, d0, d1, d2, d3, d4, d5);
-                
+
                 if (module != null)
                 {
                     module.particleCreated(fx);
                 }
-                
+
                 FMLClientHandler.instance().getClient().effectRenderer.addEffect(fx);
             }
         }
@@ -222,7 +222,7 @@ public class BlockPortal extends BlockContainer
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         texture = iconRegister.registerIcon("enhancedportals:portal");
-        
+
         ClientProxy.customPortalTextures.clear();
         int counter = 0;
 
