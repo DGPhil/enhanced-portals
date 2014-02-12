@@ -74,7 +74,7 @@ public class TileController extends TileFrame //implements IPeripheral
 
     WorldCoordinates dimensionalBridgeStabilizer;
 
-    public PortalTextureManager activeTextureData = new PortalTextureManager(), inactiveTextureData;
+    public PortalTextureManager activeTextureData, inactiveTextureData;
 
     ControlState portalState = ControlState.REQUIRES_LOCATION;
 
@@ -96,6 +96,11 @@ public class TileController extends TileFrame //implements IPeripheral
     @SideOnly(Side.CLIENT)
     GlyphIdentifier uID;
 
+    public TileController()
+    {
+        activeTextureData = new PortalTextureManager(this);
+    }
+    
     @Override
     public boolean activate(EntityPlayer player, ItemStack stack)
     {
@@ -1072,7 +1077,7 @@ public class TileController extends TileFrame //implements IPeripheral
 
         if (tagCompound.hasKey("InactiveTextureData"))
         {
-            inactiveTextureData = new PortalTextureManager();
+            inactiveTextureData = new PortalTextureManager(this);
             inactiveTextureData.readFromNBT(tagCompound, "InactiveTextureData");
         }
         

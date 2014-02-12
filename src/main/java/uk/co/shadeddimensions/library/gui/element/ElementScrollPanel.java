@@ -2,6 +2,8 @@ package uk.co.shadeddimensions.library.gui.element;
 
 import java.util.List;
 
+import net.minecraft.client.gui.Gui;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -66,6 +68,8 @@ public class ElementScrollPanel extends ElementBaseContainer
     @Override
     public void draw()
     {
+        //Gui.drawRect(posX, posY, posX + sizeX, posY + sizeY, 0x22FF0000);
+        
         for (ElementBase element : elements)
         {
             int x = posX + (int) scrollX + element.getRelativeX(), y = posY + (int) scrollY + element.getRelativeY();

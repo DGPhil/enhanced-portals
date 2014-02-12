@@ -2,6 +2,7 @@ package uk.co.shadeddimensions.ep3.client.gui;
 
 import java.awt.Color;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -464,8 +465,7 @@ public class GuiTexture extends GuiBaseContainer
     {
         if (screenState == 0)
         {
-            // TODO
-            //return stack == null || stack.getItem() instanceof ItemBlock && Block.blocksList[((ItemBlock) stack.getItem()).getBlockID()].isOpaqueCube();
+            return stack == null || stack.getItem() instanceof ItemBlock && Block.getBlockFromItem(stack.getItem()).isNormalCube();
         }
 
         return stack == null || stack.getItem() instanceof ItemBlock || FluidContainerRegistry.isFilledContainer(stack);

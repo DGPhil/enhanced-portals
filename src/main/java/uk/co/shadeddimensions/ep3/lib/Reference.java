@@ -25,7 +25,7 @@ public class Reference
             
         }
 
-        VERSION = properties.containsKey("version") ? properties.getProperty("version") : ""; 
+        VERSION = properties.containsKey("ep3.version") ? properties.getProperty("ep3.version") : ""; 
     }
     
     public static final String ID = "ep3";
@@ -36,6 +36,8 @@ public class Reference
 
     public static final String CLIENT_PROXY = "uk.co.shadeddimensions.ep3.network.ClientProxy";
     public static final String COMMON_PROXY = "uk.co.shadeddimensions.ep3.network.CommonProxy";
+    
+    public static final String GUI_FACTORY = "uk.co.shadeddimensions.ep3.client.GuiFactory";
 
     public static CreativeTabs creativeTab = new CreativeTabEP3();
 }

@@ -1,5 +1,9 @@
 package uk.co.shadeddimensions.ep3;
 
+import java.util.Set;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.world.WorldEvent;
@@ -14,6 +18,7 @@ import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
 import uk.co.shadeddimensions.ep3.network.PacketPipeline;
 import uk.co.shadeddimensions.ep3.portal.NetworkManager;
+import cpw.mods.fml.client.IModGuiFactory;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -26,10 +31,11 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(name = Reference.NAME, modid = Reference.ID, dependencies = Reference.DEPENDENCIES, acceptedMinecraftVersions = Reference.MC_VERSION)
+@Mod(name = Reference.NAME, modid = Reference.ID, dependencies = Reference.DEPENDENCIES, acceptedMinecraftVersions = Reference.MC_VERSION, guiFactory = Reference.GUI_FACTORY)
 public class EnhancedPortals
 {
     public static final PacketPipeline packetPipeline = new PacketPipeline();
+    public static final Logger logger = LogManager.getLogger("EnhancedPortals");
     
     @Instance(Reference.ID)
     public static EnhancedPortals instance;
@@ -37,8 +43,6 @@ public class EnhancedPortals
     @SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
     public static CommonProxy proxy;
 
-    public static final Logger logger = LogManager.getLogger("EnhancedPortals");
-    
     public EnhancedPortals()
     {
         LoggerConfig fml = new LoggerConfig(FMLCommonHandler.instance().getFMLLogger().getName(), Level.ALL, true);
@@ -53,7 +57,7 @@ public class EnhancedPortals
         proxy.registerPackets();
         proxy.setupCrafting();
         proxy.miscSetup();
-
+        
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         MinecraftForge.EVENT_BUS.register(this);
     }

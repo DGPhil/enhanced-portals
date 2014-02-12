@@ -23,8 +23,8 @@ public class ElementScrollBar extends ElementBase
     public void draw()
     {
         int scr = Math.min(sizeY - barSize - 1, (int) scroll);
-        Gui.drawRect(posX, posY, posX + sizeX, posY + sizeY - 1, 0x33000000);
-        Gui.drawRect(posX, posY + scr, posX + sizeX, posY + scr + barSize, 0x77000000);
+        Gui.drawRect(posX, posY, posX + sizeX, posY + sizeY - 1, 0x33FFFFFF);
+        Gui.drawRect(posX, posY + scr, posX + sizeX, posY + scr + barSize, 0x77FFFFFF);
     }
 
     @Override

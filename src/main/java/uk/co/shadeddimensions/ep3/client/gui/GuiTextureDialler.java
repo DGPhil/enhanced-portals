@@ -2,6 +2,7 @@ package uk.co.shadeddimensions.ep3.client.gui;
 
 import java.awt.Color;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -444,6 +445,11 @@ public class GuiTextureDialler extends GuiBaseContainer
     @Override
     public boolean isItemStackAllowedInFakeSlot(ElementFakeItemSlot slot, ItemStack stack)
     {
+        if (screenState == 0)
+        {
+            return stack == null || stack.getItem() instanceof ItemBlock && Block.getBlockFromItem(stack.getItem()).isNormalCube();
+        }
+        
         return stack == null || stack.getItem() instanceof ItemBlock || FluidContainerRegistry.isFilledContainer(stack);
     }
 

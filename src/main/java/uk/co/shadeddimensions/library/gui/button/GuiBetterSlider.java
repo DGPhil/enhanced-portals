@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiBetterSlider extends GuiButton
 {
+    public String initialText;
     public float sliderValue = 1.0F;
     public boolean dragging;
 
@@ -15,12 +16,14 @@ public class GuiBetterSlider extends GuiButton
     {
         super(id, x, y, 150, 20, displayText);
         sliderValue = initialValue;
+        initialText = displayText;
     }
 
     public GuiBetterSlider(int id, int x, int y, String displayText, float initialValue, int w)
     {
         super(id, x, y, w, 20, displayText);
         sliderValue = initialValue;
+        initialText = displayText;
     }
 
     /**
@@ -104,6 +107,7 @@ public class GuiBetterSlider extends GuiButton
     {
         if (this.visible)
         {
+            displayString = initialText + ": " + (int) (sliderValue * 100) + "%";
             FontRenderer fontrenderer = par1Minecraft.fontRenderer;
             par1Minecraft.getTextureManager().bindTexture(buttonTextures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

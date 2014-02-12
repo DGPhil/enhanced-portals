@@ -400,9 +400,12 @@ public class GuiBase extends GuiScreen implements IGuiBase
     {
         super.keyTyped(character, index);
 
-        if (index == 1 || index == getMinecraft().gameSettings.keyBindInventory.getKeyCode())
+        if (getMinecraft().thePlayer != null)
         {
-            getMinecraft().thePlayer.closeScreen();
+            if (index == 1 || index == getMinecraft().gameSettings.keyBindInventory.getKeyCode())
+            {
+                getMinecraft().thePlayer.closeScreen();
+            }
         }
     }
 
@@ -448,9 +451,12 @@ public class GuiBase extends GuiScreen implements IGuiBase
     {
         super.updateScreen();
 
-        if (!getMinecraft().thePlayer.isEntityAlive() || getMinecraft().thePlayer.isDead)
+        if (getMinecraft().thePlayer != null)
         {
-            getMinecraft().thePlayer.closeScreen();
+            if (!getMinecraft().thePlayer.isEntityAlive() || getMinecraft().thePlayer.isDead)
+            {
+                getMinecraft().thePlayer.closeScreen();
+            }
         }
     }
 }

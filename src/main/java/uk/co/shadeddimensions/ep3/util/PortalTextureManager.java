@@ -1,15 +1,12 @@
 package uk.co.shadeddimensions.ep3.util;
 
 import io.netty.buffer.ByteBuf;
-
-import java.io.DataInputStream;
-import java.io.IOException;
-
-import uk.co.shadeddimensions.ep3.EnhancedPortals;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import uk.co.shadeddimensions.ep3.EnhancedPortals;
+import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
+import cpw.mods.fml.common.network.ByteBufUtils;
 
 public class PortalTextureManager
 {
@@ -17,7 +14,8 @@ public class PortalTextureManager
     int portalColour, customPortalTexture;
     int particleColour, particleType;
     ItemStack[] inventory;
-
+    TileController controller;
+    
     public PortalTextureManager()
     {
         frameColour = portalColour = 0xffffff;
@@ -25,6 +23,12 @@ public class PortalTextureManager
         particleType = 0;
         customFrameTexture = customPortalTexture = -1;
         inventory = new ItemStack[2];
+    }
+    
+    public PortalTextureManager(TileController controller)
+    {
+        this();
+        this.controller = controller;
     }
 
     public PortalTextureManager(PortalTextureManager p)
@@ -36,6 +40,7 @@ public class PortalTextureManager
         customFrameTexture = p.customFrameTexture;
         customPortalTexture = p.customPortalTexture;
         inventory = p.inventory;
+        controller = p.controller;
     }
 
     public int getCustomFrameTexture()
@@ -97,54 +102,61 @@ public class PortalTextureManager
         particleType = t.getInteger("particleType");
         customFrameTexture = t.getInteger("customFrameTexture");
         customPortalTexture = t.getInteger("customPortalTexture");
-        NBTTagList l = t.getTagList("Inventory", 9);
+        NBTTagList l = t.getTagList("Inventory", 10);
 
         for (int i = 0; i < inventory.length; i++)
         {
             NBTTagCompound T = (NBTTagCompound) l.getCompoundTagAt(i);
             inventory[i] = ItemStack.loadItemStackFromNBT(T);
-            EnhancedPortals.logger.warn("Loaded: " + inventory[i]);
         }
     }
 
     public void setCustomFrameTexture(int i)
     {
         customFrameTexture = i;
+        controller.markDirty();
     }
 
     public void setCustomPortalTexture(int i)
     {
         customPortalTexture = i;
+        controller.markDirty();
     }
 
     public void setFrameColour(int i)
     {
         frameColour = i;
+        controller.markDirty();
     }
 
     public void setFrameItem(ItemStack s)
     {
         inventory[0] = s;
+        controller.markDirty();
     }
 
     public void setParticleColour(int i)
     {
         particleColour = i;
+        controller.markDirty();
     }
 
     public void setParticleType(int i)
     {
         particleType = i;
+        controller.markDirty();
     }
 
     public void setPortalColour(int i)
     {
         portalColour = i;
+        controller.markDirty();
     }
 
     public void setPortalItem(ItemStack s)
     {
         inventory[1] = s;
+        controller.markDirty();
     }
 
     public void usePacket(ByteBuf buffer)
@@ -159,7 +171,6 @@ public class PortalTextureManager
         for (int i = 0; i < inventory.length; i++)
         {
             inventory[i] = ByteBufUtils.readItemStack(buffer);
-            EnhancedPortals.logger.warn("Read: " + inventory[i]);
         }
     }
 
@@ -180,7 +191,6 @@ public class PortalTextureManager
 
             if (element != null)
             {
-                EnhancedPortals.logger.warn("Saving: " + element);
                 element.writeToNBT(T);
             }
 
@@ -202,7 +212,6 @@ public class PortalTextureManager
 
         for (ItemStack element : inventory)
         {
-            EnhancedPortals.logger.warn("Writing: " + element);
             ByteBufUtils.writeItemStack(buffer, element);
         }
     }
