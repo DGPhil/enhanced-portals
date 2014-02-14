@@ -127,7 +127,6 @@ public class GeneralUtils
                 while (line != null)
                 {
                     sb.append(line);
-                    sb.append(System.lineSeparator());
                     line = br.readLine();
                 }
 

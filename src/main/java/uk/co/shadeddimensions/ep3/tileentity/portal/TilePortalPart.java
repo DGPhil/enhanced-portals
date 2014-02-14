@@ -117,6 +117,7 @@ public class TilePortalPart extends TileEP
             portalController = null;
         }
 
+        cachedController = null;
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
@@ -139,6 +140,7 @@ public class TilePortalPart extends TileEP
     public void setPortalController(ChunkCoordinates c)
     {
         portalController = c;
+        cachedController = null;
         markDirty();
         EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(this), this);
     }

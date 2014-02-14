@@ -129,7 +129,7 @@ ep3.gui.notSet=Not Set
 # GUI Biometric Identifier
 ep3.gui.biometricIdentifier=Biometric Identifier
 ep3.gui.sending=Sending
-ep3.gui.recieving=Recieving
+ep3.gui.receiving=Receiving
 ep3.gui.allow=Allow
 ep3.gui.allowing=Allowing
 ep3.gui.disallow=Disallow

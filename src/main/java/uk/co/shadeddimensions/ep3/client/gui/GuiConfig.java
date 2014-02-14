@@ -87,10 +87,10 @@ public class GuiConfig extends GuiBase
         
         y += 50;
         panel.addElement(new ElementText(this, 0, y, Localization.getConfigString("portal"), null, 0xFFFFFF, true));
-        panel.addElement(new ElementButton(this, 0, y + 15, 110, "sound", Localization.getConfigString("sounds." + CommonProxy.disableSounds)));
+        panel.addElement(new ElementButton(this, 0, y + 15, 110, "sound", Localization.getConfigString("sounds." + !CommonProxy.disableSounds)));
         panel.addElement(new ElementButton(this, 115, y + 15, 110, "destroyBlocks", Localization.getConfigString("portalsDestroy." + CommonProxy.portalsDestroyBlocks)));
         panel.addElement(new ElementButton(this, 230, y + 15, 110, "forceOverlays", Localization.getConfigString("showOverlays." + CommonProxy.forceShowFrameOverlays)));
-        panel.addElement(new ElementButton(this, 0, y + 40, 110, "particles", Localization.getConfigString("particles." + CommonProxy.disableParticles)));
+        panel.addElement(new ElementButton(this, 0, y + 40, 110, "particles", Localization.getConfigString("particles." + !CommonProxy.disableParticles)));
         
         y += 70;
         panel.addElement(new ElementText(this, 0, y, Localization.getConfigString("power"), null, 0xFFFFFF, true));
@@ -104,7 +104,7 @@ public class GuiConfig extends GuiBase
         ElementBase lastElement = panel.getElements().get(panel.getElements().size() - 1);
         panel.addElement(new ElementText(this, 0, lastElement.getRelativeY() + lastElement.getHeight() + 10, "", null));
         addElement(panel);
-        addElement(new ElementScrollBar(this, panel.getRelativeX() + panel.getWidth() + 5, -guiTop + 37, 5, panel.getHeight() - 7, panel));
+        addElement(new ElementScrollBar(this, panel.getRelativeX() + panel.getWidth() + 5, -guiTop + 37, 5, panel.getHeight() - 7, panel, 0x33FFFFFF, 0x77FFFFFF));
 
         buttonList.add(new GuiButton(0, width / 2 - 100, height - 40, "Done"));
     }
@@ -130,7 +130,7 @@ public class GuiConfig extends GuiBase
         else if (button.getID().equals("sound"))
         {
             CommonProxy.disableSounds = !CommonProxy.disableSounds;
-            button.setText(Localization.getConfigString("sounds." + CommonProxy.disableSounds));
+            button.setText(Localization.getConfigString("sounds." + !CommonProxy.disableSounds));
         }
         else if (button.getID().equals("destroyBlocks"))
         {
@@ -145,7 +145,7 @@ public class GuiConfig extends GuiBase
         else if (button.getID().equals("particles"))
         {
             CommonProxy.disableParticles = !CommonProxy.disableParticles;
-            button.setText(Localization.getConfigString("particles." + CommonProxy.disableParticles));
+            button.setText(Localization.getConfigString("particles." + !CommonProxy.disableParticles));
         }
         else if (button.getID().equals("powerRequired"))
         {

@@ -163,7 +163,7 @@ public class TileDiallingDevice extends TileFrame //implements IPeripheral
     public void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);
-        NBTTagList list = tag.getTagList("glyphList", 9);
+        NBTTagList list = tag.getTagList("glyphList", 10);
 
         for (int i = 0; i < list.tagCount(); i++)
         {

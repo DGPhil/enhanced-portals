@@ -165,21 +165,21 @@ public class GuiDiallingDevice extends GuiBase
     }
 
     @Override
-    public void handleElementButtonClick(String buttonName, int mouseButton)
+    public void handleElementButtonClick(ElementButton button, int mouseButton)
     {
-        int num = Integer.parseInt(buttonName.substring(1));
+        int num = Integer.parseInt(button.getID().substring(1));
 
-        if (buttonName.startsWith("D"))
+        if (button.getID().startsWith("D"))
         {
             selector.setIdentifierTo(dial.glyphList.get(num).identifier);
         }
-        else if (buttonName.startsWith("T"))
+        else if (button.getID().startsWith("T"))
         {
             ClientProxy.editingDialEntry = num;
             //PacketDispatcher.sendPacketToServer(new PacketTextureData(num, dial.xCoord, dial.yCoord, dial.zCoord).getPacket()); // TODO
             GuiHandler.openGui(Minecraft.getMinecraft().thePlayer, dial, GuiHandler.TEXTURE_DIALLER);
         }
-        else if (buttonName.startsWith("R"))
+        else if (button.getID().startsWith("R"))
         {
             selector.reset();
 
@@ -304,9 +304,8 @@ public class GuiDiallingDevice extends GuiBase
         }
         
         boolean portalActive = controller.isPortalActive();
-        
-        selector.setDisabled(portalActive);
-        panel.setDisabled(portalActive);
+        selector.setDisabled(showOverlay || portalActive);
+        panel.setDisabled(showOverlay || portalActive);
         ((GuiButton) buttonList.get(1)).enabled = !showOverlay && !portalActive;
         ((GuiButton) buttonList.get(2)).enabled = !showOverlay && !portalActive;
 

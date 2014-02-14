@@ -28,9 +28,9 @@ public class ThermalExpansion
 
     public static void registerRecipes()
     {
-        ItemStack machineFrame = getItemStack("machineFrame"), coilGold = getItemStack("powerCoilGold"), electrum = getItemStack("ingotElectrum");
+        //ItemStack machineFrame = getItemStack("machineFrame"), coilGold = getItemStack("powerCoilGold"), electrum = getItemStack("ingotElectrum");
 
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockFrame.instance, 4, 0), "SQS", "QMQ", "SQS", 'S', new ItemStack(Blocks.stone), 'Q', new ItemStack(Items.quartz), 'M', machineFrame));
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockCrafting.instance, 1, 0), " E ", "EME", "CCC", 'M', machineFrame, 'C', coilGold, 'E', electrum));
+        //GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockFrame.instance, 4, 0), "SQS", "QMQ", "SQS", 'S', new ItemStack(Blocks.stone), 'Q', new ItemStack(Items.quartz), 'M', machineFrame));
+        //GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockCrafting.instance, 1, 0), " E ", "EME", "CCC", 'M', machineFrame, 'C', coilGold, 'E', electrum));
     }
 }

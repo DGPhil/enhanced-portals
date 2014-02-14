@@ -3,12 +3,14 @@ package uk.co.shadeddimensions.ep3.client.gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
 import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.container.ContainerTransferEnergy;
+import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileTransferEnergy;
 import uk.co.shadeddimensions.library.gui.GuiBaseContainer;
@@ -25,6 +27,14 @@ public class GuiTransferEnergy extends GuiBaseContainer
         ySize = 52;
         name = BlockFrame.instance.getUnlocalizedName() + ".energy.name";
         drawInventory = false;
+        drawName = false;
+    }
+    
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+    {
+        getFontRenderer().drawStringWithShadow(StatCollector.translateToLocal(name), xSize / 2 - getFontRenderer().getStringWidth(StatCollector.translateToLocal(name)) / 2, -15, 0xFFFFFF);
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
     
     @Override
@@ -56,13 +66,13 @@ public class GuiTransferEnergy extends GuiBaseContainer
     public void initGui()
     {
         super.initGui();
-        buttonList.add(new GuiButton(0, guiLeft + 23, guiTop + ySize - 25, xSize - 28, 20, energy.isSending ? "Sending" : "Receiving"));
+        buttonList.add(new GuiButton(0, guiLeft + 23, guiTop + ySize / 2 - 10, xSize - 28, 20, energy.isSending ? Localization.getGuiString("sending") : Localization.getGuiString("recieving")));
     }
     
     @Override
     public void updateScreen()
     {
         super.updateScreen();
-        ((GuiButton) buttonList.get(0)).displayString = energy.isSending ? "Sending" : "Receiving";
+        ((GuiButton) buttonList.get(0)).displayString = energy.isSending ? Localization.getGuiString("sending") : Localization.getGuiString("receiving");
     }
 }

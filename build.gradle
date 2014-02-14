@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.2-3.0.0b6-dev1"
+version = "1.7.2-3.0.0b6"
 group= "uk.co.shadeddimensions"
 archivesBaseName = "EnhancedPortals"
 
@@ -30,15 +30,29 @@ processResources
 {
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-		include 'version.properties'
-        
+        include 'version.properties'
+
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-	
+
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-		exclude 'version.properties'
+        exclude 'version.properties'
     }
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'src'
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+artifacts {
+    archives sourceJar, deobfJar
 }
 
 configurations {
@@ -53,20 +67,19 @@ dependencies {
     deployerJars 'org.apache.maven.wagon:wagon-ftp:2.2'
 }
 
-if(!project.hasProperty('ftpUrl')) ftpUrl = ''
-if(!project.hasProperty('ftpUsername')) ftpUsername = ''
-if(!project.hasProperty('ftpPassword')) ftpPassword = ''
-	
 uploadArchives {
     dependsOn 'build'
-	
-	repositories
-	{
-		mavenDeployer {
-		configuration = configurations.deployerJars
-			repository(url: ftpUrl) {
-				authentication(userName: ftpUsername, password: ftpPassword)
-			}
+
+    repositories
+    {
+       if (project.hasProperty('ftpUrl'))
+       {
+            mavenDeployer {
+            configuration = configurations.deployerJars
+                repository(url: ftpUrl) {
+                      authentication(userName: ftpUsername, password: ftpPassword)
+                }
+            }
 		}
-	}
+    }
 }

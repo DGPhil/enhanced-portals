@@ -57,18 +57,13 @@ public class CommonProxy
         public static Property useAlternateGlyphs, forceShowFrameOverlays, disableSounds, disableParticles, portalsDestroyBlocks, fasterPortalCooldown, requirePower, powerMultiplier;
     }
 
-    public static final int REDSTONE_FLUX_COST = 10000;
-
-    public static final int REDSTONE_FLUX_TIMER = 20;
-
-    public int glassesRenderIndex = 0;
+    public static final int REDSTONE_FLUX_COST = 10000, REDSTONE_FLUX_TIMER = 20;
+    public int glassesRenderIndex;
 
     public static NetworkManager networkManager;
-
     public static Configuration config;
 
     public static boolean useAlternateGlyphs, forceShowFrameOverlays, disableSounds, disableParticles, portalsDestroyBlocks, fasterPortalCooldown, requirePower, disableVanillaRecipes, disableTERecipes;
-
     public static int powerMultiplier;
 
     public static void saveConfigs()
@@ -117,10 +112,10 @@ public class CommonProxy
     {
         GameRegistry.registerItem(new ItemWrench(), "wrench");
         GameRegistry.registerItem(new ItemPaintbrush(), "nanobrush");
-        GameRegistry.registerItem(new ItemGoggles(), "goggles");
+        GameRegistry.registerItem(new ItemGoggles(), "glasses");
         GameRegistry.registerItem(new ItemLocationCard(), "location_card");
         GameRegistry.registerItem(new ItemPortalModule(), "portal_module");
-        GameRegistry.registerItem(new ItemEntityCard(), "entity_card");
+        GameRegistry.registerItem(new ItemEntityCard(), "id_card");
         GameRegistry.registerItem(new ItemHandheldScanner(), "handheld_scanner");
         GameRegistry.registerItem(new ItemUpgrade(), "upgrade");
         GameRegistry.registerItem(new ItemMisc(), "misc_items");
@@ -157,20 +152,24 @@ public class CommonProxy
     public void setupConfiguration(Configuration theConfig)
     {
         config = theConfig;
-
         config.load();
         Properties.useAlternateGlyphs = config.get("Misc", "UseAlternateGlyphs", false);
         Properties.forceShowFrameOverlays = config.get("Misc", "ForceShowFrameOverlays", false);
-
         Properties.disableSounds = config.get("Overrides", "DisableSounds", false);
         Properties.disableParticles = config.get("Overrides", "DisableParticles", false);
-
         Properties.portalsDestroyBlocks = config.get("Portal", "PortalsDestroyBlocks", true);
         Properties.fasterPortalCooldown = config.get("Portal", "FasterPortalCooldown", false);
-
         Properties.requirePower = config.get("Power", "RequirePower", true);
         Properties.powerMultiplier = config.get("Power", "PowerMultiplier", 1);
 
+        useAlternateGlyphs = Properties.useAlternateGlyphs.getBoolean(false);
+        forceShowFrameOverlays = Properties.forceShowFrameOverlays.getBoolean(false);
+        disableSounds = Properties.disableSounds.getBoolean(false);
+        disableParticles = Properties.disableParticles.getBoolean(false);
+        portalsDestroyBlocks = Properties.portalsDestroyBlocks.getBoolean(true);
+        fasterPortalCooldown = Properties.fasterPortalCooldown.getBoolean(false);
+        requirePower = Properties.requirePower.getBoolean(true);
+        powerMultiplier = Properties.powerMultiplier.getInt(1);
         disableVanillaRecipes = config.get("Recipes", "DisableVanillaRecipes", false).getBoolean(false);
         disableTERecipes = config.get("Recipes", "DisableTERecipes", false).getBoolean(false);
         config.save();
