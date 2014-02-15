@@ -358,15 +358,7 @@ public class TileController extends TileFrame //implements IPeripheral
         }
         catch (PortalException e)
         {
-            if (cachedDestinationLoc != null)
-            {
-                TileEntity tile = cachedDestinationLoc.getTileEntity();
-
-                if (tile != null && tile instanceof TileController)
-                {
-                    ((TileController) tile).connectionTerminate();
-                }
-            }
+            EnhancedPortals.logger.catching(e);
         }
 
         markDirty();
@@ -825,6 +817,8 @@ public class TileController extends TileFrame //implements IPeripheral
             try
             {
                 EntityManager.transferEntity(entity, this, control);
+                control.onEntityTeleported(entity);
+                control.onEntityTouchPortal(entity);
             }
             catch (PortalException e)
             {
@@ -850,7 +844,7 @@ public class TileController extends TileFrame //implements IPeripheral
     {
         for (ChunkCoordinates c : getRedstoneInterfaces())
         {
-            ((TileRedstoneInterface) worldObj.getTileEntity(c.posX, c.posY, c.posZ)).entityTeleport(entity);
+            ((TileRedstoneInterface) worldObj.getTileEntity(c.posX, c.posY, c.posZ)).onEntityTeleport(entity);
         }
     }
 
@@ -1031,7 +1025,7 @@ public class TileController extends TileFrame //implements IPeripheral
      */
     public void portalCreate() throws PortalException
     {
-        for (ChunkCoordinates c : portalBlocks) // Check all spots first
+        for (ChunkCoordinates c : getPortals()) // Check all spots first
         {
             if (!worldObj.isAirBlock(c.posX, c.posY, c.posZ))
             {
@@ -1046,12 +1040,18 @@ public class TileController extends TileFrame //implements IPeripheral
             }
         }
 
-        for (ChunkCoordinates c : portalBlocks)
+        for (ChunkCoordinates c : getPortals())
         {
             worldObj.setBlock(c.posX, c.posY, c.posZ, BlockPortal.instance, portalType, 2);
 
             TilePortal portal = (TilePortal) WorldUtils.getTileEntity(worldObj, c);
             portal.portalController = getChunkCoordinates();
+        }
+        
+        for (ChunkCoordinates c : getRedstoneInterfaces())
+        {
+            TileRedstoneInterface ri = (TileRedstoneInterface) WorldUtils.getTileEntity(worldObj, c);
+            ri.onPortalCreated();
         }
     }
 
@@ -1067,6 +1067,12 @@ public class TileController extends TileFrame //implements IPeripheral
         for (ChunkCoordinates c : portalBlocks)
         {
             worldObj.setBlockToAir(c.posX, c.posY, c.posZ);
+        }
+        
+        for (ChunkCoordinates c : getRedstoneInterfaces())
+        {
+            TileRedstoneInterface ri = (TileRedstoneInterface) WorldUtils.getTileEntity(worldObj, c);
+            ri.onPortalRemoved();
         }
 
         processing = false;
@@ -1215,20 +1221,12 @@ public class TileController extends TileFrame //implements IPeripheral
             return;
         }
 
-        GlyphIdentifier uID = getIdentifierUnique();
-        TileStabilizerMain dbs = getDimensionalBridgeStabilizer();
-
-        if (dbs != null && isPortalActive())
+        if (isPortalActive())
         {
-            try
-            {
-                dbs.terminateExistingConnection(getIdentifierUnique());
-            }
-            catch (Exception e)
-            {
-                System.out.println(e.getMessage());
-            }
+            connectionTerminate();
         }
+        
+        GlyphIdentifier uID = getIdentifierUnique();
 
         if (getHasIdentifierNetwork())
         {
@@ -1251,6 +1249,11 @@ public class TileController extends TileFrame //implements IPeripheral
             }
 
             throw new PortalException("");
+        }
+        
+        if (isPortalActive())
+        {
+            connectionTerminate();
         }
 
         if (getHasIdentifierUnique()) // If already have an identifier

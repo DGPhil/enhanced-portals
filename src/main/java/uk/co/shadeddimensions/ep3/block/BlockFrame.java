@@ -209,12 +209,30 @@ public class BlockFrame extends BlockContainer implements IDismantleable
 
         if (tile instanceof TileRedstoneInterface)
         {
-            return ((TileRedstoneInterface) tile).isProvidingStrongPower(side);
+            return ((TileRedstoneInterface) tile).isProvidingPower(side);
         }
-
+        
         return 0;
     }
+    
+    @Override
+    public boolean canProvidePower()
+    {
+        return true;
+    }
+    
+    @Override
+    public boolean isNormalCube(IBlockAccess world, int x, int y, int z)
+    {
+        return true; // Needs to be true to allow levers to be placed on
+    }
 
+    @Override
+    public boolean isNormalCube()
+    {
+        return false; // Needs to be false to provide power, for some reason
+    }
+    
     @Override
     public int isProvidingWeakPower(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
@@ -222,7 +240,7 @@ public class BlockFrame extends BlockContainer implements IDismantleable
 
         if (tile instanceof TileRedstoneInterface)
         {
-            return ((TileRedstoneInterface) tile).isProvidingWeakPower(side);
+            return ((TileRedstoneInterface) tile).isProvidingPower(side);
         }
 
         return 0;
