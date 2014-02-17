@@ -13,7 +13,6 @@ public class GuiFactory implements IModGuiFactory
     @Override
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -32,8 +31,6 @@ public class GuiFactory implements IModGuiFactory
     @Override
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
     {
-        Set<RuntimeOptionCategoryElement> set = new HashSet<RuntimeOptionCategoryElement>();
-        set.add(new RuntimeOptionCategoryElement("EnhancedPortals", "Testing"));
-        return set;
+        return null;
     }
 }
