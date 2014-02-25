@@ -348,4 +348,16 @@ public class TileBiometricIdentifier extends TileFrame implements IInventory
     {
         
     }
+
+    @Override
+    public void addDataToPacket(NBTTagCompound tag)
+    {
+        
+    }
+
+    @Override
+    public void onDataPacket(NBTTagCompound tag)
+    {
+        
+    }
 }

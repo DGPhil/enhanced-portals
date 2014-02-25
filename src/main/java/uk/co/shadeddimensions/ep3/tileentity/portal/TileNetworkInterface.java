@@ -2,6 +2,7 @@ package uk.co.shadeddimensions.ep3.tileentity.portal;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import uk.co.shadeddimensions.ep3.lib.Localization;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
@@ -50,6 +51,18 @@ public class TileNetworkInterface extends TileFrame //implements IPeripheral
 	{
 		return true;
 	}
+
+    @Override
+    public void addDataToPacket(NBTTagCompound tag)
+    {
+        
+    }
+
+    @Override
+    public void onDataPacket(NBTTagCompound tag)
+    {
+        
+    }
 
 	/*@Override
     public String getType()

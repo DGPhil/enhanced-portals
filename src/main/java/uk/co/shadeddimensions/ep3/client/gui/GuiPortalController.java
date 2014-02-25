@@ -26,7 +26,7 @@ import uk.co.shadeddimensions.library.util.GuiUtils;
 public class GuiPortalController extends GuiBase
 {
     TileController controller;
-    GuiButton resetButton, saveButton;
+    GuiButton resetButton, saveButton, publicButton;
     boolean overlayActive;
     String warningMessage;
     int warningTimer;
@@ -89,6 +89,12 @@ public class GuiPortalController extends GuiBase
                 EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
                 toggleState();
             }
+            else if (button.id == publicButton.id)
+            {
+                NBTTagCompound tag = new NBTTagCompound();
+                tag.setBoolean("public", true);
+                EnhancedPortals.packetPipeline.sendToServer(new PacketGuiData(tag));
+            }
         }
     }
 
@@ -97,7 +103,7 @@ public class GuiPortalController extends GuiBase
     {
         selector = new ElementGlyphSelector(this, 7, 57);
         identifier = new ElementGlyphIdentifier(this, 7, 20, selector);
-        portalComponents = new ElementItemStackPanel(this, 10, 59, 158, 75);
+        portalComponents = new ElementItemStackPanel(this, 10, 78, 158, 56);
         portalComponents.addElement(new ElementItemIconWithCount(this, 0, 0, new ItemStack(BlockPortal.instance, controller.getPortalCount())));
         portalComponents.addElement(new ElementItemIconWithCount(this, 0, 0, new ItemStack(BlockFrame.instance, controller.getFrameCount(), 0)));
         portalComponents.addElement(new ElementItemIconWithCount(this, 0, 0, new ItemStack(BlockFrame.instance, 1, 1)));
@@ -167,10 +173,11 @@ public class GuiPortalController extends GuiBase
     {
         drawCenteredString(getFontRenderer(), Localization.getGuiString("portalController"), xSize / 2, -13, 0xFFFFFF);
         getFontRenderer().drawString(Localization.getGuiString("uniqueIdentifier"), 8, 8, 0x404040);
-        getFontRenderer().drawString(overlayActive ? Localization.getGuiString("glyphs") : Localization.getGuiString("portalComponents"), 8, 44, 0x404040);
-
+        
         if (!overlayActive)
         {
+            getFontRenderer().drawString(Localization.getGuiString("portalComponents"), 8, 65, 0x404040);
+            
             if (x >= guiLeft + 7 && x <= guiLeft + xSize - 8)
             {
                 if (y >= guiTop + 20 && y <= guiTop + 37)
@@ -181,6 +188,10 @@ public class GuiPortalController extends GuiBase
                     GuiUtils.drawTooltipHoveringText(this, list, x - guiLeft, y - guiTop);
                 }
             }
+        }
+        else
+        {
+            getFontRenderer().drawString(Localization.getGuiString("glyphs"), 8, 44, 0x404040);
         }
         
         if (warningTimer > 0)
@@ -199,11 +210,14 @@ public class GuiPortalController extends GuiBase
 
         resetButton = new GuiButton(0, guiLeft + 10, guiTop + 117, (xSize - 20) / 2 - 5, 20, Localization.getGuiString("cancel"));
         saveButton = new GuiButton(1, guiLeft + xSize / 2 + 6, guiTop + 117, (xSize - 20) / 2 - 5, 20, Localization.getGuiString("save"));
-
+        publicButton = new GuiButton(10, guiLeft + 10, guiTop + 41, xSize - 20, 20, Localization.getGuiString(controller.isPublic() ? "public" : "private"));
+        
         buttonList.add(resetButton);
         buttonList.add(saveButton);
+        buttonList.add(publicButton);
 
         resetButton.visible = saveButton.visible = overlayActive;
+        publicButton.visible = !overlayActive;
     }
 
     @Override
@@ -232,6 +246,7 @@ public class GuiPortalController extends GuiBase
         identifier.setDisabled(!overlayActive);
         selector.setVisible(overlayActive);
         resetButton.visible = saveButton.visible = overlayActive;
+        publicButton.visible = !overlayActive;
     }
 
     @Override
@@ -256,6 +271,10 @@ public class GuiPortalController extends GuiBase
             {
                 warningTimer = 0;
             }
+        }
+        else
+        {
+            publicButton.displayString = Localization.getGuiString(controller.isPublic() ? "public" : "private");
         }
         
         if (warningTimer > 0)

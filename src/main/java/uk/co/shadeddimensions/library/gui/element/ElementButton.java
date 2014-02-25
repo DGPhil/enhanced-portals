@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -14,6 +16,7 @@ public class ElementButton extends ElementBase
     protected String ID;
     public String displayText;
     protected String hoverString;
+    protected byte forceState = -1;
 
     public ElementButton(IGuiBase parent, int x, int y, int w, String id, String text)
     {
@@ -49,6 +52,11 @@ public class ElementButton extends ElementBase
         displayText = text;
         hoverText = hover;
     }
+    
+    public void forceState(byte state)
+    {
+        forceState = state;
+    }
 
     @Override
     public void addTooltip(List<String> list)
@@ -71,12 +79,13 @@ public class ElementButton extends ElementBase
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         gui.getTextureManager().bindTexture(texture);
-        drawTexturedModalRect(posX, posY, 0, 196 + (!isDisabled() ? intersectsWith(gui.getMouseX(), gui.getMouseY()) ? sizeY * 2 : sizeY : 0), sizeX / 2, sizeY);
-        drawTexturedModalRect(posX + sizeX / 2, posY, 200 - sizeX / 2, 196 + (!isDisabled() ? intersectsWith(gui.getMouseX(), gui.getMouseY()) ? sizeY * 2 : sizeY : 0), sizeX / 2, sizeY);
+        
+        drawTexturedModalRect(posX, posY, 0, 196 + (!isDisabled() ? forceState == 1 || intersectsWith(gui.getMouseX(), gui.getMouseY()) ? sizeY * 2 : sizeY : 0), sizeX / 2, sizeY);
+        drawTexturedModalRect(posX + sizeX / 2, posY, 200 - sizeX / 2, 196 + (!isDisabled() ? forceState == 1 || intersectsWith(gui.getMouseX(), gui.getMouseY()) ? sizeY * 2 : sizeY : 0), sizeX / 2, sizeY);
 
         if (displayText != null)
         {
-            gui.getFontRenderer().drawStringWithShadow(displayText, posX + sizeX / 2 - gui.getFontRenderer().getStringWidth(displayText) / 2, posY + sizeY / 2 - gui.getFontRenderer().FONT_HEIGHT / 2, !isDisabled() ? intersectsWith(gui.getMouseX(), gui.getMouseY()) ? 16777120 : 14737632 : -6250336);
+            gui.getFontRenderer().drawStringWithShadow(displayText, posX + sizeX / 2 - gui.getFontRenderer().getStringWidth(displayText) / 2, posY + sizeY / 2 - gui.getFontRenderer().FONT_HEIGHT / 2, !isDisabled() ? forceState == 1 || intersectsWith(gui.getMouseX(), gui.getMouseY()) ? 16777120 : 14737632 : -6250336);
         }
     }
 
@@ -90,7 +99,7 @@ public class ElementButton extends ElementBase
     {
         if (!isDisabled() && isVisible())
         {
-            //Minecraft.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F); // TODO
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
             gui.handleElementButtonClick(this, mouseButton);
             return true;
         }

@@ -246,6 +246,9 @@ ep3.config.portal=Portal
 ep3.config.power=Power
 ep3.config.teleportation=Teleportation
 
+ep3.gui.public=Public
+ep3.gui.private=Private
+
 # Guide
 ep3.gui.mainMain=Welcome!
 ep3.gui.mainMain.information=This manual is split up into sections, you will find the categories on the left. When you have selected a category, its contents will show up in new tabs on the right.<N><N>Last Update: Beta 4.

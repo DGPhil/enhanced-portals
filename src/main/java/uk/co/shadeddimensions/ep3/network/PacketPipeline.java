@@ -143,19 +143,19 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Packet
     {
         if (packets.size() > 256)
         {
-            System.out.println("!!! You've registered too many packets...");
+            EnhancedPortals.logger.warn("!!! You've registered too many packets...");
             return false;
         }
 
         if (packets.contains(clazz))
         {
-            System.out.println("!!! You've already registered this packet...");
+            EnhancedPortals.logger.warn("!!! You've already registered this packet...");
             return false;
         }
 
         if (isPostInitialised)
         {
-            System.out.println("!!! You're registering your packet too late...");
+            EnhancedPortals.logger.warn("!!! You're registering your packet too late...");
             return false;
         }
 
@@ -213,7 +213,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Packet
 
     public void sendToAllAround(PacketEP message, TileEP tile)
     {
-        EnhancedPortals.packetPipeline.sendToAllAround(message, new TargetPoint(tile.getWorldObj().provider.dimensionId, tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5, 128.0));
+        sendToAllAround(message, new TargetPoint(tile.getWorldObj().provider.dimensionId, tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5, 128.0));
     }
 
     /**

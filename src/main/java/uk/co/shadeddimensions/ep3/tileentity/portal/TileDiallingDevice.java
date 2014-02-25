@@ -207,6 +207,18 @@ public class TileDiallingDevice extends TileFrame //implements IPeripheral
 
         tag.setTag("glyphList", list);
     }
+
+    @Override
+    public void addDataToPacket(NBTTagCompound tag)
+    {
+        
+    }
+
+    @Override
+    public void onDataPacket(NBTTagCompound tag)
+    {
+        
+    }
     
     /*@Override
     public String getType()

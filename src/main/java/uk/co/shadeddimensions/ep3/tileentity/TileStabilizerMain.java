@@ -25,12 +25,12 @@ import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
 import uk.co.shadeddimensions.ep3.item.ItemLocationCard;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.network.GuiHandler;
-import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.portal.GlyphIdentifier;
 import uk.co.shadeddimensions.ep3.portal.PortalException;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
 import uk.co.shadeddimensions.ep3.util.GeneralUtils;
 import uk.co.shadeddimensions.ep3.util.PortalTextureManager;
+import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyContainerItem;
@@ -158,7 +158,7 @@ public class TileStabilizerMain extends TileEP implements IInventory
             {
                 TileStabilizer t = (TileStabilizer) tile;
                 t.mainBlock = null;
-                EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(t), t);
+                WorldUtils.markForUpdate(t);
             }
         }
     }
@@ -504,10 +504,10 @@ public class TileStabilizerMain extends TileEP implements IInventory
             cB.setRequiresLocationCard();
             throw new PortalException("stabilizerNotFoundReceive");
         }
-        else if (!cA.getDimensionalBridgeStabilizer().getWorldCoordinates().equals(cB.getDimensionalBridgeStabilizer().getWorldCoordinates())) // And make sure they're on the same DBS. We're getting the tile instead of the worldcoordinates to make sure the DBS hasn't expanded
-        {
-            throw new PortalException("notOnSameStabilizer");
-        }
+        //else if (!cA.getDimensionalBridgeStabilizer().getWorldCoordinates().equals(cB.getDimensionalBridgeStabilizer().getWorldCoordinates())) // And make sure they're on the same DBS
+        //{
+        //    throw new PortalException("notOnSameStabilizer");
+        //}
         else if (cA.getDiallingDeviceCount() > 0 && cB.getNetworkInterfaceCount() > 0)
         {
             throw new PortalException("receivingPortalNoDialler");
@@ -515,6 +515,20 @@ public class TileStabilizerMain extends TileEP implements IInventory
         else if (cA.getNetworkInterfaceCount() > 0 && cB.getDiallingDeviceCount() > 0)
         {
             throw new PortalException("sendingPortalNoDialler"); // Should never happen but it doesn't hurt to check.
+        }
+        
+        TileStabilizerMain sA = cA.getDimensionalBridgeStabilizer(), sB = cB.getDimensionalBridgeStabilizer();
+        
+        if (!sA.getWorldCoordinates().equals(sB.getWorldCoordinates()))
+        {
+            if (cB.isPublic())
+            {
+                cB.setupTemporaryDBS(sA);
+            }
+            else
+            {
+                throw new PortalException("notOnSameStabilizer");
+            }
         }
 
         if (textureManager != null)

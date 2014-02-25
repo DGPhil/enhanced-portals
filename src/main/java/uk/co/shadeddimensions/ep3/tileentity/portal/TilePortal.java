@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import uk.co.shadeddimensions.ep3.block.BlockPortal;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
@@ -74,5 +75,17 @@ public class TilePortal extends TilePortalPart
         {
             controller.onEntityEnterPortal(entity, this);
         }
+    }
+
+    @Override
+    public void addDataToPacket(NBTTagCompound tag)
+    {
+        
+    }
+
+    @Override
+    public void onDataPacket(NBTTagCompound tag)
+    {
+        
     }
 }

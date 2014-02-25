@@ -258,6 +258,18 @@ public class TileTransferFluid extends TileFrameTransfer implements IFluidHandle
         cached = true;
     }
     
+    @Override
+    public void addDataToPacket(NBTTagCompound tag)
+    {
+        
+    }
+
+    @Override
+    public void onDataPacket(NBTTagCompound tag)
+    {
+        
+    }
+    
     /*@Override
     public String getType()
     {

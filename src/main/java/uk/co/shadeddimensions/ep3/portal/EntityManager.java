@@ -19,6 +19,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.WorldSettings.GameType;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
@@ -335,8 +336,6 @@ public class EntityManager
             }
 
             exitingWorld.removeEntity(entity);
-            // exitingWorld.loadedEntityList.remove(entity);
-            // exitingWorld.onEntityRemoved(entity); // TODO
 
             Entity newEntity = EntityList.createEntityFromNBT(tag, enteringWorld);
 
@@ -374,7 +373,6 @@ public class EntityManager
             player.setPositionAndUpdate(x, y, z);
             handleMomentum(player, touchedPortalType, exitPortalType, yaw, keepMomentum);
             player.worldObj.updateEntityWithOptionalForce(player, false);
-
             setEntityPortalCooldown(player);
             return player;
         }
@@ -393,9 +391,7 @@ public class EntityManager
             }
 
             world.removeEntity(entity);
-            // world.loadedEntityList.remove(entity);
-            // world.onEntityRemoved(entity); // TODO
-
+            
             Entity newEntity = EntityList.createEntityFromNBT(tag, world);
 
             if (newEntity != null)

@@ -2,7 +2,7 @@ package uk.co.shadeddimensions.ep3.tileentity.portal;
 
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TileFrameTransfer extends TileFrame
+public abstract class TileFrameTransfer extends TileFrame
 {
     public boolean isSending = true;
 

@@ -1,5 +1,6 @@
 package uk.co.shadeddimensions.ep3.network.packet;
 
+import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,7 +40,7 @@ public class PacketRerender extends PacketEP
     @Override
     public void handleClientSide(EntityPlayer player)
     {
-        ((EntityPlayer) player).worldObj.markBlockForUpdate(posX, posY, posZ);
+        WorldUtils.markForUpdate(((EntityPlayer) player).worldObj, posX, posY, posZ);
     }
 
     @Override

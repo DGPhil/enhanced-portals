@@ -3,6 +3,7 @@ package uk.co.shadeddimensions.library.gui.element;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -17,7 +18,6 @@ public class ElementFluidTank extends ElementProgressBar
 {
     byte scale;
     Fluid fluid;
-    
     FluidTank tank;
 
     public ElementFluidTank(IGuiBase parent, int x, int y, int progress, int max, Fluid f, int scale)
@@ -28,7 +28,7 @@ public class ElementFluidTank extends ElementProgressBar
         this.scale = (byte) scale;
         fluid = f;
     }
-
+    
     public ElementFluidTank(IGuiBase parent, int x, int y, FluidTank tank, int scale)
     {
         super(parent, x, y, 0, 0);
@@ -38,11 +38,25 @@ public class ElementFluidTank extends ElementProgressBar
         this.tank = tank;
     }
 
+    public ElementFluidTank(IGuiBase parent, int x, int y, FluidTank tank, int scale, int height)
+    {
+        super(parent, x, y, 0, 0);
+        sizeX = 18;
+        sizeY = height;
+        this.scale = (byte) scale;
+        this.tank = tank;
+    }
+
     @Override
     public void addTooltip(List<String> list)
     {
         super.addTooltip(list);
         list.set(0, list.get(0) + " mB");
+        
+        if (fluid != null)
+        {
+            list.add(fluid.getRarity().rarityColor + fluid.getLocalizedName());
+        }
     }
 
     @Override
@@ -59,8 +73,9 @@ public class ElementFluidTank extends ElementProgressBar
     public void draw()
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        
         gui.getTextureManager().bindTexture(texture);
-        drawTexturedModalRect(posX, posY, 210, 0, sizeX, sizeY);
+        //drawTexturedModalRect(posX, posY, 210, 0, sizeX, sizeY);
 
         if (!isDisabled() && fluid != null)
         {

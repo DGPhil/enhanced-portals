@@ -68,8 +68,10 @@ public abstract class ElementBaseContainer extends ElementBase
     @Override
     public boolean handleMouseClicked(int x, int y, int mouseButton)
     {
-        for (ElementBase element : elements)
+        for (int i = elements.size() - 1; i >= 0; i--)
         {
+            ElementBase element = elements.get(i);
+            
             if (element.isVisible() && element.intersectsWith(x, y))
             {
                 if (element.handleMouseClicked(x, y, mouseButton))

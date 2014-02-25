@@ -151,4 +151,8 @@ public class ComparableItemStack
         return new ItemStack(item, stackSize, metadata);
     }
 
+    public int hashCode()
+    {
+      return this.oreID != -1 ? this.oreID : this.metadata | Item.getIdFromItem(item) << 16;
+    }
 }

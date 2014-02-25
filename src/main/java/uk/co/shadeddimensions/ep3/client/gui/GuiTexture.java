@@ -29,6 +29,7 @@ import uk.co.shadeddimensions.library.gui.GuiBaseContainer;
 import uk.co.shadeddimensions.library.gui.button.GuiBetterSlider;
 import uk.co.shadeddimensions.library.gui.button.GuiRGBSlider;
 import uk.co.shadeddimensions.library.gui.element.ElementBase;
+import uk.co.shadeddimensions.library.gui.element.ElementButton;
 import uk.co.shadeddimensions.library.gui.element.ElementClickBlocker;
 import uk.co.shadeddimensions.library.gui.element.ElementFakeItemSlot;
 import uk.co.shadeddimensions.library.gui.element.ElementScrollBar;
@@ -342,6 +343,12 @@ public class GuiTexture extends GuiBaseContainer
         }
     }
 
+    @Override
+    public void handleElementButtonClick(ElementButton button, int mouseButton)
+    {
+        handleElementButtonClick(button.getID(), mouseButton);
+    }
+    
     @Override
     public void handleElementButtonClick(String buttonName, int mouseButton)
     {

@@ -1,20 +1,20 @@
 package uk.co.shadeddimensions.ep3.tileentity;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.util.ForgeDirection;
-import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
-import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.util.GeneralUtils;
 import uk.co.shadeddimensions.ep3.util.WorldCoordinates;
+import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -108,8 +108,7 @@ public class TileStabilizer extends TileEP
                         {
                             TileStabilizer t = (TileStabilizer) tile;
                             t.mainBlock = topLeft;
-
-                            EnhancedPortals.packetPipeline.sendToAllAround(new PacketTileUpdate(t), t);
+                            WorldUtils.markForUpdate(t);
                         }
                     }
 
@@ -236,16 +235,20 @@ public class TileStabilizer extends TileEP
     }
 
     @Override
-    public void packetFill(ByteBuf buffer)
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
-        buffer.writeBoolean(mainBlock != null);
+        NBTTagCompound tag = pkt.func_148857_g();
+        isFormed = tag.getBoolean("formed");
+        WorldUtils.markForUpdate(this);
     }
-
+    
     @Override
-    public void packetUse(ByteBuf buffer)
+    public Packet getDescriptionPacket()
     {
-        isFormed = buffer.readBoolean();
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setBoolean("formed", mainBlock != null);
+        
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
     }
 
     @Override

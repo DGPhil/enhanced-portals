@@ -6,8 +6,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import uk.co.shadeddimensions.ep3.tileentity.TileEP;
 
-public class PacketTileGui extends PacketTileUpdate
+public class PacketTileGui extends PacketEP
 {
+    ByteBuf buff;
+    TileEP tile;
+    int x, y, z;
+    
     public PacketTileGui()
     {
 
@@ -15,7 +19,7 @@ public class PacketTileGui extends PacketTileUpdate
 
     public PacketTileGui(TileEP tile)
     {
-        super(tile);
+        this.tile = tile;
     }
     
     @Override

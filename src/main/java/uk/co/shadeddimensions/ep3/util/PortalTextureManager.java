@@ -113,49 +113,81 @@ public class PortalTextureManager
     public void setCustomFrameTexture(int i)
     {
         customFrameTexture = i;
-        controller.markDirty();
+        
+        if (controller != null)
+        {
+            controller.markDirty();
+        }
     }
 
     public void setCustomPortalTexture(int i)
     {
         customPortalTexture = i;
-        controller.markDirty();
+        
+        if (controller != null)
+        {
+            controller.markDirty();
+        }
     }
 
     public void setFrameColour(int i)
     {
         frameColour = i;
-        controller.markDirty();
+
+        if (controller != null)
+        {
+            controller.markDirty();
+        }
     }
 
     public void setFrameItem(ItemStack s)
     {
         inventory[0] = s;
-        controller.markDirty();
+
+        if (controller != null)
+        {
+            controller.markDirty();
+        }
     }
 
     public void setParticleColour(int i)
     {
         particleColour = i;
-        controller.markDirty();
+
+        if (controller != null)
+        {
+            controller.markDirty();
+        }
     }
 
     public void setParticleType(int i)
     {
         particleType = i;
-        controller.markDirty();
+
+        if (controller != null)
+        {
+            controller.markDirty();
+        }
     }
 
     public void setPortalColour(int i)
     {
         portalColour = i;
-        controller.markDirty();
+
+        if (controller != null)
+        {
+            controller.markDirty();
+        }
     }
 
     public void setPortalItem(ItemStack s)
     {
         inventory[1] = s;
-        controller.markDirty();
+
+        if (controller != null)
+        {
+            controller.markDirty();
+        }
     }
 
     public void usePacket(ByteBuf buffer)

@@ -8,11 +8,12 @@ import uk.co.shadeddimensions.ep3.block.BlockFrame;
 import uk.co.shadeddimensions.ep3.network.ClientProxy;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.util.GeneralUtils;
+import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import cofh.api.tileentity.ISidedBlockTexture;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
-public class TileFrame extends TilePortalPart implements ISidedBlockTexture
+public abstract class TileFrame extends TilePortalPart implements ISidedBlockTexture
 {
     protected boolean wearingGoggles = GeneralUtils.isWearingGoggles();
 
@@ -106,8 +107,8 @@ public class TileFrame extends TilePortalPart implements ISidedBlockTexture
 
             if (wGoggles != wearingGoggles)
             {
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 wearingGoggles = wGoggles;
+                WorldUtils.markForUpdate(this);
             }
         }
     }

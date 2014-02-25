@@ -40,7 +40,7 @@ public class PortalRenderer implements ISimpleBlockRenderingHandler
         Tessellator tessellator = Tessellator.instance;
         int meta = world.getBlockMetadata(x, y, z), light = 230, colour = BlockPortal.instance.colorMultiplier(world, x, y, z);
         float r = (colour >> 16 & 255) / 255.0F, g = (colour >> 8 & 255) / 255.0F, b = (colour & 255) / 255.0F;
-
+        
         if (controller != null && controller.instability > 0)
         {
             light = 240 + controller.instability / 10;

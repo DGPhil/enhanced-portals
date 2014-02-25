@@ -60,6 +60,18 @@ public class TileTransferEnergy extends TileFrameTransfer //implements IEnergyHa
         //storage.writeToNBT(nbt);
     }
 
+    @Override
+    public void addDataToPacket(NBTTagCompound tag)
+    {
+        
+    }
+
+    @Override
+    public void onDataPacket(NBTTagCompound tag)
+    {
+        
+    }
+
     /*@Override
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
     {

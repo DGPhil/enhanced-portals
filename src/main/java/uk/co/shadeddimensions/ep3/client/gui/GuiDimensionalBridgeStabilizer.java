@@ -78,10 +78,10 @@ public class GuiDimensionalBridgeStabilizer extends GuiBaseContainer
     @Override
     public void addTabs()
     {
-        if (GeneralUtils.hasEnergyCost())
-        {
-            addTab(new TabRedstoneFluxInfo(this, (ElementRedstoneFlux) elements.get(0)));
-        }
+        //if (GeneralUtils.hasEnergyCost())
+        //{
+            //addTab(new TabRedstoneFluxInfo(this, (ElementRedstoneFlux) elements.get(0)));
+        //}
     }
 
     @Override
@@ -97,14 +97,14 @@ public class GuiDimensionalBridgeStabilizer extends GuiBaseContainer
         String s1 = "" + DBS.intActiveConnections * 2;
         getFontRenderer().drawString(s1, xSize - 27 - getFontRenderer().getStringWidth(s1), 18, 0x404040);
         
-        if (GeneralUtils.hasEnergyCost())
-        {
-            int instability = DBS.powerState == 0 ? DBS.instability : DBS.powerState == 1 ? 20 : DBS.powerState == 2 ? 50 : 70;        
-            getFontRenderer().drawString(Localization.getGuiString("instability"), 12, 28, 0x777777);
+        //if (GeneralUtils.hasEnergyCost())
+        //{
+        //    int instability = DBS.powerState == 0 ? DBS.instability : DBS.powerState == 1 ? 20 : DBS.powerState == 2 ? 50 : 70;        
+        //    getFontRenderer().drawString(Localization.getGuiString("instability"), 12, 28, 0x777777);
     
-            String s2 = instability + "%";        
-            getFontRenderer().drawString(s2, xSize - 27 - getFontRenderer().getStringWidth(s2), 28, instability == 0 ? 0x00DD00 : instability == 20 ? 0xDD6644 : instability == 50 ? 0xDD4422 : 0xFF0000);
-        }
+        //    String s2 = instability + "%";        
+        //    getFontRenderer().drawString(s2, xSize - 27 - getFontRenderer().getStringWidth(s2), 28, instability == 0 ? 0x00DD00 : instability == 20 ? 0xDD6644 : instability == 50 ? 0xDD4422 : 0xFF0000);
+        //}
     }
 
     @SuppressWarnings("unchecked")

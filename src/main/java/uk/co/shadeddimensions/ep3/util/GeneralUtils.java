@@ -35,7 +35,7 @@ public class GeneralUtils
 {
     public static boolean hasEnergyCost()
     {
-        return CommonProxy.powerMultiplier > 0;
+        return CommonProxy.requirePower;
     }
 
     public static boolean isWearingGoggles()

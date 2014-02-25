@@ -28,11 +28,9 @@ import uk.co.shadeddimensions.ep3.item.block.ItemDecoration;
 import uk.co.shadeddimensions.ep3.item.block.ItemFrame;
 import uk.co.shadeddimensions.ep3.item.block.ItemStabilizer;
 import uk.co.shadeddimensions.ep3.network.packet.PacketGuiData;
-import uk.co.shadeddimensions.ep3.network.packet.PacketRequestData;
 import uk.co.shadeddimensions.ep3.network.packet.PacketRerender;
 import uk.co.shadeddimensions.ep3.network.packet.PacketTextureData;
 import uk.co.shadeddimensions.ep3.network.packet.PacketTileGui;
-import uk.co.shadeddimensions.ep3.network.packet.PacketTileUpdate;
 import uk.co.shadeddimensions.ep3.portal.NetworkManager;
 import uk.co.shadeddimensions.ep3.tileentity.TileStabilizer;
 import uk.co.shadeddimensions.ep3.tileentity.TileStabilizerMain;
@@ -124,11 +122,9 @@ public class CommonProxy
 
     public void registerPackets()
     {
-        EnhancedPortals.packetPipeline.registerPacket(PacketTileUpdate.class);
         EnhancedPortals.packetPipeline.registerPacket(PacketTileGui.class);
         EnhancedPortals.packetPipeline.registerPacket(PacketTextureData.class);
         EnhancedPortals.packetPipeline.registerPacket(PacketRerender.class);
-        EnhancedPortals.packetPipeline.registerPacket(PacketRequestData.class);
         EnhancedPortals.packetPipeline.registerPacket(PacketGuiData.class);
     }
 
