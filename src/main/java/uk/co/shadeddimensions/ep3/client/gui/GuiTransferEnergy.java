@@ -51,7 +51,7 @@ public class GuiTransferEnergy extends GuiBaseContainer
     @Override
     public void addElements()
     {
-        //addElement(new ElementRedstoneFlux(this, 5, 5, energy.storage));
+        addElement(new ElementRedstoneFlux(this, 5, 5, energy.storage));
     }
     
     @Override
@@ -66,7 +66,7 @@ public class GuiTransferEnergy extends GuiBaseContainer
     public void initGui()
     {
         super.initGui();
-        buttonList.add(new GuiButton(0, guiLeft + 23, guiTop + ySize / 2 - 10, xSize - 28, 20, energy.isSending ? Localization.getGuiString("sending") : Localization.getGuiString("recieving")));
+        buttonList.add(new GuiButton(0, guiLeft + 23, guiTop + ySize / 2 - 10, xSize - 28, 20, energy.isSending ? Localization.getGuiString("sending") : Localization.getGuiString("receiving")));
     }
     
     @Override

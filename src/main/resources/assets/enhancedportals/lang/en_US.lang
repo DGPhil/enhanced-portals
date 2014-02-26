@@ -209,6 +209,7 @@ ep3.error.multipleBio=You cannot have multiple Biometric Identifiers
 ep3.error.multipleMod=You cannot have multiple Module Manipulators
 ep3.error.couldNotCreatePortalHere=A portal could not be created at this location
 ep3.error.noUidSet=You must set a Unique Identifier before doing this
+ep3.error.failedToTransfer=The receiving portal is too small
 
 # Success
 ep3.success.prefix=[Success] 

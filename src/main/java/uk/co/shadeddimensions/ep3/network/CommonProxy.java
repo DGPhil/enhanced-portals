@@ -155,7 +155,7 @@ public class CommonProxy
         Properties.disableParticles = config.get("Overrides", "DisableParticles", false);
         Properties.portalsDestroyBlocks = config.get("Portal", "PortalsDestroyBlocks", true);
         Properties.fasterPortalCooldown = config.get("Portal", "FasterPortalCooldown", false);
-        Properties.requirePower = config.get("Power", "RequirePower", true);
+        Properties.requirePower = config.get("Power", "RequirePower", false); // TODO Set to true later
         Properties.powerMultiplier = config.get("Power", "PowerMultiplier", 1);
 
         useAlternateGlyphs = Properties.useAlternateGlyphs.getBoolean(false);

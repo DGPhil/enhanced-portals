@@ -3,6 +3,7 @@ package uk.co.shadeddimensions.ep3.portal;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityBoat;
@@ -10,6 +11,7 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S1DPacketEntityEffect;
@@ -19,7 +21,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldSettings.GameType;
+import net.minecraftforge.fluids.BlockFluidBase;
+import uk.co.shadeddimensions.ep3.block.BlockPortal;
 import uk.co.shadeddimensions.ep3.network.CommonProxy;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileBiometricIdentifier;
 import uk.co.shadeddimensions.ep3.tileentity.portal.TileController;
@@ -32,28 +35,28 @@ public class EntityManager
     static ChunkCoordinates getActualExitLocation(Entity entity, TileController controller)
     {
         int entityHeight = Math.round(entity.height);
-        // boolean horizontal = controller.portalType == 3;
+        boolean horizontal = controller.portalType == 3;
 
-        // forloop:
-        for (ChunkCoordinates c : new ArrayList<ChunkCoordinates>(controller.getPortals()))
-        {
-            // if (!horizontal)
-            // {
-            // for (int i = 0; i < entityHeight; i++)
-            // {
-            // if (controller.worldObj.getBlockId(c.posX, c.posY + i, c.posZ) != CommonProxy.blockPortal.blockID && !controller.worldObj.isAirBlock(c.posX, c.posY + i, c.posZ))
-            // {
-            // continue forloop;
-            // }
-            // }
-            // }
-            // else if (horizontal && !controller.worldObj.isAirBlock(c.posX, c.posY + 1, c.posZ))
-            // {
-            // return new ChunkCoordinates(c.posX, c.posY - 1, c.posZ);
-            // }
-
-            return new ChunkCoordinates(c.posX, c.posY, c.posZ);
-        }
+        forloop:
+            for (ChunkCoordinates c : new ArrayList<ChunkCoordinates>(controller.getPortals()))
+            {
+                for (int i = 0; i < entityHeight; i++)
+                {
+                    if (controller.getWorldObj().getBlock(c.posX, c.posY + i, c.posZ) != BlockPortal.instance && !controller.getWorldObj().isAirBlock(c.posX, c.posY + i, c.posZ))
+                    {
+                        continue forloop;
+                    }
+                }
+                
+                if (horizontal && !controller.getWorldObj().isAirBlock(c.posX, c.posY + 1, c.posZ))
+                {
+                    return new ChunkCoordinates(c.posX, c.posY - 1, c.posZ);
+                }
+                else
+                {
+                    return new ChunkCoordinates(c.posX, c.posY, c.posZ);
+                }
+            }
 
         return null;
     }
@@ -196,17 +199,15 @@ public class EntityManager
 
     public static void teleportEntityHighestInstability(Entity par1Entity) // TODO: CRIMSON
     {
-        // boolean nether = MinecraftServer.getServer().getAllowNether();
-        ChunkCoordinates spawn = /* nether ? DimensionManager.getWorld(-1).getSpawnPoint() : */par1Entity.worldObj.getSpawnPoint();
-
-        // if (nether)
-        // {
-        // transferEntityToDimension(par1Entity, spawn.posX, spawn.posY, spawn.posZ, 0f, (WorldServer) par1Entity.worldObj, DimensionManager.getWorld(-1), -1, -1, false);
-        // }
-        // else
-        // {
-        transferEntityWithinDimension(par1Entity, spawn.posX, par1Entity.worldObj.getTopSolidOrLiquidBlock(spawn.posX, spawn.posY), spawn.posZ, 0f, -1, -1, false);
-        // }
+        ChunkCoordinates spawn = par1Entity.worldObj.getSpawnPoint();
+        spawn.posY = par1Entity.worldObj.getTopSolidOrLiquidBlock(spawn.posX, spawn.posY);
+        
+        if (par1Entity.worldObj.isAirBlock(spawn.posX, spawn.posY, spawn.posZ) || par1Entity.worldObj.getBlock(spawn.posX, spawn.posY, spawn.posZ) instanceof BlockLiquid || par1Entity.worldObj.getBlock(spawn.posX, spawn.posY, spawn.posZ) instanceof BlockFluidBase)
+        {
+            par1Entity.worldObj.setBlock(spawn.posX, spawn.posY, spawn.posZ, Blocks.stone);
+        }
+        
+        transferEntityWithinDimension(par1Entity, spawn.posX, spawn.posY + 1, spawn.posZ, 0f, -1, -1, false);
     }
 
     static Entity transferEntity(Entity entity, double x, double y, double z, float yaw, WorldServer world, int touchedPortalType, int exitPortalType, boolean keepMomentum)
@@ -391,7 +392,7 @@ public class EntityManager
             }
 
             world.removeEntity(entity);
-            
+
             Entity newEntity = EntityList.createEntityFromNBT(tag, world);
 
             if (newEntity != null)

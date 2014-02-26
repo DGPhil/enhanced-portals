@@ -69,19 +69,19 @@ public class GuiDimensionalBridgeStabilizer extends GuiBaseContainer
     @Override
     public void addElements()
     {
-        //if (GeneralUtils.hasEnergyCost())
-        //{
-            //addElement(new ElementRedstoneFlux(this, xSize - 23, 10, DBS.getEnergyStored(null), DBS.getMaxEnergyStored(null)));
-        //}
+        if (GeneralUtils.hasEnergyCost())
+        {
+            addElement(new ElementRedstoneFlux(this, xSize - 23, 10, DBS.getEnergyStored(null), DBS.getMaxEnergyStored(null)));
+        }
     }
     
     @Override
     public void addTabs()
     {
-        //if (GeneralUtils.hasEnergyCost())
-        //{
-            //addTab(new TabRedstoneFluxInfo(this, (ElementRedstoneFlux) elements.get(0)));
-        //}
+        if (GeneralUtils.hasEnergyCost())
+        {
+            addTab(new TabRedstoneFluxInfo(this, (ElementRedstoneFlux) elements.get(0)));
+        }
     }
 
     @Override
@@ -97,14 +97,14 @@ public class GuiDimensionalBridgeStabilizer extends GuiBaseContainer
         String s1 = "" + DBS.intActiveConnections * 2;
         getFontRenderer().drawString(s1, xSize - 27 - getFontRenderer().getStringWidth(s1), 18, 0x404040);
         
-        //if (GeneralUtils.hasEnergyCost())
-        //{
-        //    int instability = DBS.powerState == 0 ? DBS.instability : DBS.powerState == 1 ? 20 : DBS.powerState == 2 ? 50 : 70;        
-        //    getFontRenderer().drawString(Localization.getGuiString("instability"), 12, 28, 0x777777);
+        if (GeneralUtils.hasEnergyCost())
+        {
+            int instability = DBS.powerState == 0 ? DBS.instability : DBS.powerState == 1 ? 20 : DBS.powerState == 2 ? 50 : 70;        
+            getFontRenderer().drawString(Localization.getGuiString("instability"), 12, 28, 0x777777);
     
-        //    String s2 = instability + "%";        
-        //    getFontRenderer().drawString(s2, xSize - 27 - getFontRenderer().getStringWidth(s2), 28, instability == 0 ? 0x00DD00 : instability == 20 ? 0xDD6644 : instability == 50 ? 0xDD4422 : 0xFF0000);
-        //}
+            String s2 = instability + "%";        
+            getFontRenderer().drawString(s2, xSize - 27 - getFontRenderer().getStringWidth(s2), 28, instability == 0 ? 0x00DD00 : instability == 20 ? 0xDD6644 : instability == 50 ? 0xDD4422 : 0xFF0000);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -113,10 +113,10 @@ public class GuiDimensionalBridgeStabilizer extends GuiBaseContainer
     {
         super.initGui();
         
-        //if (GeneralUtils.hasEnergyCost())
-        //{
-            //buttonList.add(new GuiButton(0, guiLeft + 7, guiTop + 56, 140, 20, CommonProxy.powerMultiplier == 0 ? Localization.getGuiString("powerModeFree") : Localization.getGuiString("powerModeNormal")));
-        //}
+        if (GeneralUtils.hasEnergyCost())
+        {
+            buttonList.add(new GuiButton(0, guiLeft + 7, guiTop + 56, 140, 20, CommonProxy.powerMultiplier == 0 ? Localization.getGuiString("powerModeFree") : Localization.getGuiString("powerModeNormal")));
+        }
     }
 
     @Override
@@ -124,10 +124,10 @@ public class GuiDimensionalBridgeStabilizer extends GuiBaseContainer
     {
         super.updateScreen();
         
-        //if (GeneralUtils.hasEnergyCost())
-        //{
-            //((ElementRedstoneFlux) elements.get(0)).setMaximum(DBS.getMaxEnergyStored(null)).setProgress(DBS.getEnergyStored(null));
-        //    ((GuiButton) buttonList.get(0)).displayString = DBS.powerState == 0 ? Localization.getGuiString("powerModeNormal") : DBS.powerState == 1 ? Localization.getGuiString("powerModeRisky") : DBS.powerState == 2 ? Localization.getGuiString("powerModeUnstable") : Localization.getGuiString("powerModeUnpredictable");
-        //}
+        if (GeneralUtils.hasEnergyCost())
+        {
+            ((ElementRedstoneFlux) elements.get(0)).setMaximum(DBS.getMaxEnergyStored(null)).setProgress(DBS.getEnergyStored(null));
+            ((GuiButton) buttonList.get(0)).displayString = DBS.powerState == 0 ? Localization.getGuiString("powerModeNormal") : DBS.powerState == 1 ? Localization.getGuiString("powerModeRisky") : DBS.powerState == 2 ? Localization.getGuiString("powerModeUnstable") : Localization.getGuiString("powerModeUnpredictable");
+        }
     }
 }

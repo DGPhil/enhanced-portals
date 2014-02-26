@@ -1235,6 +1235,8 @@ public class TileController extends TileFrame //implements IPeripheral
                 dimensionalBridgeStabilizer = stabilizer;
             }
         }
+        
+        markDirty();
     }
 
     void setFrameColour(int colour)
@@ -1422,6 +1424,7 @@ public class TileController extends TileFrame //implements IPeripheral
     public void setupTemporaryDBS(TileStabilizerMain sA)
     {
         temporaryDBS = sA.getWorldCoordinates();
+        markDirty();
     }
     
     public boolean isPublic()

@@ -2,6 +2,7 @@ package uk.co.shadeddimensions.ep3.tileentity;
 
 import java.util.ArrayList;
 
+import cofh.api.energy.IEnergyHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,7 +20,7 @@ import uk.co.shadeddimensions.library.util.ItemHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileStabilizer extends TileEP
+public class TileStabilizer extends TileEP implements IEnergyHandler
 {
     ChunkCoordinates mainBlock;
     int rows;
@@ -263,5 +264,35 @@ public class TileStabilizer extends TileEP
     {
         super.writeToNBT(tag);
         GeneralUtils.saveChunkCoord(tag, mainBlock, "mainBlock");
+    }
+
+    @Override
+    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+    {
+        return getMainBlock().receiveEnergy(from, maxReceive, simulate);
+    }
+
+    @Override
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+    {
+        return getMainBlock().extractEnergy(from, maxExtract, simulate);
+    }
+
+    @Override
+    public boolean canInterface(ForgeDirection from)
+    {
+        return mainBlock != null;
+    }
+
+    @Override
+    public int getEnergyStored(ForgeDirection from)
+    {
+        return getMainBlock().getEnergyStored(from);
+    }
+
+    @Override
+    public int getMaxEnergyStored(ForgeDirection from)
+    {
+        return getMainBlock().getMaxEnergyStored(from);
     }
 }

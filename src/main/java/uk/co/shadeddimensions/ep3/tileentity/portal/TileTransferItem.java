@@ -169,6 +169,38 @@ public class TileTransferItem extends TileFrameTransfer implements IInventory//,
                                             stack = null;
                                             markDirty();
                                         }
+                                        else if (item.getStackInSlot(0).getItem() == stack.getItem())
+                                        {
+                                            int amount = 0;
+                                            
+                                            if (item.getStackInSlot(0).stackSize + stack.stackSize <= stack.getMaxStackSize())
+                                            {
+                                                amount = item.getStackInSlot(0).stackSize;
+                                            }
+                                            else
+                                            {
+                                                amount = stack.stackSize - ((item.getStackInSlot(0).stackSize + stack.stackSize) - 64);
+                                            }
+                                            
+                                            if (amount <= 0)
+                                            {
+                                                continue;
+                                            }
+                                            
+                                            item.getStackInSlot(0).stackSize += amount;
+                                            item.markDirty();
+
+                                            if (amount == stack.stackSize)
+                                            {
+                                                stack = null;
+                                            }
+                                            else
+                                            {
+                                                stack.stackSize -= amount;
+                                            }
+                                            
+                                            markDirty();
+                                        }
                                     }
                                 }
                                 

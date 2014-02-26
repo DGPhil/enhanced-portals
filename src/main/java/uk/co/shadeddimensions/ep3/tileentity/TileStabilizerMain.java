@@ -20,6 +20,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraftforge.common.util.ForgeDirection;
 import uk.co.shadeddimensions.ep3.EnhancedPortals;
 import uk.co.shadeddimensions.ep3.block.BlockStabilizer;
 import uk.co.shadeddimensions.ep3.item.ItemLocationCard;
@@ -34,10 +35,11 @@ import uk.co.shadeddimensions.ep3.util.WorldUtils;
 import uk.co.shadeddimensions.library.util.ItemHelper;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyContainerItem;
+import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileStabilizerMain extends TileEP implements IInventory
+public class TileStabilizerMain extends TileEP implements IInventory, IEnergyHandler
 {
     static final int ACTIVE_PORTALS_PER_ROW = 2, ENERGY_STORAGE_PER_ROW = CommonProxy.REDSTONE_FLUX_COST + CommonProxy.REDSTONE_FLUX_COST / 2;
 
@@ -658,28 +660,28 @@ public class TileStabilizerMain extends TileEP implements IInventory
     @Override
     public void updateEntity()
     {
-        if (activeConnections.size() > 0 && CommonProxy.powerMultiplier > 0 && tickTimer >= CommonProxy.REDSTONE_FLUX_TIMER)
+        if (activeConnections.size() > 0 && CommonProxy.requirePower && tickTimer >= CommonProxy.REDSTONE_FLUX_TIMER)
         {
             int powerRequirement = CommonProxy.powerMultiplier * activeConnections.size() * CommonProxy.REDSTONE_FLUX_COST;
 
-            if (powerState == 0 /* && extractEnergy(null, powerRequirement, true) == powerRequirement */) // Simulate the full power requirement
+            if (powerState == 0 && extractEnergy(null, powerRequirement, true) == powerRequirement) // Simulate the full power requirement
             {
-                // extractEnergy(null, powerRequirement, false);
+                extractEnergy(null, powerRequirement, false);
                 setInstability(0);
             }
-            else if (powerState == 1 || powerState == 0 /* && extractEnergy(null, (int) (powerRequirement * 0.8), true) == (int) (powerRequirement * 0.8) */) // Otherwise, try it at 80%
+            else if (powerState == 1 || powerState == 0 && extractEnergy(null, (int) (powerRequirement * 0.8), true) == (int) (powerRequirement * 0.8)) // Otherwise, try it at 80%
             {
-                // extractEnergy(null, (int) (powerRequirement * 0.8), false);
+                extractEnergy(null, (int) (powerRequirement * 0.8), false);
                 setInstability(20);
             }
-            else if (powerState == 2 || powerState == 0 /* && extractEnergy(null, (int) (powerRequirement * 0.5), true) == (int) (powerRequirement * 0.5) */) // Otherwise, try it at 50%
+            else if (powerState == 2 || powerState == 0 && extractEnergy(null, (int) (powerRequirement * 0.5), true) == (int) (powerRequirement * 0.5)) // Otherwise, try it at 50%
             {
-                // extractEnergy(null, (int) (powerRequirement * 0.5), false);
+                extractEnergy(null, (int) (powerRequirement * 0.5), false);
                 setInstability(50);
             }
-            else if (powerState == 3 || powerState == 0 /* && extractEnergy(null, (int) (powerRequirement * 0.3), true) == (int) (powerRequirement * 0.3) */) // Otherwise, try it at 30%
+            else if (powerState == 3 || powerState == 0 && extractEnergy(null, (int) (powerRequirement * 0.3), true) == (int) (powerRequirement * 0.3)) // Otherwise, try it at 30%
             {
-                // extractEnergy(null, (int) (powerRequirement * 0.3), false);
+                extractEnergy(null, (int) (powerRequirement * 0.3), false);
                 setInstability(70);
             }
             else
@@ -756,5 +758,35 @@ public class TileStabilizerMain extends TileEP implements IInventory
             inventory.writeToNBT(t);
             tag.setTag("inventory", t);
         }
+    }
+
+    @Override
+    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+    {
+        return energyStorage.receiveEnergy(maxReceive, simulate);
+    }
+
+    @Override
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+    {
+        return energyStorage.extractEnergy(maxExtract, simulate);
+    }
+
+    @Override
+    public boolean canInterface(ForgeDirection from)
+    {
+        return true;
+    }
+
+    @Override
+    public int getEnergyStored(ForgeDirection from)
+    {
+        return energyStorage.getEnergyStored();
+    }
+
+    @Override
+    public int getMaxEnergyStored(ForgeDirection from)
+    {
+        return energyStorage.getMaxEnergyStored();
     }
 }
