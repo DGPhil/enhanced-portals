@@ -148,7 +148,7 @@ ep3.gui.anythingNotOnList=任何未在列表上的物品
 # GUI Redstone
 ep3.gui.redstoneInterface=红石接口
 
-ep3.gui.input=Input
+ep3.gui.input=输入
 ep3.gui.createPortalOnSignal=接收到红石信号时创建传送门
 ep3.gui.removePortalOnSignal=接收到红石信号时移除传送门
 ep3.gui.createPortalOnPulse=接收到红石脉冲时创建传送门
